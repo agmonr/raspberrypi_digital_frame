@@ -27,6 +27,13 @@ chmod +x start.sh
 
 add "su -c '/home/pi/start.sh' pi" to /etc/rc.local just before the "exit 0"
 
+You can stop the script using (under user pi):
+	pkill python
+
+and start it again using the start.sh (to kill it: pkill python; fg )
+
+
+
 
 Todo:
 Add web intreface:
