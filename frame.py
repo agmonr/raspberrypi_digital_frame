@@ -37,10 +37,10 @@ class frame:
 			self.msg=time.strftime("%H:%M")
 			self.add_text()
 
-	def add_text(self,x=50,y=170,size=4):
+	def add_text(self,x=50,y=170,size=4.2):
 		font = cv2.FONT_HERSHEY_SIMPLEX
 		cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
-		cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),6)
+		cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
 	def check_on(self):
 		if hours_on[self.Day].count(self.Hour)>0:
