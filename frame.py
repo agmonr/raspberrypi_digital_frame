@@ -13,6 +13,7 @@ class frame:
     			for name in files:
 				if types.count(name[-3:])>0:
         				self.List.append( os.path.join(path, name) )
+		self.List.sort()
 		self.main()
 
 
