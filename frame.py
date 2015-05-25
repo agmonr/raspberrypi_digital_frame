@@ -5,9 +5,6 @@ import subprocess
 
 from config import *
 
-
-
-
 class frame:
 	def __init__(self):
 		self.List=[]
