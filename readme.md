@@ -7,6 +7,7 @@ With supported monitors (most of the modern one, but not tv sets) it will power 
 It can add the local time in specifc hours (I am using it in the morining when every minute count, and it is great for the kids too)
 The script is set to show images in serias. Usefull when your photos are sorted in folders or by date.
 For best results, resize your photos acording to the screen size (I am using ufraw for raw images and digikam for jpgs)
+You can show all images in greyscale.
 The script was testing only with jpgs.
 
 

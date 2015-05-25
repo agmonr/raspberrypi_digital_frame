@@ -4,6 +4,8 @@ XScreenResulation=1920		#Screen Resoution
 YScreenResulation=1080		
 types=['jpg','jpeg','JPG','JPEG'] #Supported image types
 serias=20			#lengith of image serias
+GrayScale=1                     #Show in greyScale
+
 
 hours_show=[0,1,2,3,4,5,6,7] # Array init 
 hours_on=[0,1,2,3,4,5,6,7] # Array init

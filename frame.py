@@ -18,6 +18,8 @@ class frame:
 
 	def read_img(self,FileName):
 		self.img=cv2.imread(FileName)
+		if GrayScale: 
+			self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
