@@ -70,7 +70,7 @@ class frame:
 				self.show()
 				count+=1
 				f+=1
-				if count>serias:
+				if count>=serias:
 					count=0
 					f=randint(0,len(self.List)-serias)
 			except:

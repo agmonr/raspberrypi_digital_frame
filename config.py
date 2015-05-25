@@ -1,14 +1,14 @@
-root="/home/Photos/"		#Images Root folder
-Delay=10 			#Daley in sec between images
-XScreenResulation=1920		#Screen Resoution
+root="/home/Photos/"			#Images Root folder
+Delay=10 				#Daley in sec between images
+XScreenResulation=1920			#Screen Resoution
 YScreenResulation=1080		
-types=['jpg','jpeg','JPG','JPEG'] #Supported image types
-serias=20			#lengith of image serias
-GrayScale=1                     #Show in greyScale
+types=['jpg','jpeg','JPG','JPEG'] 	#Supported image types
+serias=20				#length of image serias
+GrayScale=1                     	#Show in greyScale
 
 
-hours_show=[0,1,2,3,4,5,6,7] # Array init 
-hours_on=[0,1,2,3,4,5,6,7] # Array init
+hours_show=[0,1,2,3,4,5,6,7] 		# Array init 
+hours_on=[0,1,2,3,4,5,6,7] 		# Array init
 
 
 #When the script will add the hour to the image
