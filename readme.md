@@ -20,5 +20,8 @@ chmod +x start.sh
 add "su -c '/home/pi/start.sh' pi" to /etc/rc.local just before the "exit 0"
 
 
- 
+Todo:
+Add web intreface:
+	show displayed images 
+	enable configuration. 
 
