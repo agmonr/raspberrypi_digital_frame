@@ -12,13 +12,14 @@ hours_on=[0,1,2,3,4,5,6,7] 		# Array init
 
 
 #When the script will add the hour to the image
-hours_show[0]=['7','20'] #monday
-hours_show[1]=['7','20'] 
-hours_show[2]=['7','20']
-hours_show[3]=['7','20']
-hours_show[4]=['7','20']
-hours_show[5]=['7','20']
-hours_show[6]=['7','20'] #Sunday
+hours_show[0]=['07','20'] #monday
+hours_show[1]=['07','20']
+hours_show[2]=['07','20']
+hours_show[3]=['07','20']
+hours_show[4]=['07']
+hours_show[5]=[]
+hours_show[6]=['07','20'] #Sunday
+
 
 # When the script will set the screen on
 hours_on[0]=['06','07','08','16','17','18','19','20','21','22','23'] #Monday
