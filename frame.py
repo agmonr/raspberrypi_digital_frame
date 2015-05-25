@@ -23,7 +23,7 @@ class frame:
 		self.img=cv2.imread(FileName)
 		if GrayScale: 
 			self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-		print os.system('export DISPLAY=:0; xset dpms force off') #making sure power save stays off
+		print os.system('export DISPLAY=:0; $( which xset ) dpms force off') #making sure power save stays off
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
