@@ -7,6 +7,7 @@ from config import *
 
 class frame:
 	def __init__(self):
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #making sure power save stays off
 		self.List=[]
 		for path, subdirs, files in os.walk(root):
     			for name in files:
@@ -20,7 +21,7 @@ class frame:
 		self.img=cv2.imread(FileName)
 		if GrayScale: 
 			self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-		print os.system('export DISPLAY=:0; $( which xset ) dpms force off') #making sure power save stays off
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #making sure power save stays off
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
@@ -36,10 +37,10 @@ class frame:
 			self.msg=time.strftime("%H:%M")
 			self.add_text()
 
-	def add_text(self,x=220,y=170):
+	def add_text(self,x=50,y=170,size=4):
 		font = cv2.FONT_HERSHEY_SIMPLEX
-		cv2.putText(self.img, self.msg, (x,y), font, 5,(0,0,0),18)
-		cv2.putText(self.img, self.msg, (x,y), font, 5,(255,255,255),6)
+		cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
+		cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),6)
 
 	def check_on(self):
 		if hours_on[self.Day].count(self.Hour)>0:
