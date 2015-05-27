@@ -1,7 +1,6 @@
-import cv2,os,time,datetime
+import cv2,os,time,datetime,pickle,subprocess
 from random import randint
 from time import gmtime, strftime
-import subprocess
 
 from config import *
 
@@ -9,6 +8,8 @@ class frame:
 	def __init__(self):
 		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #making sure power save stays off
 		self.List=[]
+		self.Shown=[[0 for x in range(2)] for x in range(101)]
+		self.Shown=[]
 		for path, subdirs, files in os.walk(root):
     			for name in files:
 				if types.count(name[-3:])>0:
@@ -16,6 +17,14 @@ class frame:
 		self.write_log("------------")
 		self.write_log("* Starting *")
 		self.main()
+
+	def export_list(self):
+		self.Shown.append([time.strftime("%H:%M"),self.FileName])
+		if len(self.Shown) > 100:
+			self.Shown=self.Shown[-100:]
+		f=open('shown.pck','w')
+		pickle.dump(self.Shown,f)
+		f.close()
 
 	def write_log(self,Text):
 		f=open('frame.log','a')
@@ -67,6 +76,7 @@ class frame:
 		self.check_on()
 		self.read_img()
 		self.add_hour()
+		self.export_list()
 		self.show()
 	
 
