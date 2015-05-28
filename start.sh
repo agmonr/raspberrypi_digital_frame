@@ -8,3 +8,4 @@ $x &
 $( which python ) server.py &
 $( which python ) frame.py
 $( which pkill ) X
+$( which pkill ) python

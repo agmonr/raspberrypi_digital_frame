@@ -1,5 +1,5 @@
 from BaseHTTPServer import BaseHTTPRequestHandler
-import urlparse,pickle
+import urlparse,pickle,socket
 
 import config
 
@@ -20,7 +20,7 @@ class GetHandler(BaseHTTPRequestHandler):
                         '<td><b><h3>FileName</h3></b></td>',
                         '</tr>'
                         ]
-                for Hours,FileName in self.FileList:
+                for Hours,FileName in reversed(self.FileList):
                                 body.append('<tr><td><center>'+Hours+'</center></td>')
                                 body.append('<td><a href="'+FileName+'">'+FileName+'</a></td></tr>')
 
@@ -72,7 +72,7 @@ class GetHandler(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
         from BaseHTTPServer import HTTPServer
-        server = HTTPServer(('localhost', 8081), GetHandler)
+        server = HTTPServer((socket.gethostname(), 8081), GetHandler)
         print 'Starting server, use <Ctrl-C> to stop'
         server.serve_forever()
 
