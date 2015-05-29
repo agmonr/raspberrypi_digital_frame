@@ -41,10 +41,10 @@ class frame:
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
-		r = int(long(YScreenResolution*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
-		dim = (int(self.img.shape[1]*r)/1000000,YScreenResolution)
+		r = int(long(YScreenResulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
+		dim = (int(self.img.shape[1]*r)/1000000,YScreenResulation)
 		self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
-		cv2.moveWindow("Frame", int((XScreenResolution-self.img.shape[1])/2), 0) 
+		cv2.moveWindow("Frame", int((XScreenResulation-self.img.shape[1])/2), 0) 
 		cv2.imshow("Frame",self.img)
 		key=cv2.waitKey(1000*Delay)
 
