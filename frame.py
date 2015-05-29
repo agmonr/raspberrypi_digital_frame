@@ -6,7 +6,7 @@ from config import *
 
 class frame:
 	def __init__(self):
-		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #making sure power save stays off
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #Making sure power save stays off
 		self.List=[]
 		self.Shown=[[0 for x in range(2)] for x in range(101)]
 		self.Shown=[]
@@ -18,7 +18,7 @@ class frame:
 		self.write_log("* Starting *")
 		self.main()
 
-	def export_list(self):
+	def export_list(self):	#Exporting the image list for the web server
 		self.Shown.append([time.strftime("%H:%M"),self.FileName])
 		if len(self.Shown) > 100:
 			self.Shown=self.Shown[-100:]
@@ -37,14 +37,14 @@ class frame:
 		self.write_log(self.FileName+" "+str(self.img.shape))	
 		if GrayScale: 
 			self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #making sure power save stays off
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #Making sure power save stays off
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
-		r = int(long(YScreenResulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
-		dim = (int(self.img.shape[1]*r)/1000000,YScreenResulation)
+		r = int(long(YScreenResolution*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
+		dim = (int(self.img.shape[1]*r)/1000000,YScreenResolution)
 		self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
-		cv2.moveWindow("Frame", int((XScreenResulation-self.img.shape[1])/2), 0) 
+		cv2.moveWindow("Frame", int((XScreenResolution-self.img.shape[1])/2), 0) 
 		cv2.imshow("Frame",self.img)
 		key=cv2.waitKey(1000*Delay)
 

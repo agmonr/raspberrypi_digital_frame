@@ -1,9 +1,9 @@
 root="/home/Photos/"			#Images Root folder
 Delay=10 				#Daley in sec between images
-XScreenResulation=1920			#Screen Resoution
-YScreenResulation=1080		
+XScreenResolution=1920			#Screen Resoution
+YScreenResolution=1080		
 types=['jpg','jpeg','JPG','JPEG'] 	#Supported image types
-serias=20				#length of image serias
+serias=20				#Length of image serias
 GrayScale=1                     	#Show in greyScale
 
 
@@ -12,7 +12,7 @@ hours_on=[0,1,2,3,4,5,6,7] 		# Array init
 
 
 #When the script will add the hour to the image
-hours_show[0]=['07','20'] #monday
+hours_show[0]=['07','20'] #Monday
 hours_show[1]=['07','20']
 hours_show[2]=['07','20']
 hours_show[3]=['07','20']
