@@ -1,6 +1,5 @@
 from BaseHTTPServer import BaseHTTPRequestHandler
 import urlparse,pickle,socket
-
 import config
 
 class GetHandler(BaseHTTPRequestHandler):

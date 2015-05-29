@@ -82,7 +82,7 @@ class frame:
 
 	def main(self):
 		count=0
-		f=randint(0,len(self.List)-serias)
+		f=randint(0,len(self.List)-series)
 		while 1:
 			self.FileName=self.List[f]
 			try:
@@ -93,9 +93,9 @@ class frame:
 
 			count+=1
 			f+=1
-			if count>=serias:
+			if count>=series:
 				count=0
-				f=randint(0,len(self.List)-serias)
+				f=randint(0,len(self.List)-series)
 				
 
 Frame01 = frame()
