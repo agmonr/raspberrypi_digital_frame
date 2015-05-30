@@ -5,7 +5,7 @@ YScreenResolution=1080
 types=['jpg','jpeg','JPG','JPEG'] 	#Supported image types
 serias=20				#Length of image serias
 GrayScale=1                     	#Show in greyScale
-
+Show_Half=1                     	#Show hour every 30 minutes
 
 hours_show=[0,1,2,3,4,5,6,7] 		# Array init 
 hours_on=[0,1,2,3,4,5,6,7] 		# Array init

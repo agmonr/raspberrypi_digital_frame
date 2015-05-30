@@ -1,6 +1,5 @@
 import cv2,os,time,datetime,pickle,subprocess
 from random import randint
-from time import gmtime, strftime
 
 from config import *
 
@@ -52,6 +51,13 @@ class frame:
 		if hours_show[self.Day].count(self.Hour)>0:
 			self.msg=time.strftime("%H:%M")
 			self.add_text()
+			return
+
+		if Show_Half and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
+		 	self.msg=time.strftime("%H:%M")
+                        self.add_text()
+
+
 
 	def add_text(self,x=50,y=170,size=4.2):
 		font = cv2.FONT_HERSHEY_SIMPLEX
