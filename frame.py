@@ -7,7 +7,6 @@ class frame:
 	def __init__(self):
 		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #Making sure power save stays off
 		self.List=[]
-		self.Shown=[[0 for x in range(2)] for x in range(101)]
 		self.Shown=[]
 		for path, subdirs, files in os.walk(root):
     			for name in files:
@@ -15,6 +14,7 @@ class frame:
         				self.List.append( os.path.join(path, name) )
 		self.write_log("------------")
 		self.write_log("* Starting *")
+		self.List.sort()
 		self.main()
 
 	def export_list(self):	#Exporting the image list for the web server
