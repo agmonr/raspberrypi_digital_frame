@@ -5,7 +5,7 @@ from config import *
 
 class frame:
 	def __init__(self):
-		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #Making sure power save stays off
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays on
 		self.List=[]
 		self.Shown=[]
 		for path, subdirs, files in os.walk(root):
@@ -36,7 +36,7 @@ class frame:
 		self.write_log(self.FileName+" "+str(self.img.shape))	
 		if GrayScale: 
 			self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-		os.system('export DISPLAY=:0; /usr/bin/xset dpms force off') #Making sure power save stays off
+		os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
 
 	def show(self):
 		cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
@@ -91,12 +91,7 @@ class frame:
 		f=randint(0,len(self.List)-series)
 		while 1:
 			self.FileName=self.List[f]
-			try:
-				self.main1()
-			except:
-				print "Problem with img"+self.FileName
-				self.write_log( "Problem with img "+self.FileName )
-
+			self.main1()
 			count+=1
 			f+=1
 			if count>=series:
