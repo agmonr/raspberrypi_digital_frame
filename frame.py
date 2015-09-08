@@ -1,6 +1,5 @@
 import cv2,os,time,datetime,pickle,subprocess
 from random import randint
-
 from config import *
 
 class frame:
@@ -57,7 +56,13 @@ class frame:
 		 	self.msg=time.strftime("%H:%M")
                         self.add_text()
 
-
+	
+	def check_net(self):
+		Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
+		if Status.find ('100% packet loss') > 0:
+			self.msg=":( "+self.msg
+			self.add_text()
+	
 
 	def add_text(self,x=50,y=170,size=4.2):
 		font = cv2.FONT_HERSHEY_SIMPLEX
@@ -76,12 +81,16 @@ class frame:
 			while( time.strftime("%H") == self.Hour):
 				time.sleep(600)
 
+
 	def main1(self):
+		self.msg=""
 		self.Hour=time.strftime("%H")
 		self.Day=datetime.datetime.today().weekday()
 		self.check_on()
 		self.read_img()
 		self.add_hour()
+		if Check_net != 0:
+			self.check_net()
 		self.export_list()
 		self.show()
 	

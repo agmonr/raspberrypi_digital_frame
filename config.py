@@ -1,11 +1,13 @@
 root="/home/Photos/"			#Images Root folder
-Delay=10 				#Daley in sec between images
-XScreenResolution=1920			#Screen Resoution
-YScreenResolution=1080		
+Delay=6 				#Daley in sec between images
+YScreenResulation=1080
+XScreenResulation=1920
 types=['jpg','jpeg','JPG','JPEG'] 	#Supported image types
-serias=20				#Length of image serias
-GrayScale=1                     	#Show in greyScale
+series=20				#Length of image serias
+GrayScale=0                     	#Show in greyScale
 Show_Half=1                     	#Show hour every 30 minutes
+Check_net=1				#check internet connection
+Net_target='8.8.8.8'			# address to ping 
 
 hours_show=[0,1,2,3,4,5,6,7] 		# Array init 
 hours_on=[0,1,2,3,4,5,6,7] 		# Array init
