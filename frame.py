@@ -45,6 +45,12 @@ class frame:
 		cv2.moveWindow("Frame", int((XScreenResulation-self.img.shape[1])/2), 0) 
 		cv2.imshow("Frame",self.img)
 		key=cv2.waitKey(1000*Delay)
+		self.wait()
+	
+	def wait(self):
+		time.sleep(1)
+
+
 
 	def add_hour(self):
 		if hours_show[self.Day].count(self.Hour)>0:

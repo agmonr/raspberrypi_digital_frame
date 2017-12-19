@@ -1,4 +1,4 @@
-root="/home/Photos/"			#Images Root folder
+root="/home/user/background/"			#Images Root folder
 Delay=6 				#Daley in sec between images
 YScreenResulation=1080
 XScreenResulation=1920
@@ -24,10 +24,10 @@ hours_show[6]=['07','20'] #Sunday
 
 
 # When the script will set the screen on
-hours_on[0]=['06','07','08','16','17','18','19','20','21','22','23'] #Monday
-hours_on[1]=['06','07','08','16','17','18','19','20','21','22','23']
-hours_on[2]=['06','07','08','16','17','18','19','20','21','22','23']
-hours_on[3]=['06','07','08','16','17','18','19','20','21','22','23']
-hours_on[4]=['06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] #Friday
-hours_on[5]=['06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+hours_on[0]=['06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] #Friday
+hours_on[1]=hours_on[0]
+hours_on[2]=hours_on[0]
+hours_on[3]=hours_on[0]
+hours_on[4]=hours_on[0]
+hours_on[5]=hours_on[0]
 hours_on[6]=['06','07','08','16','17','18','19','20','21','22','23'] #Sunday
