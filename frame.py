@@ -3,18 +3,24 @@ from random import randint
 
 types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
+tvservice=os.path.exists("/usr/bin/tvservice")
+xset=os.path.exists("/usr/bin/xset")
+
 
 class frame:
   def __init__(self):
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays on
     self.import_config()
     self.import_config_state()
     self.List=[]
-    self.Shown=[] 
-    for path, subdirs, files in os.walk(self.root):
-      for name in files:
-        if types.count(name[-3:])>0:
-          self.List.append( str(path+name) )
+    self.Shown=[]
+    try:
+      for path, subdirs, files in os.walk(self.root):
+       for name in files:
+         if types.count(name[-3:])>0:
+            self.List.append( str(path+"/"+name) )
+    except:
+      print "End of list"
+    print self.List
     self.write_log("------------")
     self.write_log("* Starting *")
     self.List.sort()
@@ -34,7 +40,12 @@ class frame:
     
   def get_hours_on(self):
     now=datetime.datetime.now() 
-    return (requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
+    try:
+      print (datetime.datetime.today().weekday()) #to do bug hunt
+      hoursnow=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
+    except:
+      hoursnow=1
+    return hoursnow 
   
   def get_hours_show(self):
     now=datetime.datetime.now() 
@@ -54,12 +65,18 @@ class frame:
     f.write(time.strftime("%H:%M ")+Text+"\n")
     f.close()
 
+  def xset_force_on(self):
+    if not xset:
+	return
+    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
+
   def read_img(self):
     self.img=cv2.imread(self.FileName)
+    print self.FileName
     self.write_log(self.FileName+" "+str(self.img.shape))  
     if self.grayscale: 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
+    self.xset_force_on()
 
   def show(self):
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
@@ -69,6 +86,7 @@ class frame:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     for f in range (0,int(self.delay/10)+1):
+      self.xset_force_on()
       key=cv2.waitKey(10000)
       self.import_config()
     self.update_image_name()
@@ -107,6 +125,8 @@ class frame:
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
   def check_on(self):
+    if not tvservice:
+	return
     hours_on=self.get_hours_on()
     if hours_on=="1":
       Status=subprocess.Popen("/usr/bin/tvservice -s", shell=True, stdout=subprocess.PIPE).stdout.read()
@@ -135,6 +155,8 @@ class frame:
 
   def main(self):
     count=0
+    if self.series > len(self.List):
+	self.series=len(self.List)-1 
     f=randint(0,len(self.List)-self.series)
     while 1:
       self.FileName=self.List[f]

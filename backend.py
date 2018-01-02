@@ -76,7 +76,7 @@ db.create_all()
 if not db.session.query(days).count():
     db.session.add_all([
         days(hours=u'0000001110000000111111'), #monday
-        days(hours=u'0000001110000000111111'),
+        days(hours=u'0000001111111111111111'),
         days(hours=u'0000001110000000111111'),
         days(hours=u'0000001110000000111111'),
         days(hours=u'0000001111111111111111'),
@@ -86,16 +86,16 @@ if not db.session.query(days).count():
 
     db.session.add_all([
         h_display(hours=u'0000000100000000000000'), #monday
-	h_display(hours=u'0000000100000000000000'),
-	h_display(hours=u'0000000100000000000000'), 
-	h_display(hours=u'0000000100000000000000'),
-	h_display(hours=u'0000000100000000000000'),
+	h_display(hours=u'0000000100000000010000'),
+	h_display(hours=u'0000000100000000010000'), 
+	h_display(hours=u'0000000100000000010000'),
+	h_display(hours=u'0000000100000000010000'),
 	h_display(hours=u'0000000000000000000000'),
 	h_display(hours=u'0000000000000000000000')])
     db.session.commit()
 
     db.session.add_all([
-        config(root=u'/home/Photos/2016/'),
+        config(root=u'/home/Photos/'),
 	      config(delay=60),
         config(yscreenresulation=1080),
     	  config(xscreenresulation=1920),
