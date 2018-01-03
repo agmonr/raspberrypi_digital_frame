@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/ram/Documents/frame/vagrant","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}},"virtualbox":{"/root/project":{"owner":"root","group":"root","guestpath":"/root/project","hostpath":"/home/ram/Documents/frame","disabled":false,"__vagrantfile":true}}}

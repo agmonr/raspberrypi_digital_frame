@@ -1,0 +1,6 @@
+Vagrant file for building dev enviermnent for the raspberry pi digital frame based on raspbian.
+
+make sure you install vagrant vbguest using:
+
+sudo vagrant plugin install vagrant-vbguest
+

@@ -80,7 +80,7 @@ if not db.session.query(days).count():
         days(hours=u'0000001110000000111111'),
         days(hours=u'0000001110000000111111'),
         days(hours=u'0000001111111111111111'),
-	      days(hours=u'0000001111111111111111'),
+	days(hours=u'0000001111111111111111'),
         days(hours=u'0000001110000000111111')]) #sunday
     db.session.commit()
 
@@ -96,9 +96,9 @@ if not db.session.query(days).count():
 
     db.session.add_all([
         config(root=u'/home/Photos/'),
-	      config(delay=60),
+	config(delay=60),
         config(yscreenresulation=1080),
-    	  config(xscreenresulation=1920),
+    	config(xscreenresulation=1920),
         config(series=100),
         config(grayscale=0),
         config(show_half=1),

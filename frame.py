@@ -20,7 +20,6 @@ class frame:
             self.List.append( str(path+"/"+name) )
     except:
       print "End of list"
-    print self.List
     self.write_log("------------")
     self.write_log("* Starting *")
     self.List.sort()
@@ -42,14 +41,18 @@ class frame:
     now=datetime.datetime.now() 
     try:
       print (datetime.datetime.today().weekday()) #to do bug hunt
-      hoursnow=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
+      hours=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
     except:
-      hoursnow=1
-    return hoursnow 
+      hours=1
+    return hours 
   
   def get_hours_show(self):
-    now=datetime.datetime.now() 
-    return (requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
+    try:
+      now=datetime.datetime.now() 
+      hours=(requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
+    except:
+      hours=1
+    return hours
 
   def export_list(self):  #Exporting the image list for the web server
     return 
@@ -156,7 +159,7 @@ class frame:
   def main(self):
     count=0
     if self.series > len(self.List):
-	self.series=len(self.List)-1 
+	    self.series=len(self.List)-1 
     f=randint(0,len(self.List)-self.series)
     while 1:
       self.FileName=self.List[f]
