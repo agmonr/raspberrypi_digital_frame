@@ -10,16 +10,12 @@ xset=os.path.exists("/usr/bin/xset")
 class frame:
   def __init__(self):
     self.import_config()
-    print self.root
     self.import_config_state()
     self.List=[]
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
       for name in files:
-        try:
-          self.List.append(unicode(path)+"/"+unicode(name))
-        except:
-          print name
+        self.List.append(unicode(path)+"/"+unicode(name))
 
     print "Number of items "+str(len(self.List))
     self.write_log("------------")
@@ -41,19 +37,12 @@ class frame:
     
   def get_hours_on(self):
     now=datetime.datetime.now() 
-    try:
-      print (datetime.datetime.today().weekday()) #to do bug hunt
-      hours=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
-    except:
-      hours=1
+    hours=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
     return hours 
   
   def get_hours_show(self):
-    try:
-      now=datetime.datetime.now() 
-      hours=(requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday())+1)).json()["hours"][now.hour])
-    except:
-      hours=1
+    now=datetime.datetime.now() 
+    hours=(requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
     return hours
 
   def export_list(self):  #Exporting the image list for the web server
@@ -117,7 +106,7 @@ class frame:
        self.add_text()
 
   
-  def check_net(self):
+  def check_net(self): #Check internet connection
     Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
     if Status.find ('100% packet loss') > 0:
       self.msg=":( "+self.msg
@@ -129,7 +118,7 @@ class frame:
     cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
-  def check_on(self):
+  def check_on(self): 
     if not tvservice:
 	return
     hours_on=self.get_hours_on()
