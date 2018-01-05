@@ -10,16 +10,18 @@ xset=os.path.exists("/usr/bin/xset")
 class frame:
   def __init__(self):
     self.import_config()
+    print self.root
     self.import_config_state()
     self.List=[]
     self.Shown=[]
-    try:
-      for path, subdirs, files in os.walk(self.root):
-       for name in files:
-         if types.count(name[-3:])>0:
-            self.List.append( str(path+"/"+name) )
-    except:
-      print "End of list"
+    for path, subdirs, files in os.walk(self.root):
+      for name in files:
+        try:
+          self.List.append(unicode(path)+"/"+unicode(name))
+        except:
+          print name
+
+    print "Number of items "+str(len(self.List))
     self.write_log("------------")
     self.write_log("* Starting *")
     self.List.sort()

@@ -77,21 +77,21 @@ if not db.session.query(days).count():
     db.session.add_all([
         days(hours=u'0000001110000000111111'), #monday
         days(hours=u'0000001111111111111111'),
-        days(hours=u'0000001110000000111111'),
-        days(hours=u'0000001110000000111111'),
         days(hours=u'0000001111111111111111'),
-	days(hours=u'0000001111111111111111'),
+        days(hours=u'0000001111111111111111'),
+        days(hours=u'0000001111111111111111'),
+	      days(hours=u'0000001111111111111111'),
         days(hours=u'0000001110000000111111')]) #sunday
     db.session.commit()
 
     db.session.add_all([
         h_display(hours=u'0000000100000000000000'), #monday
-	h_display(hours=u'0000000100000000010000'),
-	h_display(hours=u'0000000100000000010000'), 
-	h_display(hours=u'0000000100000000010000'),
-	h_display(hours=u'0000000100000000010000'),
-	h_display(hours=u'0000000000000000000000'),
-	h_display(hours=u'0000000000000000000000')])
+	      h_display(hours=u'0000000100000000010000'),
+	      h_display(hours=u'0000000100000000010000'), 
+	      h_display(hours=u'0000000100000000010000'),
+	      h_display(hours=u'0000000100000000010000'),
+	      h_display(hours=u'0000000000000000000000'),
+	      h_display(hours=u'0000000000000000000000')])
     db.session.commit()
 
     db.session.add_all([

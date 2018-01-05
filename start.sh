@@ -1,8 +1,7 @@
 #!/bin/bash
 
-cd /home/pi/
 export DISPLAY=:0
-/usr/bin/xxset s off
+/usr/bin/xset s off
 /usr/bin/xset dpms force on
 x='X -nocursor :0'
 $x &
