@@ -63,7 +63,8 @@ class frame:
   def xset_force_on(self):
     if not xset:
 	return
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
+    os.system('/usr/bin/xset dpms force on') #Making sure screen stays on
+#    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -156,14 +157,12 @@ class frame:
     f=randint(0,len(self.List)-self.series)
     while 1:
       self.FileName=self.List[f]
-      print "XXXXX"
-      print count
       self.main1()
       count+=1
       f+=1
       if count>=self.series:
         count=0
         f=randint(0,len(self.List)-self.series)
-        
 
+os.environ['DISPLAY']=':0'        
 Frame01 = frame()

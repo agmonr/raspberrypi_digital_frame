@@ -1,13 +1,13 @@
 [Unit]
 Description=naked X server
-After=network.target auditd.service
+After=ssh.server
 
 [Service]
-ExecStart=/opt/frame/start/startx.sh
+Type=simple
+ExecStart=/usr/bin/X -nocursor :0
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-Type=notify
 
 [Install]
 WantedBy=multi-user.target

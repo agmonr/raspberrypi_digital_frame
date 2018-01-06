@@ -1,4 +1,5 @@
 #!/bin/bash
+# script to manualy update via the rest api
 
 [[ "$1" == "" || "$2" == "" ]] && curl -H "Content-Type: application/json" -X GET -i http://frame:5000/ ; echo ""; exit 0
 

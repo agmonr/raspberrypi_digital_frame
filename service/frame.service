@@ -3,6 +3,7 @@ Description=digital frame
 After=backend.service
 
 [Service]
+ExecStartPre=/bin/sleep 1
 Type=simple
 EnvironmentFile=/opt/frame/control/frameenv
 ExecStart=/opt/frame/frame.py 

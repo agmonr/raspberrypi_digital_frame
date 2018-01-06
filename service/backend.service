@@ -1,13 +1,15 @@
 [Unit]
 Description=digital frame backend service
-After=xserver
+After=xserver.service
 
 [Service]
+ExecStartPre=/bin/sleep 1
+Type=simple
 ExecStart=/opt/frame/backend.py
+PidFile=/opt/frame/run/backend.pid
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-Type=simple
 
 [Install]
 WantedBy=multi-user.target
