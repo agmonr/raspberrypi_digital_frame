@@ -3,11 +3,11 @@ Description=digital frame backend service
 After=xserver
 
 [Service]
-ExecStart=/opt/frame/start/backend.sh
+ExecStart=/opt/frame/backend.py
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-Type=notify
+Type=simple
 
 [Install]
 WantedBy=multi-user.target

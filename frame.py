@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import cv2,os,time,datetime,pickle,subprocess,json,urllib2,requests,httplib2
 from random import randint
 

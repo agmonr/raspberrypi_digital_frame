@@ -3,12 +3,13 @@ Description=digital frame
 After=backend.service
 
 [Service]
-ExecStart=/opt/frame/start/frame.sh
+Type=simple
+EnvironmentFile=/opt/frame/control/frameenv
+ExecStart=/opt/frame/frame.py 
+PidFile=/opt/frame/run/frame.pid
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-Type=notify
-PidFile=/opt/frame/run/frame.pid
 
 [Install]
 WantedBy=multi-user.target

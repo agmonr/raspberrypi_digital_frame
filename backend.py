@@ -1,7 +1,4 @@
-#### curl -H "If-Match: b70715c7332dd2bdb6a24a1539b531ffe0166bd1" -H "Content-Type: application/json" -X PATCH -i http://localhost:5000/people/3 -d '{"firstname": "XXXXsaASs"}'
-
-
-
+#!/usr/bin/python
 import pdb
 from eve import Eve
 from eve_sqlalchemy import SQL
