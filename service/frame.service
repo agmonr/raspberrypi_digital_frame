@@ -1,0 +1,15 @@
+[Unit]
+Description=digital frame
+After=backend.service
+
+[Service]
+ExecStart=/opt/frame/start/frame.sh
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=notify
+PidFile=/opt/frame/run/frame.pid
+
+[Install]
+WantedBy=multi-user.target
+Alias=frame.service

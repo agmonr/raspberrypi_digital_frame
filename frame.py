@@ -36,12 +36,12 @@ class frame:
     self.delay=int(requests.get(url+"/config/2").json()["delay"])
     
   def get_hours_on(self):
-    now=datetime.datetime.now() 
+    now=datetime.datetime.now()
     hours=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
     return hours 
   
   def get_hours_show(self):
-    now=datetime.datetime.now() 
+    now=datetime.datetime.now()
     hours=(requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
     return hours
 
@@ -79,6 +79,7 @@ class frame:
     self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
+    self.check_on()
     for f in range (0,int(self.delay/10)+1):
       self.xset_force_on()
       key=cv2.waitKey(10000)
@@ -154,6 +155,8 @@ class frame:
     f=randint(0,len(self.List)-self.series)
     while 1:
       self.FileName=self.List[f]
+      print "XXXXX"
+      print count
       self.main1()
       count+=1
       f+=1

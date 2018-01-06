@@ -1,0 +1,14 @@
+[Unit]
+Description=digital frame backend service
+After=xserver
+
+[Service]
+ExecStart=/opt/frame/start/backend.sh
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=notify
+
+[Install]
+WantedBy=multi-user.target
+Alias=backend.service
