@@ -7,3 +7,6 @@ apt-get install -y curl wget screen python-opencv xserver-xorg vim python-pip py
 pip install --upgrade pip
 pip install datetime eve_sqlalchemy eve
 
+for f in /opt/frame/service/*; do 
+  ln -s "$f" /etc/systemd/system/multi-user.target.wants/
+done
