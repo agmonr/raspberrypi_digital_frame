@@ -1,44 +1,31 @@
 # Python Digital Frame for Raspberry pi
 
-This is a small script to use your raspberrypi as Digital frame.
-The Script was tested with version2, v1 might be too slow.
-The Script is licensed under GPLv3.
+The Raspberry pi digital frame is a python based digital frame. 
 
-### Usage
-The script displays images from folder and subfolders in specific time. It will resize the image according to your config.
-With supported monitors (most of the modern ones, but not tv sets) it will power off the screen. 
-It can add the local time in specifc hours (I am using it in the morining when every minute counts, and it is great for the kids too).
-The script is set to show images in series. Useful when your photos are sorted in folders or by date.
-For best results, resize your photos acording to the screen size (I am using ufraw for raw images and digikam for jpgs).
-You can show all images in greyscale.
-The script was tested only with jpgs.
+# Requirements
+* Raspberry pi SoC version 2 or 3.
+* Tested on raspbian stretch.
+* A display set (A tv set might not be controlled via the hdmi connection)
 
+## main features 
+* Every featur can be configured and change will the frame is working.
+* Dispalying jpg file at specfic interval.
+* Adding the current hour on top of the photos being disply.
+* Turning off and on the screen in spefic time.
+* Checking net connectivity and set mark on top of the photos.
 
-### Install
-Use a fresh installtion of Raspbian (testing with version 7)
+## install script
+* Will install necessity python and system dependencies.
+* Copy the files to /opt/frame/
+* Register the application as services.
 
-Install python image manipulation library.
+## Vagrant for dev
+* Will also download some sample images.
 
-apt-get install python-opencv
+## Services
+* They are 2 services: backend for configure and contolling the frame, and a frame which display the images and control the screen.
 
-Set the root folder where your photes are located in the config.py file
+## Todo
+* adding a web interface.
 
-Copy frame.py, config.py and start.sh to the pi user home dir (/home/pi)
-Set start.sh execaction:
-
-chmod +x start.sh
-
-
-add "su -c '/home/pi/start.sh' pi" to /etc/rc.local just before the "exit 0"
-
-You can stop the script using (under user pi):
-	pkill python
-
-and start it again using the start.sh (to kill it: pkill python; fg )
-
-
-
-### Todo
-Enable configuration using the web interface.
-Use auto off when mobile device get ip address
 
