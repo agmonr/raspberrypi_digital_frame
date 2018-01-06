@@ -13,3 +13,6 @@ while read l; do
 	
 done < /tmp/images.txt
 
+service xserver start
+service backend start
+service frame start
