@@ -6,7 +6,7 @@ types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
 tvservice=os.path.exists("/usr/bin/tvservice")
 xset=os.path.exists("/usr/bin/xset")
-
+LogFile="/opt/frame/log/frame.log"
 
 class frame:
   def __init__(self):
@@ -56,15 +56,14 @@ class frame:
     f.close()
 
   def write_log(self,Text):
-    f=open('frame.log','a')
+    f=open(LogFile,'a')
     f.write(time.strftime("%H:%M ")+Text+"\n")
     f.close()
 
   def xset_force_on(self):
     if not xset:
 	return
-    os.system('/usr/bin/xset dpms force on') #Making sure screen stays on
-#    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
+    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -165,4 +164,11 @@ class frame:
         f=randint(0,len(self.List)-self.series)
 
 os.environ['DISPLAY']=':0'        
-Frame01 = frame()
+try:
+    Frame01 = frame()
+except Exception, e:
+    f=open(LogFile,'a')
+    f.write(time.strftime("%H:%M ")+"Exception"+str(e))
+    f.close()
+
+
