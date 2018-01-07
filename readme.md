@@ -3,7 +3,7 @@
 The Raspberry pi digital frame is a python based digital frame. 
 
 # Requirements
-* Raspberry pi SoC version 2 or 3.
+* Raspberry pi vagrant/.vagrant/SoC version 2 or 3.
 * Tested on raspbian stretch.
 * A display set (A tv set might not be controlled via the hdmi connection)
 
@@ -25,7 +25,6 @@ The Raspberry pi digital frame is a python based digital frame.
 ## Services
 * They are 2 services: backend for configure and contolling the frame, and a frame which display the images and control the screen.
 
-## Todo
-* adding a web interface.
+
 
 
