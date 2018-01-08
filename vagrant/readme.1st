@@ -1,6 +1,16 @@
 Vagrant file for building dev enviermnent for the raspberry pi digital frame based on raspbian.
 
-make sure you install vagrant vbguest using:
+To use this file, download and install vagarnt (https://www.vagrantup.com/) and virtualbox (https://www.virtualbox.org/wiki/Downloads )
 
-sudo vagrant plugin install vagrant-vbguest
+* make sure you install vagrant vbguest using:
+'sudo vagrant plugin install vagrant-vbguest'
+
+Use cli to start the vm by 
+'vagrant up'
+Vagrant will download a base image, start it and configure it. If everything goes will, you will have a working "digital frame" on a vm.
+
+You may ssh to the machine using
+'vagrant ssh'
+
+
 
