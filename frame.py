@@ -46,15 +46,6 @@ class frame:
     hours=(requests.get(url+"/h_display/"+self.Day).json()["hours"][now.hour])
     return hours
 
-  def export_list(self):  #Exporting the image list for the web server
-    return 
-    self.Shown.append([time.strftime("%H:%M"),self.FileName])
-    if len(self.Shown) > 100:
-      self.Shown=self.Shown[-100:]
-    f=open('shown.pck','w')
-    pickle.dump(self.Shown,f)
-    f.close()
-
   def write_log(self,Text):
     f=open(LogFile,'a')
     f.write(time.strftime("%H:%M ")+Text+"\n")
@@ -63,7 +54,7 @@ class frame:
   def xset_force_on(self):
     if not xset:
 	return
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays off
+    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays on
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -80,9 +71,8 @@ class frame:
     self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
-    self.check_on()
     for f in range (0,int(self.delay/10)+1):
-      self.xset_force_on()
+      self.check_on()
       key=cv2.waitKey(10000)
       self.import_config()
     self.update_image_name()
@@ -125,6 +115,7 @@ class frame:
 	return
     hours_on=self.get_hours_on()
     if hours_on=="1":
+      self.xset_force_on()
       Status=subprocess.Popen("/usr/bin/tvservice -s", shell=True, stdout=subprocess.PIPE).stdout.read()
       if Status.find('progressive') == -1:
         self.write_log("Screen off - turning on")
@@ -140,12 +131,10 @@ class frame:
     self.msg=""
     self.Hour=str(time.strftime("%H"))
     self.Day=str(datetime.datetime.today().weekday()+1)
-    self.check_on()
     self.read_img()
     self.add_hour()
     if self.check_net != 0:
       self.check_net()
-    self.export_list()
     self.show()
   
 
