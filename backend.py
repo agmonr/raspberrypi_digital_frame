@@ -47,7 +47,7 @@ class config(Base):
 
 SETTINGS = {
     'DEBUG': True,
-    'SQLALCHEMY_DATABASE_URI': 'sqlite://',
+    'SQLALCHEMY_DATABASE_URI': 'mysql+pymysql://frame@localhost/frame',
     'RESOURCE_METHODS': ['GET','POST','DELETE'],
     'ITEM_METHODS': ['GET','PUT','DELETE','PATCH'],
     'RETURN_MEDIA_AS_URL': True,
@@ -68,46 +68,6 @@ db = app.data.driver
 Base.metadata.bind = db.engine
 db.Model = Base
 db.create_all()
-
-# Insert some example data in the db
-if not db.session.query(days).count():
-    db.session.add_all([
-        days(hours=u'000000111000000011111111'), #monday
-        days(hours=u'000000111111111111111111'), 
-        days(hours=u'000000111111111111111111'),
-        days(hours=u'000000111111111111111111'),
-        days(hours=u'000000111111111111111111'),
-	      days(hours=u'100000111111111111111111'),
-        days(hours=u'000000111000000011111111')]) #sunday
-    db.session.commit()
-
-    db.session.add_all([
-        h_display(hours=u'000000010000000000000000'), #monday
-	      h_display(hours=u'000000010000000001000000'),
-	      h_display(hours=u'000000010000000001000000'), 
-	      h_display(hours=u'000000010000000001000000'),
-	      h_display(hours=u'000000010000000001000000'),
-	      h_display(hours=u'000000000000000000000000'),
-	      h_display(hours=u'000000000000000000000000')])
-    db.session.commit()
-
-    db.session.add_all([
-        config(root=u'/home/Photos/'),
-	config(delay=60),
-        config(yscreenresulation=1080),
-    	config(xscreenresulation=1920),
-        config(series=100),
-        config(grayscale=0),
-        config(show_half=1),
-        config(check_net=0),
-        config(net_target="8.8.8.8")])   
-    db.session.commit()
-
-    db.session.add_all([
-        state(image_name="null")])   
-    db.session.commit()
-
-
 
 # using reloader will destroy in-memory sqlite db
 app.run(debug=True, use_reloader=False, host='0.0.0.0')
