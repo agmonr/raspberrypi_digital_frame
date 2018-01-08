@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import cv2,os,time,datetime,pickle,subprocess,json,urllib2,requests,httplib2
+import sys,cv2,os,time,datetime,pickle,subprocess,json,urllib2,requests,httplib2
 from random import randint
 
 types=['jpg','jpeg','JPG','JPEG']
@@ -38,12 +38,12 @@ class frame:
     
   def get_hours_on(self):
     now=datetime.datetime.now()
-    hours=(requests.get(url+"/days/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
+    hours=(requests.get(url+"/days/"+self.Day).json()["hours"][now.hour])
     return hours 
   
   def get_hours_show(self):
     now=datetime.datetime.now()
-    hours=(requests.get(url+"/h_display/"+str(int(datetime.datetime.today().weekday()))).json()["hours"][now.hour])
+    hours=(requests.get(url+"/h_display/"+self.Day).json()["hours"][now.hour])
     return hours
 
   def export_list(self):  #Exporting the image list for the web server
@@ -138,8 +138,8 @@ class frame:
 
   def main1(self):
     self.msg=""
-    self.Hour=time.strftime("%H")
-    self.Day=datetime.datetime.today().weekday()
+    self.Hour=str(time.strftime("%H"))
+    self.Day=str(datetime.datetime.today().weekday()+1)
     self.check_on()
     self.read_img()
     self.add_hour()
@@ -164,11 +164,6 @@ class frame:
         f=randint(0,len(self.List)-self.series)
 
 os.environ['DISPLAY']=':0'        
-try:
-    Frame01 = frame()
-except Exception, e:
-    f=open(LogFile,'a')
-    f.write(time.strftime("%H:%M ")+"Exception"+str(e))
-    f.close()
+Frame01 = frame()
 
 
