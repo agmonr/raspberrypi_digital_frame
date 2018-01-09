@@ -121,7 +121,7 @@ class frame:
 
   def write_log(self,Text):
     f=open(LogFile,'a')
-    f.write(time.strftime("%H:%M ")+Text+"\n")
+    f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
 
   def main1(self):
