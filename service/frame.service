@@ -6,7 +6,6 @@ After=backend.service
 ExecStartPre=/bin/sleep 1
 Type=simple
 ExecStart=/opt/frame/frame.py 
-PidFile=/opt/frame/run/frame.pid
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255

@@ -18,9 +18,9 @@ class frame:
       for name in files:
         self.List.append(unicode(path)+"/"+unicode(name))
 
-    print "Number of items "+str(len(self.List))
     self.write_log("------------")
     self.write_log("* Starting *")
+    self.write_log("Number of items "+str(len(self.List)))
     self.List.sort()
     self.main()
 
@@ -45,11 +45,6 @@ class frame:
     now=datetime.datetime.now()
     hours=(requests.get(url+"/h_display/"+self.Day).json()["hours"][now.hour])
     return hours
-
-  def write_log(self,Text):
-    f=open(LogFile,'a')
-    f.write(time.strftime("%H:%M ")+Text+"\n")
-    f.close()
 
   def xset_force_on(self):
     if not xset:
@@ -96,14 +91,12 @@ class frame:
     if self.show_half=="1" and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
        self.msg=time.strftime("%H:%M")
        self.add_text()
-
   
   def check_net(self): #Check internet connection
     Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
     if Status.find ('100% packet loss') > 0:
       self.msg=":( "+self.msg
       self.add_text()
-  
 
   def add_text(self,x=50,y=170,size=4.2):
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -126,6 +119,10 @@ class frame:
       while( time.strftime("%H") == self.Hour):
         time.sleep(600)
 
+  def write_log(self,Text):
+    f=open(LogFile,'a')
+    f.write(time.strftime("%H:%M ")+Text+"\n")
+    f.close()
 
   def main1(self):
     self.msg=""

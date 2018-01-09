@@ -6,7 +6,6 @@ After=xserver.service
 ExecStartPre=/bin/sleep 1
 Type=simple
 ExecStart=/opt/frame/backend.py
-PidFile=/opt/frame/run/backend.pid
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
