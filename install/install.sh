@@ -12,6 +12,7 @@ fi
 apt-get -y update
 apt-get -y upgrade
 apt-get install -y curl\
+  x11-utils\
   wget\
   vim\
   screen\
