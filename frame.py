@@ -9,17 +9,19 @@ LogFile="/opt/frame/log/frame.log"
 
 class frame:
   def __init__(self):
+    self.write_log("------------")
+    self.write_log("* Starting *")
     self.import_config()
+    self.write_log("* finish importing config *")
     self.import_config_state()
     self.List=[]
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
+      self.write_log(str(path))
       for name in files:
         self.List.append(unicode(path)+"/"+unicode(name))
 
-    self.write_log("------------")
-    self.write_log("* Starting *")
-    self.write_log("Number of items "+str(len(self.List)))
+    self.write_log("Total of "+str(len(self.List))+"images in "+str(self.root))
     self.List.sort()
     self.main()
 
@@ -73,6 +75,7 @@ class frame:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     for f in range (0,int(self.delay/10)+1):
+      self.xset_force_on()
       key=cv2.waitKey(10000)
       self.import_config()
     self.update_image_name()
@@ -111,13 +114,13 @@ class frame:
   def check_on_off(self): 
     hours_on=self.get_hours_on()
     if hours_on=="1":
-      self.xset_force_on()
       return 1
     else:
       self.xset_force_off()
-      time.sleep(10)
+      time.sleep(600)
 
   def write_log(self,Text):
+    print(time.strftime("%H:%M:%S ")+Text+"\n")
     f=open(LogFile,'a')
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
