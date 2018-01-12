@@ -4,7 +4,6 @@ from random import randint
 
 types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
-tvservice=os.path.exists("/usr/bin/tvservice")
 xset=os.path.exists("/usr/bin/xset")
 LogFile="/opt/frame/log/frame.log"
 
@@ -49,7 +48,14 @@ class frame:
   def xset_force_on(self):
     if not xset:
 	return
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on') #Making sure screen stays on
+    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
+
+  def xset_force_off(self):
+    if not xset:
+	return
+    os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
+
+
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -67,7 +73,6 @@ class frame:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     for f in range (0,int(self.delay/10)+1):
-      self.check_on()
       key=cv2.waitKey(10000)
       self.import_config()
     self.update_image_name()
@@ -103,21 +108,14 @@ class frame:
     cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
-  def check_on(self): 
-    if not tvservice:
-	return
+  def check_on_off(self): 
     hours_on=self.get_hours_on()
     if hours_on=="1":
       self.xset_force_on()
-      Status=subprocess.Popen("/usr/bin/tvservice -s", shell=True, stdout=subprocess.PIPE).stdout.read()
-      if Status.find('progressive') == -1:
-        self.write_log("Screen off - turning on")
-        os.system('/usr/bin/tvservice -p')
+      return 1
     else:
-      os.system('/usr/bin/tvservice -o')
-      self.write_log("Turning screen off")
-      while( time.strftime("%H") == self.Hour):
-        time.sleep(600)
+      self.xset_force_off()
+      time.sleep(10)
 
   def write_log(self,Text):
     f=open(LogFile,'a')
@@ -128,12 +126,12 @@ class frame:
     self.msg=""
     self.Hour=str(time.strftime("%H"))
     self.Day=str(datetime.datetime.today().weekday()+1)
-    self.read_img()
-    self.add_hour()
     if self.check_net != 0:
       self.check_net()
-    self.show()
-  
+    if self.check_on_off():
+      self.read_img()
+      self.add_hour()
+      self.show()
 
   def main(self):
     count=0
