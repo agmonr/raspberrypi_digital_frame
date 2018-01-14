@@ -30,7 +30,7 @@ pip install -r "${DEST}"install/requirements.txt
 mysql -u root < "${DEST}"install/create_user.sql 
 mysql -u root < "${DEST}"install/create_tables.sql
 
-for f in "{DEST}"/service/*; do 
+for f in "${DEST}"/service/*; do 
   ln -sf "$f" /etc/systemd/system/multi-user.target.wants/
 done
 systemctl daemon-reload
