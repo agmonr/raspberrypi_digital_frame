@@ -21,7 +21,8 @@ apt-get install -y curl\
   python-requests\
   python-httplib2\
   xserver-xorg\
-  mysql-server 
+  mysql-server\
+  nginx
 
 pip install --upgrade pip
 pip install -r "${DEST}"install/requirements.txt  
@@ -29,8 +30,13 @@ pip install -r "${DEST}"install/requirements.txt
 mysql -u root < "${DEST}"install/create_user.sql 
 mysql -u root < "${DEST}"install/create_tables.sql
 
-for f in "${DEST}"/service/*; do 
+for f in "{DEST}"/service/*; do 
   ln -sf "$f" /etc/systemd/system/multi-user.target.wants/
 done
 systemctl daemon-reload
+rm /etc/nginx/sites-enabled/default
+ln -s /opt/frame/install/nginx/default /etc/nginx/sites-enabled/default 
 
+cp /opt/frame/web/index.html /var/www/index.html
+
+service nginx restart

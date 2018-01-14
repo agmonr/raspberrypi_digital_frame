@@ -1,0 +1,20 @@
+server {
+    listen 80 default_server;
+
+    root /var/www/;
+    index index.php index.html index.htm;
+
+    server_name frame;
+    location / {
+        try_files $uri $uri/ /index.php;
+    }
+    location /api/ {
+    proxy_pass http://localhost:5000/;
+    sub_filter "http://frame/api" "http://frame/";
+    sub_filter_once off;
+    }
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        include snippets/fastcgi-php.conf;
+    }
+}

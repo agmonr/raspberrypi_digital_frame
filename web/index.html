@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2></h2>
+<p id="main"></p>
+<script>
+
+var xmlconfig = new XMLHttpRequest();
+xmlconfig.onreadystatechange = function() {
+  if (this.readyState == 4 ) {
+    var myObj = JSON.parse(this.responseText);
+	  document.getElementById("main").innerHTML += "<br><b>Root Folder</b> "+(myObj._items[0].root)+"</br>";
+	  document.getElementById("main").innerHTML += "Frame resulation: "+(myObj._items[3].xscreenresulation)+"x"+ (myObj._items[2].yscreenresulation);
+  }
+};
+
+xmlconfig.open("GET", "http://frame/api/config/", true);
+xmlconfig.send();
+
+var days = new XMLHttpRequest();
+days.onreadystatechange = function() {
+  if (this.readyState == 4 ) {
+    var mixed = document.getElementById("main");
+    var tr = document.createElement("tr");
+    var myDays = JSON.parse(this.responseText);
+    console.log(myDays._items);
+    for (day in myDays._items) {
+	    document.getElementById("main").innerHTML +="<br>"+ myDays._items[day].hours+"</br>";
+    }
+  }
+};
+
+
+days.open("GET", "http://frame/api/days/", true);
+days.send();
+
+</script>
+
+<!DOCTYPE html>
+<head>
+<title>Sum Table Column</title>
+<script>
+window.onload=function() {
+
+  var values = new Array(3);
+  values[0] = [123.45, "apple", true];
+  values[1] = [65, "banana", false];
+  values[2] = [1034.99, "cherry", false];
+
+  var mixed = document.getElementById("mixed");
+
+  // IE7 only supports appending rows to tbody
+
+  // for each outer array row
+  for (var i = 0 ; i < values.length; i++) {
+     var tr = document.createElement("tr");
+
+     // for each inner array cell
+     // create td then text, append
+     for (var j = 0; j < values[i].length; j++) {
+       var td = document.createElement("td");
+       var txt = document.createTextNode(values[i][j]);
+       td.appendChild(txt);
+       tr.appendChild(td);
+     }
+
+     mixed.appendChild(tr);
+   }
+
+}
+
+</script>
+
+</head>
+<body>
+<table id="mixed">
+<tr><th>01</th><th>02</th><th>03</th></tr>
+</table>
+</body>
+
+
+</body>
+</html>
