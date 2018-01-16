@@ -4,6 +4,7 @@ After=ssh.server
 
 [Service]
 Type=simple
+ExecStartPre=export DISPLAY=:0; xset s off
 ExecStart=/usr/bin/X -nolock -nocursor :0
 KillMode=process
 Restart=on-failure

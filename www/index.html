@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<html>
+<body>
+<h2></h2>
+<p id="main"></p>
+
+<script>
+
+/*
+
+*/
+ var etag="";
+ var n=0;
+ var hours="";
+
+function on_off_hour() {
+	var d = new Date();
+	var n = d.getDay()-1;
+	var h = d.getHours();
+
+  console.log(n);
+  var xmlconfig1 = new XMLHttpRequest();
+	xmlconfig1.onreadystatechange = function() {
+  	if (this.readyState == 4 ) {
+      var myDays = JSON.parse(this.responseText);
+      MyDaysNow=myDays._items[n].hours[h]
+      etag=myDays._items[n]._etag;
+      hours=myDays._items[n].hours;
+      if ( MyDaysNow == "1" ){
+        document.getElementById("main").innerHTML ="<br><b>Turning screen off</br>";
+       HoursBase=set_in_str (hours, h, '0') 
+     }
+      else {
+        HoursBase=set_in_str (hours, h, '1') 
+	      document.getElementById("main").innerHTML ="<br> Turning screen on</br>";
+      }
+        post_json(HoursBase);
+ 
+  }
+};
+
+function post_json(SHours) {
+  var sendData = $('#data').val();
+  n=n+1;
+  $.ajax({
+    headers: {
+      'If-Match': etag,
+      'Content-Type':'application/json'
+      },
+      url: 'http://frame/api/days/'+n,    //Your api url
+      type: 'PATCH',   //type is any HTTP method
+      data: JSON.stringify({ 'hours': SHours,}),
+      success: function () {
+         }
+        })
+     ;
+};
+
+function set_in_str(HoursString, place, set) {
+  let HoursBase=""
+  for ( var f = 0; f<HoursString.length; f++) {
+    if ( f != place ){
+    HoursBase += HoursString.charAt(f);
+    }
+    else{ 
+    HoursBase += set;
+    }
+  }
+  return (HoursBase);
+}
+
+
+
+	xmlconfig1.open("GET", "http://frame/api/days/", true);
+	xmlconfig1.send();
+}
+
+</script>
+
+<!DOCTYPE html>
+<head>
+<title>The Frame</title>
+</head>
+<body>
+
+<button onclick="on_off_hour()">Screen on/off</button>
+
+<!--
+<button>Send an HTTP POST request to a page and get the result back</button>
+<table id="mixed">
+<tr><th>01</th><th>02</th><th>03</th></tr>
+</table>
+--!>
+</body>
+</html>
