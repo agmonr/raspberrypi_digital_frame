@@ -8,27 +8,22 @@
 <p id="main"></p>
 
 <script>
+var etag="";
+var d = new Date();
+var n = d.getDay();
+var h = d.getHours();
 
-/*
-
-*/
- var etag="";
- var n=0;
- var hours="";
 
 function on_off_hour() {
-	var d = new Date();
-	var n = d.getDay()-1;
-	var h = d.getHours();
+  var xmlconfig = new XMLHttpRequest();
+	xmlconfig.onreadystatechange = function() {
 
-  console.log(n);
-  var xmlconfig1 = new XMLHttpRequest();
-	xmlconfig1.onreadystatechange = function() {
   	if (this.readyState == 4 ) {
       var myDays = JSON.parse(this.responseText);
-      MyDaysNow=myDays._items[n].hours[h]
-      etag=myDays._items[n]._etag;
-      hours=myDays._items[n].hours;
+      var etag=myDays._items[n]._etag;
+      var hours=myDays._items[n].hours;
+      var MyDaysNow=myDays._items[n].hours[h]
+
       if ( MyDaysNow == "1" ){
         document.getElementById("main").innerHTML ="<br><b>Turning screen off</br>";
        HoursBase=set_in_str (hours, h, '0') 
@@ -37,27 +32,31 @@ function on_off_hour() {
         HoursBase=set_in_str (hours, h, '1') 
 	      document.getElementById("main").innerHTML ="<br> Turning screen on</br>";
       }
-        post_json(HoursBase);
- 
+        post_json(HoursBase,etag,n);
   }
 };
+       xmlconfig.open("GET", "http://frame/api/days/", true);
+       xmlconfig.send();
 
-function post_json(SHours) {
+};
+
+function post_json(hours,etag,n) {
   var sendData = $('#data').val();
-  n=n+1;
+  console.log(hours+" "+etag+" "+n);
   $.ajax({
     headers: {
       'If-Match': etag,
       'Content-Type':'application/json'
       },
-      url: 'http://frame/api/days/'+n,    //Your api url
-      type: 'PATCH',   //type is any HTTP method
-      data: JSON.stringify({ 'hours': SHours,}),
+      url: 'http://frame/api/days/'+n,
+      type: 'PATCH',   
+      data: JSON.stringify({ 'hours': hours,}),
       success: function () {
          }
-        })
-     ;
+        });
 };
+
+
 
 function set_in_str(HoursString, place, set) {
   let HoursBase=""
@@ -70,12 +69,6 @@ function set_in_str(HoursString, place, set) {
     }
   }
   return (HoursBase);
-}
-
-
-
-	xmlconfig1.open("GET", "http://frame/api/days/", true);
-	xmlconfig1.send();
 }
 
 </script>
