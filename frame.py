@@ -11,6 +11,7 @@ class frame:
   def __init__(self):
     self.write_log("------------")
     self.write_log("* Starting *")
+    self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'true' } )
     self.import_config()
     self.write_log("* finish importing config *")
     self.import_config_state()
@@ -21,21 +22,30 @@ class frame:
       for name in files:
         self.List.append(unicode(path)+"/"+unicode(name))
 
-    self.write_log("Total of "+str(len(self.List))+"images in "+str(self.root))
+    self.write_log("Total of "+str(len(self.List))+" images in "+str(self.root))
     self.List.sort()
     self.main()
 
   def import_config_state(self):
-    self.yscreenresulation=requests.get(url+"/config/3").json()["yscreenresulation"]
-    self.xscreenresulation=requests.get(url+"/config/4").json()["xscreenresulation"]
+    self.yscreenresulation=int(requests.get(url+"/config/4").json()["value"])
+    self.xscreenresulation=int(requests.get(url+"/config/3").json()["value"])
+
+  def check_import_config(self):
+    reread=requests.get(url+"/config/10").json()["value"]
+    print reread
+    if reread=="true":
+        print "Importig config"
+        self.import_config
+        self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'false' } )
 
   def import_config(self):
-    self.root=requests.get(url+"/config/1").json()["root"]
-    self.series=requests.get(url+"/config/5").json()["series"]
-    self.grayscale=requests.get(url+"/config/6").json()["grayscale"]
-    self.show_half=requests.get(url+"/config/7").json()["show_half"]
-    self.check_net=requests.get(url+"/config/8").json()["check_net"]
-    self.delay=int(requests.get(url+"/config/2").json()["delay"])
+    self.root=requests.get(url+"/config/1").json()["value"]
+    self.delay=int(requests.get(url+"/config/2").json()["value"])
+    self.series=requests.get(url+"/config/5").json()["value"]
+    self.grayscale=requests.get(url+"/config/6").json()["value"]
+    self.show_half=requests.get(url+"/config/7").json()["value"]
+    #self.check_net=(requests.get(url+"/config/8").json()["value"])
+    self.check_net=0
     
   def get_hours_on(self):
     now=datetime.datetime.now()
@@ -57,13 +67,11 @@ class frame:
 	return
     os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
 
-
-
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     print self.FileName
     self.write_log(self.FileName+" "+str(self.img.shape))  
-    if self.grayscale: 
+    if self.grayscale=="true": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
     self.xset_force_on()
 
@@ -77,13 +85,13 @@ class frame:
     for f in range (0,int(self.delay/10)+1):
       self.xset_force_on()
       key=cv2.waitKey(10000)
-      self.import_config()
+      self.check_import_config()
     self.update_image_name()
 
   def update_rest(self,lurl,data):
     etag=requests.get(url+lurl).json()["_etag"]
     headers = {'If-Match': etag,'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
-    r = requests.patch(url+lurl, data=data, headers=headers)
+    r = requests.patch(url+lurl, data=json.dumps(data), headers=headers)
 
   def update_image_name(self):
     imagename = '{"image_name": "'+str(self.FileName)+'"}'
@@ -111,11 +119,12 @@ class frame:
     cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
-  def check_on_off(self): 
+  def check_on_off(self):
     hours_on=self.get_hours_on()
     if hours_on=="1":
       return 1
     else:
+      self.write_log("putting screen off") 
       self.xset_force_off()
       time.sleep(600)
 

@@ -34,15 +34,8 @@ class state(Base): #varios info about state
 class config(Base):
     __tablename__ = 'config'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    root=Column(String(23))               #Images Root folder
-    delay=Column(Integer)                 #Daley in sec between images
-    yscreenresulation=Column(Integer)
-    xscreenresulation=Column(Integer)
-    series=Column(Integer)              #Length of image serias
-    grayscale=Column(Boolean)           #Show in greyScale
-    show_half=Column(Boolean)           #Show hour every 30 minutes
-    check_net=Column(Boolean)           #check internet connection
-    net_target=Column(String(23))       # address to ping 
+    key=Column(String(23))     
+    value=Column(String(23))       # address to ping 
 
 
 SETTINGS = {
