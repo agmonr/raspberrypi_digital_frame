@@ -37,6 +37,7 @@ systemctl daemon-reload
 rm /etc/nginx/sites-enabled/default
 ln -s /opt/frame/install/nginx/default /etc/nginx/sites-enabled/default 
 
-cp /opt/frame/web/index.html /var/www/index.html
+rm -rf /var/www/
+ln -s /opt/frame/www/ /var/
 
 service nginx restart
