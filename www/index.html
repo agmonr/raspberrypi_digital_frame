@@ -15,29 +15,29 @@ var h = d.getHours();
 
 
 function on_off_hour() {
-  var xmlconfig = new XMLHttpRequest();
-	xmlconfig.onreadystatechange = function() {
+  var xmldays = new XMLHttpRequest();
+  xmldays.open("GET", "http://frame/api/days/", true);
+  xmldays.send();
+
+	xmldays.onreadystatechange = function() {
 
   	if (this.readyState == 4 ) {
       var myDays = JSON.parse(this.responseText);
-      var etag=myDays._items[n]._etag;
-      var hours=myDays._items[n].hours;
-      var MyDaysNow=myDays._items[n].hours[h]
-
+      var etag=myDays._items[n-1]._etag;
+      var hours=myDays._items[n-1].hours;
+      var MyDaysNow=myDays._items[n-1].hours[h];
+      console.log(MyDaysNow);
       if ( MyDaysNow == "1" ){
-        document.getElementById("main").innerHTML ="<br><b>Turning screen off</br>";
-       HoursBase=set_in_str (hours, h, '0') 
+        HoursBase=set_in_str(hours, h, '0') 
+        document.getElementById("main").innerHTML ="<br><b>Screen On - Turning off</br>";
      }
       else {
-        HoursBase=set_in_str (hours, h, '1') 
+        HoursBase=set_in_str(hours, h, '1') 
 	      document.getElementById("main").innerHTML ="<br> Turning screen on</br>";
       }
         post_json(HoursBase,etag,n);
   }
 };
-       xmlconfig.open("GET", "http://frame/api/days/", true);
-       xmlconfig.send();
-
 };
 
 function post_json(hours,etag,n) {
@@ -52,11 +52,32 @@ function post_json(hours,etag,n) {
       type: 'PATCH',   
       data: JSON.stringify({ 'hours': hours,}),
       success: function () {
+        set_refresh()
          }
         });
 };
 
+function get_etag(){
 
+
+
+}
+
+
+function set_refresh(){
+  var sendData = $('#data').val();
+  $.ajax({
+    headers: {
+      'If-Match': etag,
+      'Content-Type':'application/json'
+      },
+      url: 'http://frame/api/config/10/',
+      type: 'PATCH',   
+      data: JSON.stringify({"id":'10', "key":'reread', "value": 'true' }),
+      success: function () {
+         }
+        });
+};
 
 function set_in_str(HoursString, place, set) {
   let HoursBase=""
