@@ -5,6 +5,7 @@ from random import randint
 types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
+tvservice=os.path.exists("/usr/bin/tvservice")
 LogFile="/opt/frame/log/frame.log"
 
 class frame:
@@ -122,9 +123,15 @@ class frame:
   def check_on_off(self):
     hours_on=self.get_hours_on()
     if hours_on=="1":
+      if tvservice:
+        os.system('export DISPLAY=:0; /usr/bin/tvservice -p')
       return 1
     else:
       self.write_log("putting screen off") 
+      if tvservice:
+        os.system('export DISPLAY=:0; /usr/bin/tvservice -o')
+
+
       self.xset_force_off()
       time.sleep(20)
 

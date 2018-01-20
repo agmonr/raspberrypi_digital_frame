@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </head>
 <html>
 <body>
@@ -8,89 +9,73 @@
 <p id="main"></p>
 
 <script>
-var etag="";
-var d = new Date();
-var n = d.getDay();
-var h = d.getHours();
-
-
 function on_off_hour() {
-  var xmldays = new XMLHttpRequest();
-  xmldays.open("GET", "http://frame/api/days/", true);
-  xmldays.send();
-
-	xmldays.onreadystatechange = function() {
-
-  	if (this.readyState == 4 ) {
-      var myDays = JSON.parse(this.responseText);
-      var etag=myDays._items[n-1]._etag;
-      var hours=myDays._items[n-1].hours;
-      var MyDaysNow=myDays._items[n-1].hours[h];
-      console.log(MyDaysNow);
-      if ( MyDaysNow == "1" ){
-        HoursBase=set_in_str(hours, h, '0') 
-        document.getElementById("main").innerHTML ="<br><b>Screen On - Turning off</br>";
-     }
-      else {
-        HoursBase=set_in_str(hours, h, '1') 
-	      document.getElementById("main").innerHTML ="<br> Turning screen on</br>";
-      }
-        post_json(HoursBase,etag,n);
-  }
-};
+  console.log('Starting function on/off');
+  get_DayObject();
 };
 
-function post_json(hours,etag,n) {
+function get_DayObject() {
+  var d = new Date();
+  var Today = d.getDay()
+  var NowHour = d.getHours(); 
+  console.log('Now is day '+Today+' hour '+NowHour);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    DisplayDay(this,Today,NowHour);
+    }
+  };
+xhttp.open("GET", "http://frame/api/days/", true);
+xhttp.send();
+};
+
+
+
+function DisplayDay(Days,Today,NowHour){
+//  console.log(JSON.parse(Days.responseText)._items[0]._etag);
+//  console.log(Today);
+  
+  var Hours=JSON.parse(Days.responseText)._items[Today-1].hours;
+  State=Hours[NowHour]
+  if ( State == "1" ){
+    document.getElementById("main").innerHTML ="<br><b>Screen is On</br>";
+    State=0;
+    }
+  else{
+    document.getElementById("main").innerHTML ="<br><b>Screen is Off</br>";
+    State=1;
+  };
+
+  var NewHours=Hours; 
+//  console.log(State);
+//  console.log(Hours.length);
+  console.log(NewHours);
+
+  
+  update_day(Days,NewHours,Today)
+}
+
+function update_day(Days,NewHours,Today){
+  
+  var Etag=JSON.parse(Days.responseText)._items[Today]._etag;
+  console.log(NewHours);
   var sendData = $('#data').val();
-  console.log(hours+" "+etag+" "+n);
+
   $.ajax({
     headers: {
-      'If-Match': etag,
+      'If-Match': Etag,
       'Content-Type':'application/json'
       },
-      url: 'http://frame/api/days/'+n,
+      url: 'http://frame/api/days/'+(Today+1),
       type: 'PATCH',   
-      data: JSON.stringify({ 'hours': hours,}),
+      data: JSON.stringify({ 'hours': NewHours,}),
       success: function () {
-        set_refresh()
          }
         });
-};
-
-function get_etag(){
-
-
 
 }
 
 
-function set_refresh(){
-  var sendData = $('#data').val();
-  $.ajax({
-    headers: {
-      'If-Match': etag,
-      'Content-Type':'application/json'
-      },
-      url: 'http://frame/api/config/10/',
-      type: 'PATCH',   
-      data: JSON.stringify({"id":'10', "key":'reread', "value": 'true' }),
-      success: function () {
-         }
-        });
-};
-
-function set_in_str(HoursString, place, set) {
-  let HoursBase=""
-  for ( var f = 0; f<HoursString.length; f++) {
-    if ( f != place ){
-    HoursBase += HoursString.charAt(f);
-    }
-    else{ 
-    HoursBase += set;
-    }
-  }
-  return (HoursBase);
-}
 
 </script>
 
