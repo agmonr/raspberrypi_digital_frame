@@ -126,7 +126,7 @@ class frame:
     else:
       self.write_log("putting screen off") 
       self.xset_force_off()
-      time.sleep(600)
+      time.sleep(20)
 
   def write_log(self,Text):
     print(time.strftime("%H:%M:%S ")+Text+"\n")
@@ -147,9 +147,10 @@ class frame:
 
   def main(self):
     count=0
-    if self.series > len(self.List):
-	    self.series=len(self.List)-1 
-    f=randint(0,len(self.List)-self.series)
+    if int (self.series )> int( len(self.List)):
+      f=0
+    else:
+      f=randint(0,int(len(self.List))-int(self.series))
     while 1:
       self.FileName=self.List[f]
       self.main1()
