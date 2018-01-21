@@ -1,3 +1,4 @@
 run/*
 log/*.log
 vagrant/.vagrant/*
+www/Photos/

@@ -83,11 +83,11 @@ class frame:
     self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
+    self.update_image_name()
     for f in range (0,int(self.delay/10)+1):
       self.xset_force_on()
       key=cv2.waitKey(10000)
       self.check_import_config()
-    self.update_image_name()
 
   def update_rest(self,lurl,data):
     etag=requests.get(url+lurl).json()["_etag"]

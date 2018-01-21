@@ -13,12 +13,12 @@ Base = declarative_base()
 class days(Base): #Hours per day when the screen will be on
     __tablename__ = 'days'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    hours = Column(String(23))
+    hours = Column(String(24))
 
 class h_display(Base): #When to display the hour on top of the photo
     __tablename__ = 'h_display'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    hours = Column(String(23))
+    hours = Column(String(24))
 
 class commands(Base): #send command and get respond from the display
     __tablename__ = 'commands'

@@ -2,20 +2,9 @@
 <head>
  <meta charset="utf-8">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+ 
 </head>
-<style>
-.button {
-    background-color: white;
-    color: black;
-    border: 2px solid #4CAF50; /* Green */
-}
-.button:hover {
-    background-color: #4CAF50; /* Green */
-    color: white;
-}
-
-</style>
 <html>
 <body>
 <h2></h2>
@@ -120,11 +109,20 @@ function DisplayLink(ImageName,root){
   FileName=(ImageName.split(root)[1])
   Location='<img src="Photos/'+FileName+'" width=100%>';
   console.log(Location)
-  document.getElementById("main").innerHTML =Location;
+  document.getElementById("main").innerHTML +=Location;
 } 
 
+function resizeIframe(iframeID) 
+{       
+    var iframe = window.parent.document.getElementById(iframeID);
+    var container = document.getElementById('content');
+    iframe.style.height = container.offsetHeight + 'px';            
+} 
 
+function Reload(){
+location.reload();
 
+}
 
 </script>
 
@@ -133,9 +131,11 @@ function DisplayLink(ImageName,root){
 <title>The Frame</title>
 </head>
 <body>
+
 <script>GetRoot('Show')</script>
-<p><button class="button" onclick="on_off_hour()">Screen on/off</button></p>
-<button class="button" onclick="GetRoot('Download')">Download Image</button>
+<p><button class="button1" onclick="on_off_hour()">Screen on/off</button></p>
+<p><button class="button2" onclick="GetRoot('Download')">Download Image</button></p>
+<button class="button3" onclick="Reload()">Reload</button>
 
 <!--
 <button>Send an HTTP POST request to a page and get the result back</button>
