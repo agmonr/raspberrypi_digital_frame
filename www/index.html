@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <head>
+ <meta charset="utf-8">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 </head>
+<style>
+.button {
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50; /* Green */
+}
+.button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+</style>
 <html>
 <body>
 <h2></h2>
 <p id="main"></p>
-
 <script>
 function on_off_hour() {
   console.log('Starting function on/off');
@@ -16,64 +28,101 @@ function on_off_hour() {
 
 function get_DayObject() {
   var d = new Date();
-  var Today = d.getDay()
+  var Today = (d.getDay());
   var NowHour = d.getHours(); 
   console.log('Now is day '+Today+' hour '+NowHour);
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
-    DisplayDay(this,Today,NowHour);
+    NewState=DisplayDay(this,Today,NowHour);
+    UpdateState(this,Today,NowHour,NewState);
     }
   };
-xhttp.open("GET", "http://frame/api/days/", true);
+xhttp.open("GET", "/api/days/", true);
 xhttp.send();
 };
-
-
 
 function DisplayDay(Days,Today,NowHour){
 //  console.log(JSON.parse(Days.responseText)._items[0]._etag);
 //  console.log(Today);
   
-  var Hours=JSON.parse(Days.responseText)._items[Today-1].hours;
+  var Hours=JSON.parse(Days.responseText)._items[Today].hours;
   State=Hours[NowHour]
   if ( State == "1" ){
-    document.getElementById("main").innerHTML ="<br><b>Screen is On</br>";
-    State=0;
+    document.getElementById("main").innerHTML ="<br><b>Set screen Off</br>";
+    NewState=0;
     }
   else{
-    document.getElementById("main").innerHTML ="<br><b>Screen is Off</br>";
-    State=1;
+    document.getElementById("main").innerHTML ="<br><b>Set screen On</br>";
+    NewState=1;
   };
-
-  var NewHours=Hours; 
-//  console.log(State);
-//  console.log(Hours.length);
-  console.log(NewHours);
-
-  
-  update_day(Days,NewHours,Today)
+    return (NewState);
 }
 
-function update_day(Days,NewHours,Today){
-  
-  var Etag=JSON.parse(Days.responseText)._items[Today]._etag;
-  console.log(NewHours);
-  var sendData = $('#data').val();
+function UpdateState(DaysObject,Today,NowHour,NewState){
+ 
+  console.log(DaysObject,Today,NowHour,NewState);
+  var Hours=JSON.parse(DaysObject.responseText)._items[Today].hours;
+  var Etag=JSON.parse(DaysObject.responseText)._items[Today]._etag;
 
+  console.log(Hours+" "+NewState);
+  NewHours=Hours.slice(0,NowHour)+NewState+Hours.slice(NowHour+1,Hours.length);
+  console.log(NewHours.length);
+  var sendData = $('#data').val();
   $.ajax({
     headers: {
       'If-Match': Etag,
       'Content-Type':'application/json'
       },
-      url: 'http://frame/api/days/'+(Today+1),
+      url: '/api/days/'+(Today+1),
       type: 'PATCH',   
       data: JSON.stringify({ 'hours': NewHours,}),
       success: function () {
          }
         });
+}
+
+
+function GetImageLocation(Order,root) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    if (Order == 'Download') {
+    PostDownloadLink((JSON.parse(this.responseText)._items[0].image_name),root);
+    }else{
+    DisplayLink((JSON.parse(this.responseText)._items[0].image_name),root);
+    }}
+  };
+xhttp.open("GET", "/api/state", true);
+xhttp.send();
+};
+
+function GetRoot(Order){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    GetImageLocation(Order,JSON.parse(this.responseText)._items[0].value);
+    }
+  };
+xhttp.open("GET", "/api/config", true);
+xhttp.send();
 
 }
+
+function PostDownloadLink(ImageName,root){
+  FileName=(ImageName.split(root)[1])
+  Location='<a href="Photos/'+FileName+'" download link">'+FileName+'</a>';
+  console.log(Location)
+  document.getElementById("main").innerHTML =Location;
+} 
+
+function DisplayLink(ImageName,root){
+  FileName=(ImageName.split(root)[1])
+  Location='<img src="Photos/'+FileName+'" width=100%>';
+  console.log(Location)
+  document.getElementById("main").innerHTML =Location;
+} 
+
 
 
 
@@ -84,8 +133,9 @@ function update_day(Days,NewHours,Today){
 <title>The Frame</title>
 </head>
 <body>
-
-<button onclick="on_off_hour()">Screen on/off</button>
+<script>GetRoot('Show')</script>
+<p><button class="button" onclick="on_off_hour()">Screen on/off</button></p>
+<button class="button" onclick="GetRoot('Download')">Download Image</button>
 
 <!--
 <button>Send an HTTP POST request to a page and get the result back</button>
