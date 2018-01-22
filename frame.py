@@ -50,6 +50,7 @@ class frame:
     
   def get_hours_on(self):
     now=datetime.datetime.now()
+    print "self.day "+str(self.Day)
     hours=(requests.get(url+"/days/"+self.Day).json()["hours"][now.hour])
     return hours 
   
@@ -59,14 +60,16 @@ class frame:
     return hours
 
   def xset_force_on(self):
-    if not xset:
-	return
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
+    if xset:
+      os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
+#    if tvservice:
+#      os.system('export DISPLAY=:0; /usr/bin/tvservice -p')  
 
   def xset_force_off(self):
-    if not xset:
-	return
-    os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
+    if xset:
+      os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
+#    if tvservice:
+#      os.system('export DISPLAY=:0; /usr/bin/tvservice -o')  
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -84,7 +87,7 @@ class frame:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     self.update_image_name()
-    for f in range (0,int(self.delay/10)+1):
+    for f in range (0,int(self.delay/6)+1):
       self.xset_force_on()
       key=cv2.waitKey(10000)
       self.check_import_config()
@@ -122,16 +125,11 @@ class frame:
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
+    print "Hours_on "+hours_on
     if hours_on=="1":
-      if tvservice:
-        os.system('export DISPLAY=:0; /usr/bin/tvservice -p')
       return 1
     else:
       self.write_log("putting screen off") 
-      if tvservice:
-        os.system('export DISPLAY=:0; /usr/bin/tvservice -o')
-
-
       self.xset_force_off()
       time.sleep(20)
 
@@ -144,7 +142,10 @@ class frame:
   def main1(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
-    self.Day=str(datetime.datetime.today().weekday()+1)
+    self.Day=int(datetime.datetime.today().weekday()+2)
+    if self.Day > 7:
+      self.Day=Self.Day-7
+    self.Day=str(self.Day)
     if self.check_net != 0:
       self.check_net()
     if self.check_on_off():
@@ -154,10 +155,9 @@ class frame:
 
   def main(self):
     count=0
-    if int (self.series )> int( len(self.List)):
-      f=0
-    else:
-      f=randint(0,int(len(self.List))-int(self.series))
+    if int(self.series) > len(self.List):
+      self.series=len(self.List)-1
+    f=randint(0,int(len(self.List))-int(self.series))
     while 1:
       self.FileName=self.List[f]
       self.main1()

@@ -97,8 +97,8 @@ xhttp.open("GET", "/api/config", true);
 xhttp.send();
 
 }
-
-function PostDownloadLink(ImageName,root){
+// create link to download image
+function PostDownloadLink(ImageName,root){ 
   FileName=(ImageName.split(root)[1])
   Location='<a href="Photos/'+FileName+'" download link">'+FileName+'</a>';
   console.log(Location)
@@ -107,10 +107,22 @@ function PostDownloadLink(ImageName,root){
 
 function DisplayLink(ImageName,root){
   FileName=(ImageName.split(root)[1])
-  Location='<img src="Photos/'+FileName+'" width=100%>';
+//  Location='Photos/'+FileName;
+  Location='<img src="Photos/'+FileName+'" id="yourImgId" alt="test" onload="DisplayImage()">'
+  document.getElementById("main").innerHTML =Location;
   console.log(Location)
-  document.getElementById("main").innerHTML +=Location;
 } 
+
+function DisplayImage (){
+var yourImg = document.getElementById("yourImgId");
+
+if(yourImg && yourImg.style) {
+  var canvas = document.getElementById("main");
+  console.log(window.innerWidth);
+  yourImg.style.width = String(window.innerWidth-20)+"px";
+}
+}
+
 
 function resizeIframe(iframeID) 
 {       
@@ -133,15 +145,9 @@ location.reload();
 <body>
 
 <script>GetRoot('Show')</script>
-<p><button class="button1" onclick="on_off_hour()">Screen on/off</button></p>
-<p><button class="button2" onclick="GetRoot('Download')">Download Image</button></p>
+<button class="button1" onclick="on_off_hour()">Screen on/off</button>
+<button class="button2" onclick="GetRoot('Download')">Download Image</button>
 <button class="button3" onclick="Reload()">Reload</button>
 
-<!--
-<button>Send an HTTP POST request to a page and get the result back</button>
-<table id="mixed">
-<tr><th>01</th><th>02</th><th>03</th></tr>
-</table>
---!>
 </body>
 </html>
