@@ -13,6 +13,26 @@
 <script>
 // Display on or off screen state by the current hour
 
+function OnOffButton() {
+  console.log('function OnOffBytton');
+  var d = new Date();
+  var Today = (d.getDay());
+  var NowHour = d.getHours(); 
+
+  console.log('Now is day '+Today+' hour '+NowHour);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    if (NewState==1){
+    document.getElementById("main").innerHTML ='<center><button  style="font-size : 40px" onclick="SetOnOffHour()">Click to Turn Screen On</button>'+"<p></p>"}
+    else {
+    document.getElementById("main").innerHTML ='<center><button style="font-size : 40px" onclick="SetOnOffHour()">Click to Turn Screen Off</button>'+"<p></p>"}
+    }
+  };
+xhttp.open("GET", "/api/days/", true);
+xhttp.send();
+};
+
 function ShowOnOff() {
   var d = new Date();
   var Today = (d.getDay());
@@ -35,7 +55,7 @@ function SetOnOffHour() {
   GetUpdateDayObject();
 };
 
-//  Get json from eve about screen hours on day
+//  Get json from Eve about screen hours on day
 function GetUpdateDayObject() {
   var d = new Date();
   var Today = (d.getDay());
@@ -54,17 +74,12 @@ xhttp.send();
 };
 // Display screen state
 function DisplayDay(Days,Today,NowHour){
-//  console.log(JSON.parse(Days.responseText)._items[0]._etag);
-//  console.log(Today);
-  
   var Hours=JSON.parse(Days.responseText)._items[Today].hours;
   State=Hours[NowHour]
   if ( State == "0" ){
-    document.getElementById("main").innerHTML +="<center><p class=boxoff>SCREEN OFF</p>";
     NewState=1;
     }
   else{
-    document.getElementById("main").innerHTML +="<center><p class=boxon>SCREEN ON</p>";
     NewState=0;
   };
     return (NewState);
@@ -150,9 +165,9 @@ xhttp.send();
 function DisplayLink(ImageName,root){
   console.log('function DisplayLink');
   FileName=(ImageName.split(root)[1])
-  Location='<img src="Photos/'+FileName+'" id="yourImgId" alt="test" onload="DisplayImage()">'
+  Location='<img src="Photos/'+FileName+'" id="yourImgId" alt="test" onload="DisplayImage()" onResize="DisplayImage()" >'
   document.getElementById("main").innerHTML +=Location;
-  Location='<center><font size="5ppx"><a href="Photos/'+FileName+'" download link">'+FileName+'</a></font></center>';
+  Location='<center><p class="downloadbox" <font size="7ppx"><a href="Photos/'+FileName+'" download link">Download</a></font></center>';
   document.getElementById("main").innerHTML +=Location;
   console.log(Location)
 } 
@@ -168,10 +183,8 @@ if(yourImg && yourImg.style) {
   }
 }
 
-
 function Reload(){
   location.reload();
-//  ShowImageLink('Show');
 }
 
 </script>
@@ -182,7 +195,8 @@ function Reload(){
 </head>
 <body>
 <script>ShowOnOff()</script>
+<script>OnOffButton()</script>
 <script>ShowImage()</script>
-<center><button class="button1" onclick="SetOnOffHour()">Screen on/off</button>
 </body>
 </html>
+

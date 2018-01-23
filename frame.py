@@ -62,14 +62,18 @@ class frame:
   def xset_force_on(self):
     if xset:
       os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
-#    if tvservice:
-#      os.system('export DISPLAY=:0; /usr/bin/tvservice -p')  
+
+  def tvservice_on(self):
+    if tvservice:
+      os.system('export DISPLAY=:0; /usr/bin/tvservice -p')  
+
+  def tvservice_off(self):
+    if tvservice:
+      os.system('export DISPLAY=:0; /usr/bin/tvservice -o')  
 
   def xset_force_off(self):
     if xset:
       os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
-#    if tvservice:
-#      os.system('export DISPLAY=:0; /usr/bin/tvservice -o')  
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
@@ -87,9 +91,9 @@ class frame:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     self.update_image_name()
-    for f in range (0,int(self.delay/6)+1):
+    for f in range (0,int(self.delay/12)+1):
       self.xset_force_on()
-      key=cv2.waitKey(10000)
+      key=cv2.waitKey(5000)
       self.check_import_config()
 
   def update_rest(self,lurl,data):
@@ -127,10 +131,13 @@ class frame:
     hours_on=self.get_hours_on()
     print "Hours_on "+hours_on
     if hours_on=="1":
+      self.xset_force_on()
+#      self.tvservice_on()
       return 1
     else:
       self.write_log("putting screen off") 
       self.xset_force_off()
+#      self.tvservice_off()
       time.sleep(20)
 
   def write_log(self,Text):
