@@ -6,7 +6,7 @@
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 20px;
     margin: 4px 2px;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
@@ -14,10 +14,11 @@
 }
 
 .button1 {
-    border-radius:7%;
+    border-radius:30;
+    font-size: 30px;
     background-color: white; 
     color: black; 
-    border: 2px solid #4CAF50;
+    border: 10px solid #4CAF50;
 }
 
 .button1:hover {
@@ -64,4 +65,28 @@
 .button5:hover {
     background-color: #555555;
     color: white;
+}
+
+p.boxon {
+    font-size: 35px;
+    margin-left: 200px;
+    margin-right: 200px;
+    background-color: #4CAF50;
+    text-align: center;
+    color: white;
+}
+p.boxoff {
+    font-size: 35px;
+    margin-left: 200px;
+    margin-right: 200px;
+    text-align: center;
+    background-color: #bc1616;
+    color: white;
+}
+
+iframe{
+max-width: 1300px;
+min-width: 900px;
+max-height: 1400px; 
+min-height: 1000px;
 }

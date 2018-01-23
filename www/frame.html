@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<head>
+ <meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+<meta http-equiv="refresh" content="20">
+</head>
+<html>
+<body>
+<h2></h2>
+
+<p id="main"></p>
+<script>
+// Display on or off screen state by the current hour
+
+function ShowOnOff() {
+  var d = new Date();
+  var Today = (d.getDay());
+  var NowHour = d.getHours(); 
+
+  console.log('Now is day '+Today+' hour '+NowHour);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    NewState=DisplayDay(this,Today,NowHour);
+    }
+  };
+xhttp.open("GET", "/api/days/", true);
+xhttp.send();
+};
+
+function SetOnOffHour() {
+//  document.getElementById("main").innerHTML="";
+  console.log('Starting function on/off');
+  GetUpdateDayObject();
+};
+
+//  Get json from eve about screen hours on day
+function GetUpdateDayObject() {
+  var d = new Date();
+  var Today = (d.getDay());
+  var NowHour = d.getHours(); 
+
+  console.log('Now is day '+Today+' hour '+NowHour);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    NewState=DisplayDay(this,Today,NowHour);
+    UpdateState(this,Today,NowHour,NewState);
+    }
+  };
+xhttp.open("GET", "/api/days/", true);
+xhttp.send();
+};
+// Display screen state
+function DisplayDay(Days,Today,NowHour){
+//  console.log(JSON.parse(Days.responseText)._items[0]._etag);
+//  console.log(Today);
+  
+  var Hours=JSON.parse(Days.responseText)._items[Today].hours;
+  State=Hours[NowHour]
+  if ( State == "0" ){
+    document.getElementById("main").innerHTML +="<center><p class=boxoff>SCREEN OFF</p>";
+    NewState=1;
+    }
+  else{
+    document.getElementById("main").innerHTML +="<center><p class=boxon>SCREEN ON</p>";
+    NewState=0;
+  };
+    return (NewState);
+}
+// update data into eve including etag in the Header
+function UpdateState(DaysObject,Today,NowHour,NewState){
+ 
+  console.log(DaysObject,Today,NowHour,NewState);
+  var Hours=JSON.parse(DaysObject.responseText)._items[Today].hours;
+  var Etag=JSON.parse(DaysObject.responseText)._items[Today]._etag;
+  Reload();
+  NewHours=Hours.slice(0,NowHour)+NewState+Hours.slice(NowHour+1,Hours.length);
+  console.log('Hours  Before='+Hours+"\n"+'Updated Hours='+NewHours);
+  var sendData = $('#data').val();
+  $.ajax({
+    headers: {
+      'If-Match': Etag,
+      'Content-Type':'application/json'
+      },
+      url: '/api/days/'+(Today+1),
+      type: 'PATCH',   
+      data: JSON.stringify({ 'hours': NewHours,}),
+      success: function () {
+         }
+  });
+}
+
+//#####################################################################
+
+// Create a download link for the current image 
+function GetShowImage(root) {
+  console.log('function GetShowImage '+root);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    console.log('Calling DisplayLink');
+    DisplayLink((JSON.parse(this.responseText)._items[0].image_name),root);
+    };
+  };
+xhttp.open("GET", "/api/state", true);
+xhttp.send();
+};
+
+// Create a download link for the current image 
+function GetImageLocation(root) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    DisplayLink((JSON.parse(this.responseText)._items[0].image_name),root);
+  };
+xhttp.open("GET", "/api/state", true);
+xhttp.send();
+  };
+};
+
+// Get from config section in the Eve
+function ShowImage(){
+  console.log('Function ShowImage()');
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    GetShowImage(JSON.parse(this.responseText)._items[0].value);
+    }
+  };
+xhttp.open("GET", "/api/config", true);
+xhttp.send();
+}
+
+// Get from config section in the Eve
+function ShowImageLink(){
+//  document.getElementById("main").innerHTML=""
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    GetImageLocation(JSON.parse(this.responseText)._items[0].value);
+    }
+  };
+xhttp.open("GET", "/api/config", true);
+xhttp.send();
+}
+
+// Display the image on screen from the link
+function DisplayLink(ImageName,root){
+  console.log('function DisplayLink');
+  FileName=(ImageName.split(root)[1])
+  Location='<img src="Photos/'+FileName+'" id="yourImgId" alt="test" onload="DisplayImage()">'
+  document.getElementById("main").innerHTML +=Location;
+  Location='<center><font size="5ppx"><a href="Photos/'+FileName+'" download link">'+FileName+'</a></font></center>';
+  document.getElementById("main").innerHTML +=Location;
+  console.log(Location)
+} 
+
+// add new alment to the document
+function DisplayImage (){
+var yourImg = document.getElementById("yourImgId");
+if(yourImg && yourImg.style) {
+  var canvas = document.getElementById("main");
+  console.log(window.innerWidth);
+  Width=window.innerWidth-20
+  yourImg.style.width = String(Width)+"px";
+  }
+}
+
+
+function Reload(){
+  location.reload();
+//  ShowImageLink('Show');
+}
+
+</script>
+
+<!DOCTYPE html>
+<head>
+<title>The Frame</title>
+</head>
+<body>
+<script>ShowOnOff()</script>
+<script>ShowImage()</script>
+<center><button class="button1" onclick="SetOnOffHour()">Screen on/off</button>
+</body>
+</html>
