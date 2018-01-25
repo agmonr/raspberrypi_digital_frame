@@ -21,22 +21,24 @@ class frame:
     return hours 
   
   def tvservice_off(self):
+    os.system('service xserver stop')
     if tvservice:
       print "Tvservice off"
       os.system('/usr/bin/tvservice -o')  
 
-  def xset_force_off(self):
-    if xset:
-      os.system('export DISPLAY=:0; /usr/bin/xset dpms force off')  
+  def tvservice_on(self):
+    os.system('service xserver start')
+    if tvservice:
+      print "Tvservice on"
+      os.system('/usr/bin/tvservice -p')  
+
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
     print "Hours_on "+hours_on
     if hours_on=="1":
       self.tvservice_on()
-      os.system('service xserver start')
       os.system('/opt/frame/show.py')  
-      os.system('service xserver stop')
       self.tvservice_off()
 
   def write_log(self,Text):

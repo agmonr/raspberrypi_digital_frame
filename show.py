@@ -4,6 +4,8 @@ from random import randint
 
 types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
+xset=os.path.exists("/usr/bin/xset")
+tvservice=os.path.exists("/usr/bin/tvservice")
 LogFile="/opt/frame/log/frame.log"
 
 class show:
@@ -57,12 +59,17 @@ class show:
     hours=(requests.get(url+"/h_display/"+self.Day).json()["hours"][now.hour])
     return hours
 
+  def xset_force_on(self):
+    if xset:
+      os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
+
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     print self.FileName
     self.write_log(self.FileName+" "+str(self.img.shape))  
     if self.grayscale=="true": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+    self.xset_force_on()
 
   def show(self):
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
@@ -73,6 +80,7 @@ class show:
     cv2.imshow("Frame",self.img)
     self.update_image_name()
     for f in range (0,int(self.delay/12)+1):
+      self.xset_force_on()
       key=cv2.waitKey(5000)
       self.check_import_config()
 
@@ -111,8 +119,10 @@ class show:
     hours_on=self.get_hours_on()
     print "Hours_on "+hours_on
     if hours_on=="1":
+      self.xset_force_on()
       return 1
     else:
+      self.write_log("putting screen off") 
       sys.exit(0)
 
   def write_log(self,Text):
