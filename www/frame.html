@@ -43,6 +43,7 @@ function ShowOnOff() {
   xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
     NewState=DisplayDay(this,Today,NowHour);
+    OnOffButton()
     }
   };
 xhttp.open("GET", "/api/days/", true);
@@ -50,7 +51,6 @@ xhttp.send();
 };
 
 function SetOnOffHour() {
-//  document.getElementById("main").innerHTML="";
   console.log('Starting function on/off');
   GetUpdateDayObject();
 };
@@ -195,7 +195,6 @@ function Reload(){
 </head>
 <body>
 <script>ShowOnOff()</script>
-<script>OnOffButton()</script>
 <script>ShowImage()</script>
 </body>
 </html>

@@ -9,10 +9,11 @@ The Raspberry pi digital frame is a python based digital frame.
 
 ## main features
 * Dispalying jpg files at specfic interval.
-* Every feature can be configured and changed while the frame is on.
-* Adding the current hour on top of the photos being display.
-* Turning off and on the screen in spefic times.
-* Checking net connectivity and put mark on top of the photos.
+* Settigns can be configured and changed while the frame is on.
+* Current hour is added in the top left cornert of the image being display.
+* The screen will be turn off in specfic hours per weekday.
+* Can Check net connectivity and put mark on top of the photos.
+* web interface shows the current image, can download it, turn screen on and off.
 
 ## install script
 * Installing necessity python and system dependencies.
@@ -23,7 +24,7 @@ The Raspberry pi digital frame is a python based digital frame.
 * Will also download some sample images.
 
 ## Services
-* They are 2 services: backend for configure and contolling the frame, and a frame which display the images and control the screen.
+* They are 2 main services: backend for configure and contolling the frame, and a frame which display the images and control the screen.
 
 
 

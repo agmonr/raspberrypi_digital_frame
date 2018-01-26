@@ -72,13 +72,14 @@ class show:
     self.xset_force_on()
 
   def show(self):
+    self.update_image_name()
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     r = int(long(self.yscreenresulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
     dim = (int(self.img.shape[1]*r)/1000000,self.yscreenresulation)
     self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
-    self.update_image_name()
+    time.sleep(1)
     for f in range (0,int(self.delay/12)+1):
       self.xset_force_on()
       key=cv2.waitKey(5000)
@@ -89,11 +90,11 @@ class show:
     headers = {'If-Match': etag,'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
     r = requests.patch(url+lurl, data=json.dumps(data), headers=headers)
 
-  def update_image_name(self):
+  def update_image_name(self): # export image name to Eve
     imagename = '{"image_name": "'+str(self.FileName)+'"}'
     self.update_rest("/state/1", imagename )
 
-  def add_hour(self):
+  def add_hour(self):  # Adding hour to displayed image
     hours_show=self.get_hours_show()
     if hours_show=="1":
       self.msg=time.strftime("%H:%M")
