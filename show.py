@@ -7,6 +7,7 @@ url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
 tvservice=os.path.exists("/usr/bin/tvservice")
 LogFile="/opt/frame/log/frame.log"
+HistoryFile="/opt/frame/www/history.html"
 
 class show:
   def __init__(self):
@@ -67,6 +68,7 @@ class show:
     self.img=cv2.imread(self.FileName)
     print self.FileName
     self.write_log(self.FileName+" "+str(self.img.shape))  
+    self.write_history_html(self.FileName)
     if self.grayscale=="true": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
     self.xset_force_on()
@@ -130,6 +132,25 @@ class show:
     print(time.strftime("%H:%M:%S ")+Text+"\n")
     f=open(LogFile,'a')
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
+    f.close()
+
+  def write_history_html(self,Text):
+    FileName=Text.replace("/home/","")
+    History=[]
+    History.append(str(time.strftime("<p>%H:%M:%S ")+"<a href="+FileName+" download link>"+FileName+"</a></font></center></p>\n"))
+    try:
+      with open(HistoryFile) as f:
+        for g in range(0,100):
+         Line=f.readline()
+         if len(Line)>1:
+           History.append(str(Line))
+      f.close()
+    except:
+      print "Starting new file"
+
+    f=open(HistoryFile,'w') 
+    for g in range(0,len(History)):
+      f.write(str(History[g]))
     f.close()
 
   def main1(self):
