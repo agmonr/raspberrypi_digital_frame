@@ -52,11 +52,14 @@ class frame:
     self.Hour=str(time.strftime("%H"))
     self.Day=int(datetime.datetime.today().weekday()+2)
     if self.Day > 7:
-      self.Day=Self.Day-7
+      self.Day=self.Day-7
     self.Day=str(self.Day)
+    SleepTime=10
     while 1:
       self.check_on_off()
-      time.sleep(10)
+      time.sleep(SleepTime)  #You are going to sleep deeper and deeper
+      if SleepTime < 120:
+        SleepTime+=3
 
 
 Frame01 = frame()

@@ -6,7 +6,14 @@
 <title>The Frame</title>
 </head>
 <body>
-<iframe src="frame.html" ></iframe>
-<iframe src="history.html" ></iframe>
+<script> window.setInterval("reloadIFrame();", 3000);
+function reloadIFrame() {
+  document.frames["history"].location.reload();
+  document.frames["frame"].location.reload();
+ }
+</script>
+
+<iframe src="frame.html" name="frame" ></iframe>
+<iframe src="history.html"name="history" ></iframe>
 </body>
 </html>

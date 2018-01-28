@@ -67,6 +67,7 @@ function GetUpdateDayObject() {
   if (this.readyState == 4 && this.status == 200) {
     NewState=DisplayDay(this,Today,NowHour);
     UpdateState(this,Today,NowHour,NewState);
+    GetRereadEtag()
     }
   };
 xhttp.open("GET", "/api/days/", true);
@@ -106,6 +107,40 @@ function UpdateState(DaysObject,Today,NowHour,NewState){
          }
   });
 }
+
+function GetRereadEtag(){
+  console.log('Function GetReradEtag');
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+  console.log(this.status)
+  if (this.readyState == 4 ) {
+    console.log('Getting etag');
+//    console.log(JSON.parse(this.responseText)._items[10]._etag);
+    console.log(JSON.parse(this.responseText));
+//    UpdateReload(JSON.parse(this.responseText)._etag);
+    }
+  };
+  xhttp.open("GET", "/api/config/", true);
+  xhttp.send();
+}
+
+function UpdateReload(Etag) {
+  var sendData = $('#data').val();
+  $.ajax({
+    headers: {
+      'If-Match': Etag,
+      'Content-Type':'application/json'
+      },
+      url: '/api/config/10',
+      type: 'PATCH',
+      data: JSON.stringify({ 'value': 'True',}),
+      success: function () {
+         }
+  });
+}
+
+
+
 
 //#####################################################################
 

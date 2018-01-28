@@ -6,7 +6,7 @@ types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
 tvservice=os.path.exists("/usr/bin/tvservice")
-LogFile="/opt/frame/log/frame.log"
+LogFile="/opt/frame/log/show.log"
 HistoryFile="/opt/frame/www/history.html"
 
 class show:
@@ -34,11 +34,11 @@ class show:
 
   def check_import_config(self):
     reread=requests.get(url+"/config/10").json()["value"]
-    print reread
     if reread=="true":
         print "Importig config"
         self.import_config
         self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'false' } )
+        return (1)
 
   def import_config(self):
     self.root=requests.get(url+"/config/1").json()["value"]
@@ -82,10 +82,15 @@ class show:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     time.sleep(1)
-    for f in range (0,int(self.delay/12)+1):
+    f=0 
+    while ( f < int(self.delay/10) ):
+      f+=1
+      print f
       self.xset_force_on()
-      key=cv2.waitKey(5000)
-      self.check_import_config()
+      key=cv2.waitKey(10000)
+      check=self.check_import_config()
+      if check==1:
+        break
 
   def update_rest(self,lurl,data):
     etag=requests.get(url+lurl).json()["_etag"]
@@ -158,7 +163,7 @@ class show:
     self.Hour=str(time.strftime("%H"))
     self.Day=int(datetime.datetime.today().weekday()+2)
     if self.Day > 7:
-      self.Day=Self.Day-7
+      self.Day=self.Day-7
     self.Day=str(self.Day)
     if self.check_net != 0:
       self.check_net()
