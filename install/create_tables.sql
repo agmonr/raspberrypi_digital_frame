@@ -56,15 +56,8 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `root` varchar(23) DEFAULT NULL,
-  `delay` int(11) DEFAULT NULL,
-  `yscreenresulation` int(11) DEFAULT NULL,
-  `xscreenresulation` int(11) DEFAULT NULL,
-  `series` int(11) DEFAULT NULL,
-  `grayscale` tinyint(1) DEFAULT NULL,
-  `show_half` tinyint(1) DEFAULT NULL,
-  `check_net` tinyint(1) DEFAULT NULL,
-  `net_target` varchar(23) DEFAULT NULL,
+  `key` varchar(23) DEFAULT NULL,
+  `value` varchar(23) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -75,7 +68,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'/home/Photos/',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,NULL,60,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,NULL,NULL,1080,NULL,NULL,NULL,NULL,NULL,NULL),(4,NULL,NULL,NULL,1920,NULL,NULL,NULL,NULL,NULL),(5,NULL,NULL,NULL,NULL,100,NULL,NULL,NULL,NULL),(6,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL),(7,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL),(8,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL),(9,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'8.8.8.8');
+INSERT INTO `config` VALUES (1,'root','/home/Photos/'),(2,'delay',60),(3,'xscreenresulation',1920),(4,'yscreenresulation',1080),(5,'series',100),(6,'grayscale','0'),(7,'show_half',1),(8,'check_net',0),(9,'net_address','8.8.8.8'),(10,'reload','True');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 

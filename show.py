@@ -51,13 +51,14 @@ class show:
     
   def get_hours_on(self):
     now=datetime.datetime.now()
-    print "self.day "+str(self.Day)
-    hours=(requests.get(url+"/days/"+self.Day).json()["hours"][now.hour])
+    print "self.day "+str(self.day)
+    print now.hour
+    hours=(requests.get(url+"/days/"+self.day).json()["hours"][now.hour])
     return hours 
   
   def get_hours_show(self):
     now=datetime.datetime.now()
-    hours=(requests.get(url+"/h_display/"+self.Day).json()["hours"][now.hour])
+    hours=(requests.get(url+"/h_display/"+self.day).json()["hours"][now.hour])
     return hours
 
   def xset_force_on(self):
@@ -156,10 +157,10 @@ class show:
   def main1(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
-    self.Day=int(datetime.datetime.today().weekday()+2)
-    if self.Day > 7:
-      self.Day=Self.Day-7
-    self.Day=str(self.Day)
+    self.day=int(datetime.datetime.today().weekday()+2)
+    if self.day > 7:
+      self.day=self.day-7
+    self.day=str(self.day)
     if self.check_net != 0:
       self.check_net()
     if self.check_on_off():
@@ -169,9 +170,11 @@ class show:
 
   def main(self):
     count=0
-    if int(self.series) > len(self.List):
+    if self.series > len(self.List):
       self.series=len(self.List)-1
     f=randint(0,int(len(self.List))-int(self.series))
+    print len(self.List)
+    print f
     while 1:
       self.FileName=self.List[f]
       self.main1()

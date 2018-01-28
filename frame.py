@@ -16,8 +16,8 @@ class frame:
 
   def get_hours_on(self):
     now=datetime.datetime.now()
-    print "self.day "+str(self.Day)
-    hours=(requests.get(url+"/days/"+self.Day).json()["hours"][now.hour])
+    print "self.day "+str(self.day)
+    hours=(requests.get(url+"/days/"+self.day).json()["hours"][now.hour])
     return hours 
   
   def tvservice_off(self):
@@ -31,7 +31,6 @@ class frame:
     if tvservice:
       print "Tvservice on"
       os.system('/usr/bin/tvservice -p')  
-
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
@@ -50,10 +49,10 @@ class frame:
   def main(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
-    self.Day=int(datetime.datetime.today().weekday()+2)
-    if self.Day > 7:
-      self.Day=Self.Day-7
-    self.Day=str(self.Day)
+    self.day=int(datetime.datetime.today().weekday()+2)
+    if self.day > 7:
+      self.day=self.day-7
+    self.day=str(self.day)
     while 1:
       self.check_on_off()
       time.sleep(10)
