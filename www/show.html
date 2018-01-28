@@ -108,6 +108,9 @@ function UpdateState(DaysObject,Today,NowHour,NewState){
   });
 }
 
+GetRereadEtag()
+
+console.log('test');
 function GetRereadEtag(){
   console.log('Function GetReradEtag');
   var xhttp = new XMLHttpRequest();
@@ -116,7 +119,7 @@ function GetRereadEtag(){
   if (this.readyState == 4 ) {
     console.log('Getting etag');
 //    console.log(JSON.parse(this.responseText)._items[10]._etag);
-    console.log(JSON.parse(this.responseText));
+    UpdateReload(JSON.parse(this.responseText)._items[9]._etag);
 //    UpdateReload(JSON.parse(this.responseText)._etag);
     }
   };
@@ -133,7 +136,7 @@ function UpdateReload(Etag) {
       },
       url: '/api/config/10',
       type: 'PATCH',
-      data: JSON.stringify({ 'value': 'True',}),
+      data: JSON.stringify({ 'value': 'true',}),
       success: function () {
          }
   });

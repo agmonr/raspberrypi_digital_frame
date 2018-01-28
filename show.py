@@ -172,9 +172,10 @@ class show:
 
   def main(self):
     count=0
-    if self.series > len(self.List):
-      self.series=len(self.List)-1
-    f=randint(0,int(len(self.List))-int(self.series))
+    if (len(self.List))<int(self.series):
+      f=1
+    else:
+      f=randint(0,(len(self.List)-int(self.series)))
     while 1:
       self.FileName=self.List[f]
       self.main1()
