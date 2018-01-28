@@ -1,0 +1,14 @@
+[Unit]
+Description=digital frame
+After=backend.service
+
+[Service]
+Type=simple
+ExecStart=/opt/frame/backend.py 
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+
+[Install]
+WantedBy=multi-user.target
+Alias=frame.service

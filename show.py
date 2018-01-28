@@ -6,7 +6,7 @@ types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
 tvservice=os.path.exists("/usr/bin/tvservice")
-LogFile="/opt/frame/log/frame.log"
+LogFile="/opt/frame/log/show.log"
 HistoryFile="/opt/frame/www/history.html"
 
 class show:
@@ -34,7 +34,6 @@ class show:
 
   def check_import_config(self):
     reread=requests.get(url+"/config/10").json()["value"]
-    print reread
     if reread=="true":
         print "Importig config"
         self.import_config
@@ -51,8 +50,6 @@ class show:
     
   def get_hours_on(self):
     now=datetime.datetime.now()
-    print "self.day "+str(self.day)
-    print now.hour
     hours=(requests.get(url+"/days/"+self.day).json()["hours"][now.hour])
     return hours 
   
@@ -121,7 +118,6 @@ class show:
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
-    print "Hours_on "+hours_on
     if hours_on=="1":
       self.xset_force_on()
       return 1
@@ -173,8 +169,6 @@ class show:
     if self.series > len(self.List):
       self.series=len(self.List)-1
     f=randint(0,int(len(self.List))-int(self.series))
-    print len(self.List)
-    print f
     while 1:
       self.FileName=self.List[f]
       self.main1()
