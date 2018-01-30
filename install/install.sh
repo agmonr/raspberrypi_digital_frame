@@ -33,6 +33,9 @@ mysql -u root < "${DEST}"install/create_tables.sql
 for f in "${DEST}"/service/*; do 
   ln -sf "$f" /etc/systemd/system/multi-user.target.wants/
 done
+
+ln -sf /etc/systemd/system/show.service "${DEST}"/service/show.service
+
 systemctl daemon-reload
 rm /etc/nginx/sites-enabled/default
 ln -s /opt/frame/install/nginx/default /etc/nginx/sites-enabled/default 
@@ -41,4 +44,5 @@ rm -rf /var/www/
 ln -sf /opt/frame/www/ /var/
 ln -sf /home/Photos/ /opt/frame/www/
 
+cp "{DEST}"/install/.vimrc /root/
 service nginx restart

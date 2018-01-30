@@ -13,6 +13,7 @@ class show:
   def __init__(self):
     self.write_log("------------")
     self.write_log("* Starting *")
+    self.tvservice_on()
     self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'true' } )
     self.import_config()
     self.write_log("* finish importing config *")
@@ -27,6 +28,13 @@ class show:
     self.write_log("Total of "+str(len(self.List))+" images in "+str(self.root))
     self.List.sort()
     self.main()
+
+  def tvservice_on(self):
+     os.system('service xserver start')
+     if tvservice:
+        print "Tvservice on"
+        os.system('/usr/bin/tvservice -p')  
+
 
   def import_config_state(self):
     self.yscreenresulation=int(requests.get(url+"/config/4").json()["value"])
@@ -128,7 +136,9 @@ class show:
       self.xset_force_on()
       return 1
     else:
-      self.write_log("putting screen off") 
+      print hours_on
+      self.write_log("Killing my self") 
+      os.system('service show stop')  
       sys.exit(0)
 
   def write_log(self,Text):
