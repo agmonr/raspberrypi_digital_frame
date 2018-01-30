@@ -1,6 +1,6 @@
 # Python Digital Frame for Raspberry pi
 
-The Raspberry pi digital frame is a python based digital frame. 
+A python based digital frame with rest api and web interface. 
 
 # Requirements
 * Raspberry pi vagrant/.vagrant/SoC version 2 or 3.
