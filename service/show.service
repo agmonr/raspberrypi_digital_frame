@@ -3,7 +3,7 @@ Description=digital frame
 After=xserver.service
  
 [Service]
-Type=forking
+Type=simple
 ExecStart=/opt/frame/show.py 
 KillMode=process
 Restart=on-failure

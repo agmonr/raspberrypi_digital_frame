@@ -37,6 +37,12 @@ class frame:
     if hours_on=="1":
       self.tvservice_on()
       os.system('service show start')
+      while 1:
+        time.sleep(10)
+        a=subprocess.check_output(['ps', 'x'])
+        if a.find('/usr/bin/python /opt/frame/show.py')==-1:
+          break
+
       self.tvservice_off()
 
   def write_log(self,Text):
