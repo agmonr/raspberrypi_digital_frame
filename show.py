@@ -13,7 +13,6 @@ class show:
   def __init__(self):
     self.write_log("------------")
     self.write_log("* Starting *")
-    self.destroyflag=0
     self.tvservice_on()
     self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'true' } )
     self.import_config()
@@ -79,16 +78,15 @@ class show:
     self.write_history_html(self.FileName)
     if self.grayscale=="true": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-    self.xset_force_on()
 
-  def show(self,window_name):
+  def show(self):
     self.update_image_name()
-    cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE )
+    cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     r = int(long(self.yscreenresulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
     dim = (int(self.img.shape[1]*r)/1000000,self.yscreenresulation)
     self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
-    cv2.moveWindow(window_name, int((self.xscreenresulation-self.img.shape[1])/2), 0) 
-    cv2.imshow(window_name,self.img)
+    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
+    cv2.imshow("Frame",self.img)
     time.sleep(1)
     f=0 
     while ( f < int(self.delay/10) ):
@@ -98,9 +96,6 @@ class show:
       check=self.check_import_config()
       if check==1:
         break
- 
-  def destroy_window(self,window_name):
-    cv2.destroyWindow(window_name)
 
   def update_rest(self,lurl,data):
     etag=requests.get(url+lurl).json()["_etag"]
@@ -141,6 +136,7 @@ class show:
     else:
       print hours_on
       self.write_log("Killing my self") 
+      os.system('service frame start')  
       os.system('service show stop')  
       sys.exit(0)
 
@@ -181,17 +177,7 @@ class show:
     if self.check_on_off():
       self.read_img()
       self.add_hour()
-      self.show("frame")
-      if self.destroyflag==1:
-        self.destroy_window("frame01")
-      else:
-        self.destroyflag=1
-
-      self.read_img()
-      self.add_hour()
-      self.show("frame01")
-      self.destroy_window("frame")
-      
+      self.show()
 
   def main(self):
     count=0

@@ -34,7 +34,7 @@ for f in "${DEST}"/service/*; do
   ln -sf "$f" /etc/systemd/system/multi-user.target.wants/
 done
 
-ln -sf /etc/systemd/system/show.service "${DEST}"/service/show.service
+ln -sf "${DEST}"/service/show.service /etc/systemd/system/show.service 
 
 systemctl daemon-reload
 rm /etc/nginx/sites-enabled/default
