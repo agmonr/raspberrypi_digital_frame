@@ -1,6 +1,5 @@
 [Unit]
 Description=display imagesy
-After=frame
 
 [Service]
 Type=simple
@@ -8,7 +7,3 @@ ExecStart=/opt/frame/show.py
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-
-[Install]
-WantedBy=multi-user.target
-Alias=sshd.service

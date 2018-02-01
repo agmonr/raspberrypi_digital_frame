@@ -1,6 +1,6 @@
 [Unit]
 Description=naked X server
-After=ssh.server
+After=network.target
 
 [Service]
 Type=simple
@@ -11,5 +11,4 @@ Restart=on-failure
 RestartPreventExitStatus=255
 
 [Install]
-WantedBy=multi-user.target
-Alias=sshd.service
+WantedBy=loading.service

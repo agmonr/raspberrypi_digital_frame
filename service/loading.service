@@ -1,6 +1,6 @@
 [Unit]
 Description=welcome msg
-After=xserver
+After=xserver.service
 
 [Service]
 Type=simple
@@ -8,7 +8,3 @@ ExecStart=/opt/frame/scripts/load_msg.sh
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-
-[Install]
-WantedBy=multi-user.target
-Alias=sshd.service

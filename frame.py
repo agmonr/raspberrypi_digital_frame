@@ -19,9 +19,6 @@ class frame:
     hours=(requests.get(url+"/days/"+self.day).json()["hours"][now.hour])
     return hours 
  
-  def start_loading_msg(self):
-    os.system('service loading start')  
-
   def tvservice_off(self):
     os.system('service xserver stop')
     if tvservice:
@@ -56,7 +53,6 @@ class frame:
     f.close()
 
   def main(self):
-    self.start_loading_msg()
     self.msg=""
     self.Hour=str(time.strftime("%H"))
     self.day=int(datetime.datetime.today().weekday()+2)

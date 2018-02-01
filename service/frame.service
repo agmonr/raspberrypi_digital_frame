@@ -9,7 +9,3 @@ ExecStart=/opt/frame/frame.py
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
-
-[Install]
-WantedBy=multi-user.target
-Alias=frame.service

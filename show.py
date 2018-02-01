@@ -187,8 +187,9 @@ class show:
       f=1
     else:
       f=randint(0,(len(self.List)-int(self.series)))
+
+    self.stop_loading_service()
     while 1:
-      self.stop_loading_service()
       self.FileName=self.List[f]
       self.main1()
       count+=1
