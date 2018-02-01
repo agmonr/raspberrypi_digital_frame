@@ -1,14 +1,14 @@
 [Unit]
-Description=digital frame
-After=xserver.service
- 
+Description=welcome msg
+After=xserver
+
 [Service]
 Type=simple
-ExecStart=/opt/frame/show.py 
+ExecStart=/opt/frame/scripts/load_msg.sh
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
 
 [Install]
 WantedBy=multi-user.target
-Alias=frame.service
+Alias=sshd.service
