@@ -22,7 +22,8 @@ apt-get install -y curl\
   python-httplib2\
   xserver-xorg\
   mysql-server\
-  nginx
+  nginx\
+  xloadimage
 
 pip install --upgrade pip
 pip install -r "${DEST}"install/requirements.txt  

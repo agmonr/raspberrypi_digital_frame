@@ -1,10 +1,10 @@
 [Unit]
-Description=display imagesy
-After=frame
+Description=welcome msg
+After=xserver
 
 [Service]
 Type=simple
-ExecStart=/opt/frame/show.py
+ExecStart=/opt/frame/scripts/load_msg.sh
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
