@@ -35,6 +35,8 @@ class show:
         print "Tvservice on"
         os.system('/usr/bin/tvservice -p')  
 
+  def stop_loading_service(self):
+    os.system('service loading stop')  
 
   def import_config_state(self):
     self.yscreenresulation=int(requests.get(url+"/config/4").json()["value"])
@@ -88,7 +90,7 @@ class show:
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     time.sleep(1)
-    f=0 
+    f=0
     while ( f < int(self.delay/10) ):
       f+=1
       self.xset_force_on()
@@ -186,6 +188,7 @@ class show:
     else:
       f=randint(0,(len(self.List)-int(self.series)))
     while 1:
+      self.stop_loading_service()
       self.FileName=self.List[f]
       self.main1()
       count+=1
