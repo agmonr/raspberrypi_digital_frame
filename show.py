@@ -71,6 +71,7 @@ class show:
 
   def xset_force_on(self):
     if xset:
+      print "force on"
       os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
 
   def read_img(self):

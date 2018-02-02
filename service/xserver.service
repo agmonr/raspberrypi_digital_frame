@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStartPre=export DISPLAY=:0; xset s off
-ExecStart=/usr/bin/X -nolock -nocursor :0
+ExecStartPre=export DISPLAY=:0
+ExecStart=/usr/bin/X -nolock -nocursor :0 -s 14400
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
