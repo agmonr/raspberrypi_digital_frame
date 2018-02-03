@@ -71,7 +71,6 @@ class show:
 
   def xset_force_on(self):
     if xset:
-      print "force on"
       os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
 
   def read_img(self):
@@ -126,8 +125,12 @@ class show:
       self.msg=":( "+self.msg
       self.add_text()
 
-  def add_text(self,x=50,y=170,size=4.2):
-    font = cv2.FONT_HERSHEY_SIMPLEX
+  def add_text(self,x=50,y=170,scale=1):
+    font=cv2.FONT_HERSHEY_SIMPLEX
+    size=scale*((self.img.shape[1::-1])[1]/280)
+    y=((self.img.shape[1::-1])[1])/8
+    x=((self.img.shape[1::-1])[0])/40
+    
     cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
