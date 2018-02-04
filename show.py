@@ -130,8 +130,7 @@ class show:
     size=scale*((self.img.shape[1::-1])[1]/280)
     y=((self.img.shape[1::-1])[1])/8
     x=((self.img.shape[1::-1])[0])/40
-    
-    cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),18)
+    cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),17)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
   def check_on_off(self):
