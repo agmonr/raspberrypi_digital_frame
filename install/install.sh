@@ -29,6 +29,7 @@ apt-get install -y curl\
 /usr/local/bin/pip install -r "${DEST}"install/requirements.txt  
 
 mysql -u root < "${DEST}"install/create_user.sql 
+service mysql restart
 mysql -u root < "${DEST}"install/create_tables.sql
 
 for f in "${DEST}"/service/*; do 
