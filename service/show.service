@@ -3,6 +3,7 @@ Description=display imagesy
 
 [Service]
 Type=simple
+Environment=DISPLAY=:0
 ExecStart=/opt/frame/show.py
 KillMode=process
 Restart=on-failure

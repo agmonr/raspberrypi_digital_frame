@@ -25,8 +25,8 @@ apt-get install -y curl\
   nginx\
   xloadimage
 
-pip install --upgrade pip
-pip install -r "${DEST}"install/requirements.txt  
+/usr/bin/pip install --upgrade pip
+/usr/local/bin/pip install -r "${DEST}"install/requirements.txt  
 
 mysql -u root < "${DEST}"install/create_user.sql 
 mysql -u root < "${DEST}"install/create_tables.sql
@@ -45,5 +45,5 @@ rm -rf /var/www/
 ln -sf /opt/frame/www/ /var/
 ln -sf /home/Photos/ /opt/frame/www/
 
-cp "{DEST}"/install/.vimrc /root/
+cp "${DEST}"/install/.vimrc /root/
 service nginx restart
