@@ -127,8 +127,9 @@ class show:
 
   def add_text(self,x=50,y=170,scale=1):
     font=cv2.FONT_HERSHEY_SIMPLEX
-    size=scale*((self.img.shape[1::-1])[1]/280)
-    y=((self.img.shape[1::-1])[1])/8
+#    size=scale*((self.img.shape[1::-1])[1]/300+((self.img.shape[1::-1])[0]))/400
+    size=3
+    y=((self.img.shape[1::-1])[1])/7
     x=((self.img.shape[1::-1])[0])/40
     cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),17)
     cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
@@ -170,7 +171,7 @@ class show:
       f.write(str(History[g]))
     f.close()
 
-  def main1(self):
+  def display(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
     self.day=int(datetime.datetime.today().weekday()+2)
@@ -194,7 +195,7 @@ class show:
     self.stop_loading_service()
     while 1:
       self.FileName=self.List[f]
-      self.main1()
+      self.display()
       count+=1
       f+=1
       if count>=self.series:
