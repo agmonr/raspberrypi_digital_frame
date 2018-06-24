@@ -26,7 +26,13 @@ apt-get install -y curl\
   xloadimage
 
 /usr/bin/pip install --upgrade pip
-/usr/local/bin/pip install -r "${DEST}"install/requirements.txt  
+/usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
+
+/usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
+if [ "$RESULT" != "0" ]; then
+    echo "Error installing python dependencies. exiting"
+    exit 2
+fi
 
 mysql -u root < "${DEST}"install/create_tables.sql
 mysql -u root < "${DEST}"install/create_user.sql 
