@@ -21,7 +21,7 @@ apt-get install -y curl\
   python-requests\
   python-httplib2\
   xserver-xorg\
-  mysql-server\
+  mariadb-server-10.0\
   nginx\
   xloadimage
 
