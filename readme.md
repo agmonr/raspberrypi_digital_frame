@@ -16,6 +16,7 @@ A python based digital frame with rest api and web interface.
 * web interface shows the current image, can download it, turn screen on and off.
 
 ## install script
+* use cd install; sudo ./install.sh script u
 * Installing necessity python and system dependencies.
 * Copy project files to /opt/frame/
 * Register the application as services.
