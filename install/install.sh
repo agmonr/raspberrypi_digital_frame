@@ -22,6 +22,7 @@ apt-get install -y curl\
   python-httplib2\
   xserver-xorg\
   mariadb-server-10.0\
+  python-cairo-dev\
   nginx\
   xloadimage
 
