@@ -8,3 +8,7 @@ ExecStart=/opt/frame/scripts/load_msg.sh
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
+
+[Install]
+Alias=loading
+

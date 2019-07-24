@@ -29,7 +29,6 @@ apt-get install -y curl\
 /usr/bin/pip install --upgrade pip
 
  /usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
-exprot RESULT=0
 if [ "$RESULT" != "0" ]; then
     echo "Error installing python dependencies. exiting"
     exit 2
@@ -39,8 +38,10 @@ mysql -u root < "${DEST}"install/create_tables.sql
 mysql -u root < "${DEST}"install/create_user.sql 
 mysqladmin reload 
 
-for f in "${DEST}"/service/*; do 
-  ln -sf "$f" /etc/systemd/system/
+for f in "${DEST}"service/*; do 
+    echo ${f}
+  ln -sf "$f" /etc/systemd/system
+  systemctl daemon-reload
   systemctl enable ${f}
 done
 
@@ -56,3 +57,4 @@ ln -sf /home/Photos/ /opt/frame/www/
 
 cp "${DEST}"/install/.vimrc /root/
 service nginx restart
+

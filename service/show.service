@@ -8,3 +8,7 @@ ExecStart=/opt/frame/show.py
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
+
+[Install]
+WantedBy=frame.service
+

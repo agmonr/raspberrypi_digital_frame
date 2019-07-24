@@ -9,3 +9,6 @@ KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
 
+[Install]
+WantedBy=frame.service
+
