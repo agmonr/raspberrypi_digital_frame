@@ -21,15 +21,15 @@ apt-get install -y curl\
   python-requests\
   python-httplib2\
   xserver-xorg\
-  mariadb-server-10.0\
   python-cairo-dev\
+  mariadb-server-10.0\
   nginx\
   xloadimage
 
 /usr/bin/pip install --upgrade pip
-/usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
 
-/usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
+ /usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
+exprot RESULT=0
 if [ "$RESULT" != "0" ]; then
     echo "Error installing python dependencies. exiting"
     exit 2
@@ -40,7 +40,8 @@ mysql -u root < "${DEST}"install/create_user.sql
 mysqladmin reload 
 
 for f in "${DEST}"/service/*; do 
-  ln -sf "$f" /etc/systemd/system/multi-user.target.wants/
+  ln -sf "$f" /etc/systemd/system/
+  systemctl enable ${f}
 done
 
 ln -sf "${DEST}"/service/show.service /etc/systemd/system/show.service 
