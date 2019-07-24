@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/X -nolock -nocursor :0 -s 14400
+ExecStart=/usr/bin/X vt1 -nolock -nocursor :0 -s 14400
 KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
