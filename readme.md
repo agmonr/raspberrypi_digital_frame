@@ -2,7 +2,6 @@
 
 A python based digital frame with rest api and web interface. Wasn't build to security, DO NOT USE ON OPEN NETWORK!:)
 
-
 # HighLights!
 * Built to save power. The application is putting the screen on standby mode using the Raspberry pi tools to control the screen.
 * Using only a Raspberry pia, a memory card and a screen you can create a lovely digital photo frame, for the pleasure of your family. A great way show some of the thousand of photos you never look at. 
@@ -13,12 +12,12 @@ A python based digital frame with rest api and web interface. Wasn't build to se
 * BASH Scripts examples to set the rest api.
 * Log file open on port 80 with links to the photos.
 
-# DOESN"T HAVE YET
+# Doesn't have yet.
 * Cloud support. Should be set manulay by the user.
 
 # Requirements
-* Raspberry pi 2+ with a large memory card and for prod, virtual box and vagreant for dev.
-* A display set (A tv set might not be set on and off by the hdmi connection)
+* Raspberry pi 2+ with a large memory card, virtual box and vagreant for dev.
+* For prod, A display set (A tv set might not be set on and off by the hdmi connection)
 
 ## main features
 * Dispalying jpg files at specfic interval.
@@ -28,7 +27,7 @@ A python based digital frame with rest api and web interface. Wasn't build to se
 * Can Check net connectivity and put mark on top of the photos.
 
 ## How to install
-Get a good power supply for the Raspberry pie and a nice screen. Follow the instrucation on Raspbery pie web side and then come back to here.
+Get a good power supply for the Raspberry pi and a nice screen. Follow the instrucation on Raspberry web side and then come back to here.
 
 Hi Again.
 
@@ -37,9 +36,10 @@ Hi Again.
     sudo ./install.sh
     
  and hope for good.
- If everything will work good, you should have the software installed on /opt/frame/.
- The example scripts can set the screen for always on or off.
- You sould have a few new services running now take a look in the services folder.
+ You should have the software installed on '/opt/frame/'.
+ The default photos folder is '/home/Photos/'
+ The example scripts will set the screen for always on or off and some other stuff.
+ You sould have a few new services running now; take a look in the services folder.
  HAVE FUN.
 
 ## Vagrant for dev
