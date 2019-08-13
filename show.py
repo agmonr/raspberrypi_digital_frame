@@ -20,7 +20,6 @@ class show:
     self.import_config_state()
     self.List=[]
     self.Shown=[]
-    os.system('/bin/chvt 2')
     os.system('/bin/chvt 1')
     for path, subdirs, files in os.walk(self.root):
       self.write_log(str(path))
