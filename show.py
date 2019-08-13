@@ -68,7 +68,7 @@ class show:
   
   def get_hours_show(self):
     now=datetime.datetime.now()
-    hours=(requests.get(url+"/h_display/"+self.day).json()["hours"][now.hour])
+    hours=(requests.get(url+"/clock_on/"+self.day).json()["hours"][now.hour])
     return hours
 
   def xset_force_on(self):

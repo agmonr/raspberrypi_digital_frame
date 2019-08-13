@@ -97,13 +97,13 @@ INSERT INTO `days` VALUES (1,'111111111111111111111111'),(2,'1111111111111111111
 UNLOCK TABLES;
 
 --
--- Table structure for table `h_display`
+-- Table structure for table `clock_on`
 --
 
-DROP TABLE IF EXISTS `h_display`;
+DROP TABLE IF EXISTS `clock_on`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `h_display` (
+CREATE TABLE `clock_on` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hours` varchar(24) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -111,13 +111,13 @@ CREATE TABLE `h_display` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `h_display`
+-- Dumping data for table `clock_on`
 --
 
-LOCK TABLES `h_display` WRITE;
-/*!40000 ALTER TABLE `h_display` DISABLE KEYS */;
-INSERT INTO `h_display` VALUES (1,'000000010000000000001100'),(2,'000000010000000000001100'),(3,'000000010000000000001100'),(4,'000000010000000000001100'),(5,'000000010000000000001100'),(6,'000000010000100000000000'),(7,'000000000000000000001100');
-/*!40000 ALTER TABLE `h_display` ENABLE KEYS */;
+LOCK TABLES `clock_on` WRITE;
+/*!40000 ALTER TABLE `clock_on` DISABLE KEYS */;
+INSERT INTO `clock_on` VALUES (1,'000000010000000000001100'),(2,'000000010000000000001100'),(3,'000000010000000000001100'),(4,'000000010000000000001100'),(5,'000000010000000000001100'),(6,'000000010000100000000000'),(7,'000000000000000000001100');
+/*!40000 ALTER TABLE `clock_on` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -539,7 +539,7 @@ CREATE TABLE `innodb_index_stats` (
 
 LOCK TABLES `innodb_index_stats` WRITE;
 /*!40000 ALTER TABLE `innodb_index_stats` DISABLE KEYS */;
-INSERT INTO `innodb_index_stats` VALUES ('frame','commands','PRIMARY','2018-01-17 07:14:20','n_diff_pfx01',0,1,'id'),('frame','commands','PRIMARY','2018-01-17 07:14:20','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','commands','PRIMARY','2018-01-17 07:14:20','size',1,NULL,'Number of pages in the index'),('frame','config','PRIMARY','2018-01-21 11:07:04','n_diff_pfx01',10,1,'id'),('frame','config','PRIMARY','2018-01-21 11:07:04','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','config','PRIMARY','2018-01-21 11:07:04','size',1,NULL,'Number of pages in the index'),('frame','days','PRIMARY','2018-01-17 07:14:40','n_diff_pfx01',7,1,'id'),('frame','days','PRIMARY','2018-01-17 07:14:40','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','days','PRIMARY','2018-01-17 07:14:40','size',1,NULL,'Number of pages in the index'),('frame','h_display','PRIMARY','2018-01-21 11:07:14','n_diff_pfx01',7,1,'id'),('frame','h_display','PRIMARY','2018-01-21 11:07:14','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','h_display','PRIMARY','2018-01-21 11:07:14','size',1,NULL,'Number of pages in the index'),('frame','state','PRIMARY','2018-01-17 07:14:20','n_diff_pfx01',0,1,'id'),('frame','state','PRIMARY','2018-01-17 07:14:20','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','state','PRIMARY','2018-01-17 07:14:20','size',1,NULL,'Number of pages in the index'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_diff_pfx01',0,1,'domain_id'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_diff_pfx02',0,1,'domain_id,sub_id'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','size',1,NULL,'Number of pages in the index');
+INSERT INTO `innodb_index_stats` VALUES ('frame','commands','PRIMARY','2018-01-17 07:14:20','n_diff_pfx01',0,1,'id'),('frame','commands','PRIMARY','2018-01-17 07:14:20','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','commands','PRIMARY','2018-01-17 07:14:20','size',1,NULL,'Number of pages in the index'),('frame','config','PRIMARY','2018-01-21 11:07:04','n_diff_pfx01',10,1,'id'),('frame','config','PRIMARY','2018-01-21 11:07:04','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','config','PRIMARY','2018-01-21 11:07:04','size',1,NULL,'Number of pages in the index'),('frame','days','PRIMARY','2018-01-17 07:14:40','n_diff_pfx01',7,1,'id'),('frame','days','PRIMARY','2018-01-17 07:14:40','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','days','PRIMARY','2018-01-17 07:14:40','size',1,NULL,'Number of pages in the index'),('frame','clock_on','PRIMARY','2018-01-21 11:07:14','n_diff_pfx01',7,1,'id'),('frame','clock_on','PRIMARY','2018-01-21 11:07:14','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','clock_on','PRIMARY','2018-01-21 11:07:14','size',1,NULL,'Number of pages in the index'),('frame','state','PRIMARY','2018-01-17 07:14:20','n_diff_pfx01',0,1,'id'),('frame','state','PRIMARY','2018-01-17 07:14:20','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('frame','state','PRIMARY','2018-01-17 07:14:20','size',1,NULL,'Number of pages in the index'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_diff_pfx01',0,1,'domain_id'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_diff_pfx02',0,1,'domain_id,sub_id'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','n_leaf_pages',1,NULL,'Number of leaf pages in the index'),('mysql','gtid_slave_pos','PRIMARY','2018-01-17 07:13:43','size',1,NULL,'Number of pages in the index');
 /*!40000 ALTER TABLE `innodb_index_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,7 +567,7 @@ CREATE TABLE `innodb_table_stats` (
 
 LOCK TABLES `innodb_table_stats` WRITE;
 /*!40000 ALTER TABLE `innodb_table_stats` DISABLE KEYS */;
-INSERT INTO `innodb_table_stats` VALUES ('frame','commands','2018-01-17 07:14:20',0,1,0),('frame','config','2018-01-21 11:07:04',10,1,0),('frame','days','2018-01-17 07:14:40',7,1,0),('frame','h_display','2018-01-21 11:07:14',7,1,0),('frame','state','2018-01-17 07:14:20',0,1,0),('mysql','gtid_slave_pos','2018-01-17 07:13:43',0,1,0);
+INSERT INTO `innodb_table_stats` VALUES ('frame','commands','2018-01-17 07:14:20',0,1,0),('frame','config','2018-01-21 11:07:04',10,1,0),('frame','days','2018-01-17 07:14:40',7,1,0),('frame','clock_on','2018-01-21 11:07:14',7,1,0),('frame','state','2018-01-17 07:14:20',0,1,0),('mysql','gtid_slave_pos','2018-01-17 07:13:43',0,1,0);
 /*!40000 ALTER TABLE `innodb_table_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 

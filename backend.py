@@ -15,8 +15,8 @@ class days(Base): #Hours per day when the screen will be on
     id = Column(Integer, primary_key=True, autoincrement=True)
     hours = Column(String(24))
 
-class h_display(Base): #When to display the hour on top of the photo
-    __tablename__ = 'h_display'
+class clock_on(Base): #When to display the hour on top of the photo
+    __tablename__ = 'clock_on'
     id = Column(Integer, primary_key=True, autoincrement=True)
     hours = Column(String(24))
 
@@ -47,7 +47,7 @@ SETTINGS = {
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'DOMAIN': DomainConfig({
         'state': ResourceConfig(state),
-        'h_display': ResourceConfig(h_display),
+        'clock_on': ResourceConfig(clock_on),
         'commands': ResourceConfig(commands),
         'config': ResourceConfig(config),
         'days': ResourceConfig(days)
