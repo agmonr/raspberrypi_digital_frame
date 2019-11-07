@@ -1,5 +1,0 @@
-run/*
-log/*.log
-vagrant/.vagrant/*
-www/Photos/
-www/Photos/history.html
