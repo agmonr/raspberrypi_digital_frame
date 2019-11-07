@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import pdb
 from eve import Eve
 from eve_sqlalchemy import SQL

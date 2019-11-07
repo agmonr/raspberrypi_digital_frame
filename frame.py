@@ -1,5 +1,5 @@
-#!/usr/bin/python
-import sys,os,time,datetime,subprocess,json,urllib2,requests,httplib2
+#!/usr/bin/python3
+import sys,os,time,datetime,subprocess,json,urllib3,requests,httplib2
 from random import randint
 
 url="http://localhost:5000"
@@ -22,13 +22,13 @@ class frame:
   def tvservice_off(self):
     os.system('service xserver stop')
     if tvservice:
-      print "Tvservice off"
+      print ( "Tvservice off" )
       os.system('/usr/bin/tvservice -o')  
 
   def tvservice_on(self):
     os.system('service xserver start')
     if tvservice:
-      print "Tvservice on"
+      print ( "Tvservice on" )
       os.system('/usr/bin/tvservice -p')  
 
 

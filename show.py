@@ -1,5 +1,5 @@
-#!/usr/bin/python
-import sys,cv2,os,time,datetime,pickle,subprocess,json,urllib2,requests,httplib2
+#!/usr/bin/python3
+import sys,cv2,os,time,datetime,pickle,subprocess,json,urllib3,requests,httplib2
 from random import randint
 
 types=['jpg','jpeg','JPG','JPEG']
@@ -24,7 +24,7 @@ class show:
     for path, subdirs, files in os.walk(self.root):
       self.write_log(str(path))
       for name in files:
-        self.List.append(unicode(path)+"/"+unicode(name))
+        self.List.append(str(path)+"/"+str(name))
 
     self.write_log("Total of "+str(len(self.List))+" images in "+str(self.root))
     self.List.sort()
@@ -33,7 +33,7 @@ class show:
   def tvservice_on(self):
      os.system('service xserver start')
      if tvservice:
-        print "Tvservice on"
+        print ( "Tvservice on" )
         os.system('/usr/bin/tvservice -p')  
 
   def stop_loading_service(self):
@@ -46,7 +46,7 @@ class show:
   def check_import_config(self):
     reread=requests.get(url+"/config/10").json()["value"]
     if reread=="true":
-        print "Importig config"
+        print ( "Importig config" )
         self.import_config
         self.update_rest("/config/10", {"id":'10', "key":'reread', "value": 'false' } )
         return (1)
@@ -76,7 +76,7 @@ class show:
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
-    print self.FileName
+    print ( self.FileName )
     self.write_log(self.FileName+" "+str(self.img.shape))  
     self.write_history_html(self.FileName)
     if self.grayscale=="true": 
@@ -85,9 +85,9 @@ class show:
   def show(self):
     self.update_image_name()
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
-    r = int(long(self.yscreenresulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
-    dim = (int(self.img.shape[1]*r)/1000000,self.yscreenresulation)
-    self.img=cv2.resize(self.img, dim, interpolation = cv2.INTER_AREA)
+#    r = int(int(self.yscreenresulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
+#    dim = ((self.img.shape[1]*r)/1000000,self.yscreenresulation)
+    self.img=cv2.resize(self.img, (self.xscreenresulation,self.yscreenresulation), interpolation = cv2.INTER_AREA)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     time.sleep(1)
@@ -141,7 +141,7 @@ class show:
       self.xset_force_on()
       return 1
     else:
-      print hours_on
+      print ( hours_on )
       self.write_log("Killing my self") 
       os.system('service frame start')  
       os.system('service show stop')  
@@ -165,7 +165,7 @@ class show:
            History.append(str(Line))
       f.close()
     except:
-      print "Starting new file"
+      print ( "Starting new file" )
 
     f=open(HistoryFile,'w') 
     for g in range(0,len(History)):
@@ -199,7 +199,7 @@ class show:
       self.display()
       count+=1
       f+=1
-      if count>=self.series:
+      if count>=int(self.series):
         count=0
         f=randint(0,len(self.List)-self.series)
 

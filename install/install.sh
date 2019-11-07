@@ -16,19 +16,20 @@ apt-get install -y curl\
   wget\
   vim\
   screen\
-  python-opencv\
-  python-pip\
-  python-requests\
-  python-httplib2\
+  python3-opencv\
+  python3-pip\
+  python3-requests\
+  python3-httplib2\
   xserver-xorg\
   python-cairo-dev\
   mariadb-server\
+  pkg-config\
   nginx\
   xloadimage
 
-/usr/bin/pip install --upgrade pip
+#/usr/bin/pip3 install --upgrade pip3
 
- /usr/local/bin/pip install -r "${DEST}"install/requirements.txt; RESULT=$?
+/usr/bin/pip3 install -r "${DEST}"install/requirements.txt; RESULT=$?
 if [ "$RESULT" != "0" ]; then
     echo "Error installing python dependencies. exiting"
     exit 2
