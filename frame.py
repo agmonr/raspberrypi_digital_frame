@@ -39,8 +39,8 @@ class frame:
       os.system('service show start')
       while 1:
         time.sleep(10)
-        a=subprocess.check_output(['ps', 'x'])
-        if a.find('/usr/bin/python /opt/frame/show.py')==-1:
+        a=str((subprocess.check_output(['ps', 'x'])))
+        if (a.find('/usr/bin/python3 /opt/frame/show.py'))==-1:
           break
       self.tvservice_off()
     else:
