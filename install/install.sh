@@ -25,11 +25,14 @@ apt-get install -y curl\
   mariadb-server\
   pkg-config\
   nginx\
-  libjasper1\
   libatlas-base-dev\
   libqtgui4\
   libqt4-test\
   xloadimage
+
+if [ "$( uname -a | grep -c x86 )" == 0 ]; then
+	apt-get instal -f libjasper1
+fi
 
 #/usr/bin/pip3 install --upgrade pip3
 
