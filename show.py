@@ -112,19 +112,16 @@ class show:
     if width is None and height is None:
         return image
 
-    # check to see if the width is None
-    if width is None:
-        # calculate the ratio of the height and construct the
-        # dimensions
-        r = height / float(h)
-        dim = (int(w * r), height)
+    r = height / float(h)
+    dim_height = (int(w * r), height)
 
-    # otherwise, the height is None
+    r = width / float(w)
+    dim_width = (width, int(h * r))
+
+    if dim_width > dim_height :
+        dim = dim_width
     else:
-        # calculate the ratio of the width and construct the
-        # dimensions
-        r = width / float(w)
-        dim = (width, int(h * r))
+        dim = dim_height
 
     # resize the image
     resized = cv2.resize(image, dim, interpolation = inter)
