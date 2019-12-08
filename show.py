@@ -31,6 +31,7 @@ class show:
     self.main()
 
   def tvservice_on(self):
+     os.system('service xserver stop')
      os.system('service xserver start')
      if tvservice:
         print ( "Tvservice on" )
@@ -105,26 +106,27 @@ class show:
     # initialize the dimensions of the image to be resized and
     # grab the image size
     dim = None
-    (h, w) = self.img.shape[:2]
+    (h, w) = image.shape[:2]
 
     # if both the width and height are None, then return the
     # original image
     if width is None and height is None:
         return image
 
-    r = height / float(h)
-    dim_height = (int(w * r), height)
+    w2 = ( height / float(h) ) * w
+    #dim_width = (width, int(h * r))
+   
+    h2 = ( width / float (w) ) * h 
+#    dim_height = (int(w * r), height)
+#    print (dim_height)
 
-    r = width / float(w)
-    dim_width = (width, int(h * r))
-
-    if dim_width > dim_height :
-        dim = dim_width
+    if w2 < width :
+        h2 = height
     else:
-        dim = dim_height
+        w2 = width
 
     # resize the image
-    resized = cv2.resize(image, dim, interpolation = inter)
+    resized = cv2.resize(image, ( int (w2), int(h2)), interpolation = inter)
 
     # return the resized image
     return resized
@@ -158,12 +160,12 @@ class show:
 
   def add_text(self,x=50,y=170,scale=1):
     font=cv2.FONT_HERSHEY_SIMPLEX
-#    size=scale*((self.img.shape[1::-1])[1]/300+((self.img.shape[1::-1])[0]))/400
+    size=scale*((self.img.shape[1::-1])[1]/300+((self.img.shape[1::-1])[0]))/400
     size=3
     y=((self.img.shape[1::-1])[1])/7
     x=((self.img.shape[1::-1])[0])/40
-    cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),17)
-    cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
+#    cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),17)
+#    cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
