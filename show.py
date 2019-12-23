@@ -86,9 +86,6 @@ class show:
   def show(self):
     self.update_image_name()
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
-#    r = int(int(self.yscreenresulation*1000 / self.img.shape[0]*1000)) # *1000 cause we need better precision
-#    dim = ((self.img.shape[1]*r)/1000000,self.yscreenresulation)
-#    self.img=cv2.resize(self.img, (self.xscreenresulation,self.yscreenresulation), interpolation = cv2.INTER_AREA)
     self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
@@ -159,13 +156,24 @@ class show:
       self.add_text()
 
   def add_text(self,x=50,y=170,scale=1):
-    font=cv2.FONT_HERSHEY_SIMPLEX
-    size=scale*((self.img.shape[1::-1])[1]/300+((self.img.shape[1::-1])[0]))/400
-    size=3
-    y=((self.img.shape[1::-1])[1])/7
-    x=((self.img.shape[1::-1])[0])/40
-#    cv2.putText(self.img, self.msg, (x,y), font, size,(0,0,0),17)
-#    cv2.putText(self.img, self.msg, (x,y), font, size,(255,255,255),7)
+    # font 
+    font = cv2.FONT_HERSHEY_SIMPLEX 
+    # org 
+    org = (50, 50) 
+    # fontScale 
+    fontScale = 1.2
+    # Line thickness of 2 px 
+    thickness = 2
+    linecolor = (0,0,0)
+    linethickness = 3
+    bodycolor = (170,255,255)
+    bodythinkness = 2
+
+    # Using cv2.putText() method
+    #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
+    cv2.putText(self.img, self.msg, org, font, fontScale, linecolor, linethickness, cv2.LINE_AA) 
+    cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
+
 
   def check_on_off(self):
     hours_on=self.get_hours_on()
