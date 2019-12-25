@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # script to set all days to default 
 # sunday-thursday - on 07-09 & 16-00

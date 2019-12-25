@@ -87,7 +87,7 @@ class show:
     self.update_image_name()
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
-    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
+    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), -30) 
     cv2.imshow("Frame",self.img)
     time.sleep(1)
     f=0
