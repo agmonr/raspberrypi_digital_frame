@@ -87,7 +87,7 @@ class show:
     self.update_image_name()
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
-    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), -30) 
+    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2), 0) 
     cv2.imshow("Frame",self.img)
     time.sleep(1)
     f=0
@@ -159,15 +159,15 @@ class show:
     # font 
     font = cv2.FONT_HERSHEY_SIMPLEX 
     # org 
-    org = (50, 50) 
+    org = (50, 100) 
     # fontScale 
-    fontScale = 1.2
+    fontScale = 2.3
     # Line thickness of 2 px 
-    thickness = 2
+    thickness = 6
     linecolor = (0,0,0)
-    linethickness = 3
+    linethickness = 8
     bodycolor = (170,255,255)
-    bodythinkness = 2
+    bodythinkness = 5
 
     # Using cv2.putText() method
     #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
