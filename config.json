@@ -4,9 +4,10 @@
 		"Root": "/home/Photos/",
 		"hoursOn": "0 12 * * *",
 		"hoursOff": "0 23 * * *",
-		"Delay": 2,
+		"Delay": 60,
+		"FontScale": 8,
 		"Series": 100,
-		"Grayscale": 0,
+		"Grayscale": "False",
 		"ShowHalfHour": 1
 	}
 }

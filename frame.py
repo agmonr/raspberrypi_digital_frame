@@ -11,13 +11,14 @@ xset=os.path.exists("/usr/bin/xset")
 class frame:
   def __init__(self):
 
+    self.tvServiceBin=os.path.exists("/usr/bin/tvservice") 
+    print (self.tvServiceBin)
     self.read_config()    
     self.write_log("------------")
     self.write_log("* Starting *")
     
     self.write_log("* finish importing config *")
     self.tvservice_on()
-    
     root = tkinter.Tk()
     self.xscreenresulation=root.winfo_screenheight()
     self.yscreenresulation=root.winfo_screenwidth()
@@ -47,6 +48,7 @@ class frame:
     self.series=(data['config']['Series'])
     self.grayscale=(data['config']['Grayscale'])
     self.show_half=(data['config']['ShowHalfHour'])
+    self.scale=(data['config']['FontScale'])
     self.check_net=0
     f.close()
     
@@ -60,16 +62,18 @@ class frame:
     
  
   def tvservice_off(self):
-      if self.getTvStatus():
+      if self.getTvStatus() and self.tvServiceBin:
         os.system('sudo /usr/bin/tvservice -o')  
 
   def tvservice_on(self):
-      if not self.getTvStatus():
+      if not self.getTvStatus() and self.tvServiceBin:
         os.system('sudo /usr/bin/tvservice -p')
         os.system('sudo /bin/chvt 2')
         os.system('sudo /bin/chvt 1')
 
   def getTvStatus(self):
+      if self.tvServiceBin is False:
+          return True
       displayStatus=str(subprocess.run(['sudo','/usr/bin/tvservice','-s'], stdout=subprocess.PIPE))
       if 'TV is off' in displayStatus:
         return False
@@ -86,10 +90,6 @@ class frame:
   def main(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
-    self.day=int(datetime.datetime.today().weekday()+2)
-    if self.day > 7:
-      self.day=self.day-7
-    self.day=str(self.day)
     Sleep=10
     while 1:
       self.check_on_off()
@@ -100,7 +100,7 @@ class frame:
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     self.write_log(self.FileName+" "+str(self.img.shape))  
-    if self.grayscale=="true": 
+    if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
   def show(self):
@@ -111,8 +111,6 @@ class frame:
     for f in range(0, int(self.delay)):
       key=cv2.waitKey(1)
       time.sleep(1)
-
-
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
     # initialize the dimensions of the image to be resized and
@@ -157,19 +155,20 @@ class frame:
       self.msg=":( "+self.msg
       self.add_text()
 
-  def add_text(self,x=50,y=170,scale=1):
+  def add_text(self,x=50,y=170):
     # font 
     font = cv2.FONT_HERSHEY_SIMPLEX 
     # org 
-    org = (50, 100) 
+    scale=self.scale
+    fontScale = scale
+    org = (20, 100+scale*15) 
     # fontScale 
-    fontScale = 2.3
     # Line thickness of 2 px 
-    thickness = 6
+    thickness = scale*3
     linecolor = (0,0,0)
-    linethickness = 8
+    linethickness = scale*3
     bodycolor = (170,255,255)
-    bodythinkness = 5
+    bodythinkness = scale*2
 
     # Using cv2.putText() method
     #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
