@@ -1,56 +1,104 @@
 #!/usr/bin/python3
-import sys,os,time,datetime,subprocess,json,urllib3,requests,httplib2
+import sys,os,time,datetime,cv2,pickle,subprocess,json,numpy,tkinter
+#import sys,os,time,datetime,cv2,pickle,subprocess,json,urllib3,requests,httplib2,tkinter,numpy
+
+
+import croniter
+from crontab import CronTab 
 from random import randint
 
+
+
+xset=os.path.exists("/usr/bin/xset")
+tvservice=os.path.exists("sudo /usr/bin/tvservice")
+
+types=['jpg','jpeg','JPG','JPEG']
 url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
-tvservice=os.path.exists("/usr/bin/tvservice")
-LogFile="/opt/frame/log/frame.log"
+tvservice=os.path.exists("sudo /usr/bin/tvservice")
+
+HistoryFile="/opt/frame/www/history.html"
 
 class frame:
   def __init__(self):
+
+    self.read_config()    
     self.write_log("------------")
     self.write_log("* Starting *")
+    
     self.write_log("* finish importing config *")
+    self.tvservice_on()
+    
+    root = tkinter.Tk()
+    self.xscreenresulation=root.winfo_screenheight()
+    self.yscreenresulation=root.winfo_screenwidth()
+    
+    self.write_log("* finish importing config *")
+    #self.import_config_state()
+    self.List=[]
+    self.screenOn=True
+    self.Shown=[]
+    for path, subdirs, files in os.walk(self.root):
+      self.write_log(str(path))
+      for name in files:
+        self.List.append(str(path)+"/"+str(name))
+
+    self.write_log("Total of "+str(len(self.List))+" images in "+str(self.root))
+    self.List.sort()
     self.main()
+        
+  def read_config(self):
+    f = open('config.json',)
+    data = json.load(f)
+    self.LogFile=(data['config']['LogFile'])
+    self.root=(data['config']['Root'])
+    self.hoursOn=(data['config']['hoursOn'])
+    self.hoursOff=(data['config']['hoursOff'])
+    self.delay=(data['config']['Delay'])
+    self.series=(data['config']['Series'])
+    self.grayscale=(data['config']['Grayscale'])
+    self.show_half=(data['config']['ShowHalfHour'])
+    self.check_net=0
+    f.close()
+    
 
   def get_hours_on(self):
     now=datetime.datetime.now()
-    hours=(requests.get(url+"/days/"+self.day).json()["hours"][now.hour])
-    return hours 
+    if now in self.HoursOn:
+      return 1
+    else:
+      return 0
+    
  
   def tvservice_off(self):
-    os.system('service xserver stop')
-    if tvservice:
       print ( "Tvservice off" )
-      os.system('/usr/bin/tvservice -o')  
+      if self.getTvStatus():
+        os.system('sudo /usr/bin/tvservice -o')  
 
   def tvservice_on(self):
-    os.system('service xserver start')
-    if tvservice:
       print ( "Tvservice on" )
-      os.system('/usr/bin/tvservice -p')  
+      if not self.getTvStatus():
+        os.system('sudo /usr/bin/tvservice -p')
+        os.system('sudo /bin/chvt 2')
+        os.system('sudo /bin/chvt 1')
 
-
-  def check_on_off(self):
-    hours_on=self.get_hours_on()
-    if hours_on=="1":
-      self.tvservice_on()
-      os.system('service show start')
-      while 1:
-        time.sleep(10)
-        a=str((subprocess.check_output(['ps', 'x'])))
-        if (a.find('/usr/bin/python3 /opt/frame/show.py'))==-1:
-          break
-      self.tvservice_off()
-    else:
-      os.system('service show stop')
+  def getTvStatus(self):
+      displayStatus=str(subprocess.run(['sudo','/usr/bin/tvservice','-s'], stdout=subprocess.PIPE))
+      if 'TV is off' in displayStatus:
+        return False
+      else:
+        return True
+      
 
   def write_log(self,Text):
     print(time.strftime("%H:%M:%S ")+Text+"\n")
-    f=open(LogFile,'a')
+    f=open(self.LogFile,'a')
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
+
+  def get_hours_on(self):
+    return 1
+  
 
   def main(self):
     self.msg=""
@@ -65,7 +113,168 @@ class frame:
       time.sleep(Sleep)
       if Sleep < 120:
         Sleep+=3
+
+
+  def xset_force_on(self):
+    if xset:
+      os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
+
+  def read_img(self):
+
+    self.img=cv2.imread(self.FileName)
+    print ( self.FileName )
+    self.write_log(self.FileName+" "+str(self.img.shape))  
+#    self.write_history_html(self.FileName)
+
+    if self.grayscale=="true": 
+      self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+
+  def show(self):
+    cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
+    self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
     
+#    cv2.moveWindow("Frame", ape[1])/2), -29) 
+    cv2.imshow("Frame",self.img)
+    time.sleep(1)
+    f=0
+    while ( f < int(self.delay) ):
+      f+=1
+      self.xset_force_on()
+      key=cv2.waitKey(10000)
+      #check=self.check_import_config()
+      check=1
+      if check==1:
+        break
+
+
+
+
+  def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    #dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    w2 = int (( height / float(h) ) * w)
+    #dim_width = (width, int(h * r))
+   
+    h2 = int (( width / float (w) ) * h )
+#    dim_height = (int(w * r), height)
+#    print (dim_height)
+
+    if w2 < width :
+        h2 = height
+    else:
+        w2 = width
+
+    print (height)
+    print (width)
+
+    # resize the image
+    return cv2.resize(image, ( w2, h2))
+
+  def add_hour(self):  # Adding hour to displayed image
+    hours_show="1" #self.get_hours_show() #todo
+    if hours_show=="1":
+      self.msg=time.strftime("%H:%M")
+      self.add_text()
+      return
+
+    if self.show_half=="1" and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
+       self.msg=time.strftime("%H:%M")
+       self.add_text()
+  
+  def check_net(self): #Check internet connection
+    Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
+    if Status.find ('100% packet loss') > 0:
+      self.msg=":( "+self.msg
+      self.add_text()
+
+  def add_text(self,x=50,y=170,scale=1):
+    # font 
+    font = cv2.FONT_HERSHEY_SIMPLEX 
+    # org 
+    org = (50, 100) 
+    # fontScale 
+    fontScale = 2.3
+    # Line thickness of 2 px 
+    thickness = 6
+    linecolor = (0,0,0)
+    linethickness = 8
+    bodycolor = (170,255,255)
+    bodythinkness = 5
+
+    # Using cv2.putText() method
+    #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
+    cv2.putText(self.img, self.msg, org, font, fontScale, linecolor, linethickness, cv2.LINE_AA) 
+    cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
+
+
+  def check_on_off(self):
+    hoursOn= CronTab(self.hoursOn)
+    hoursOff= CronTab(self.hoursOff)
+    if (hoursOn.previous()<hoursOff.previous()):
+       print ('tv off')
+       self.tvservice_off()
+    else:
+       print ('tv on')
+       self.tvservice_on()
+    
+
+
+  def write_log(self,Text):
+    print(time.strftime("%H:%M:%S ")+Text+"\n")
+    f=open(self.LogFile,'a')
+    f.write(time.strftime("%H:%M:%S ")+Text+"\n")
+    f.close()
+
+  def write_history_html(self,Text):
+    FileName=Text.replace("/home/","")
+    History=[]
+    History.append(str(time.strftime("<p>%H:%M:%S ")+"<a href="+FileName+" download link>"+FileName+"</a></font></center></p>\n"))
+    try:
+      with open(HistoryFile) as f:
+        for g in range(0,100):
+         Line=f.readline()
+         if len(Line)>1:
+           History.append(str(Line))
+      f.close()
+    except:
+      print ( "Starting new file" )
+
+    f=open(HistoryFile,'w') 
+    for g in range(0,len(History)):
+      f.write(str(History[g]))
+    f.close()
+
+  def display(self):
+    self.check_on_off()
+    self.msg=""
+    self.Hour=str(time.strftime("%H"))
+    self.read_img()
+    self.add_hour()
+    self.show()
+
+  def main(self):
+    count=0
+    if (len(self.List))<int(self.series):
+      f=1
+    else:
+      f=randint(0,(len(self.List)-int(self.series)))
+
+    #self.stop_loading_service()
+    while 1:
+      self.FileName=self.List[f]
+      self.display()
+      count+=1
+      f+=1
+      if count>=int(self.series):
+        count=0
+        f=randint(0,len(self.List)-self.series)
+
 Frame01 = frame()
-
-
