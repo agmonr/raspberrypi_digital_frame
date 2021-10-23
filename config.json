@@ -1,10 +1,10 @@
 {
 	"config": {
 		"LogFile": "frame.log",
-		"Root": "/home/ram/photos/",
+		"Root": "/home/Photos/",
 		"hoursOn": "0 12 * * *",
 		"hoursOff": "0 23 * * *",
-		"Delay": 60,
+		"Delay": 2,
 		"Series": 100,
 		"Grayscale": 0,
 		"ShowHalfHour": 1

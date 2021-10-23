@@ -1,23 +1,12 @@
-#!/usr/bin/python3
-import sys,os,time,datetime,cv2,pickle,subprocess,json,numpy,tkinter
-#import sys,os,time,datetime,cv2,pickle,subprocess,json,urllib3,requests,httplib2,tkinter,numpy
-
-
-import croniter
+#!/usr/bin/env python3
+import os,time,datetime,cv2,subprocess,json,numpy,tkinter,croniter
 from crontab import CronTab 
 from random import randint
 
 
 
-xset=os.path.exists("/usr/bin/xset")
-tvservice=os.path.exists("sudo /usr/bin/tvservice")
-
 types=['jpg','jpeg','JPG','JPEG']
-url="http://localhost:5000"
 xset=os.path.exists("/usr/bin/xset")
-tvservice=os.path.exists("sudo /usr/bin/tvservice")
-
-HistoryFile="/opt/frame/www/history.html"
 
 class frame:
   def __init__(self):
@@ -71,12 +60,10 @@ class frame:
     
  
   def tvservice_off(self):
-      print ( "Tvservice off" )
       if self.getTvStatus():
         os.system('sudo /usr/bin/tvservice -o')  
 
   def tvservice_on(self):
-      print ( "Tvservice on" )
       if not self.getTvStatus():
         os.system('sudo /usr/bin/tvservice -p')
         os.system('sudo /bin/chvt 2')
@@ -96,10 +83,6 @@ class frame:
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
 
-  def get_hours_on(self):
-    return 1
-  
-
   def main(self):
     self.msg=""
     self.Hour=str(time.strftime("%H"))
@@ -114,38 +97,20 @@ class frame:
       if Sleep < 120:
         Sleep+=3
 
-
-  def xset_force_on(self):
-    if xset:
-      os.system('export DISPLAY=:0; /usr/bin/xset dpms force on')  
-
   def read_img(self):
-
     self.img=cv2.imread(self.FileName)
-    print ( self.FileName )
     self.write_log(self.FileName+" "+str(self.img.shape))  
-#    self.write_history_html(self.FileName)
-
     if self.grayscale=="true": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
   def show(self):
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
-    
-#    cv2.moveWindow("Frame", ape[1])/2), -29) 
+    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2), int((self.xscreenresulation-self.img.shape[0])/2))
     cv2.imshow("Frame",self.img)
-    time.sleep(1)
-    f=0
-    while ( f < int(self.delay) ):
-      f+=1
-      self.xset_force_on()
-      key=cv2.waitKey(10000)
-      #check=self.check_import_config()
-      check=1
-      if check==1:
-        break
-
+    for f in range(0, int(self.delay)):
+      key=cv2.waitKey(1)
+      time.sleep(1)
 
 
 
@@ -171,9 +136,6 @@ class frame:
         h2 = height
     else:
         w2 = width
-
-    print (height)
-    print (width)
 
     # resize the image
     return cv2.resize(image, ( w2, h2))
@@ -219,10 +181,8 @@ class frame:
     hoursOn= CronTab(self.hoursOn)
     hoursOff= CronTab(self.hoursOff)
     if (hoursOn.previous()<hoursOff.previous()):
-       print ('tv off')
        self.tvservice_off()
     else:
-       print ('tv on')
        self.tvservice_on()
     
 
