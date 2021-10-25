@@ -2,10 +2,11 @@
 	"config": {
 		"LogFile": "frame.log",
 		"Root": "/home/Photos/",
-		"hoursOn": "0 12 * * *",
+		"hoursOn": "0 7,8,9,12 * * *",
 		"hoursOff": "0 23 * * *",
+    "clockOn": "0 7,15,17-20 * * *",
 		"Delay": 60,
-		"FontScale": 8,
+		"FontScale": 2,
 		"Series": 100,
 		"Grayscale": "False",
 		"ShowHalfHour": 1

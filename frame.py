@@ -48,25 +48,18 @@ class frame:
     self.series=(data['config']['Series'])
     self.grayscale=(data['config']['Grayscale'])
     self.show_half=(data['config']['ShowHalfHour'])
+    self.showClock=(data['config']['clockOn'])
     self.scale=(data['config']['FontScale'])
     self.check_net=0
     f.close()
     
 
-  def get_hours_on(self):
-    now=datetime.datetime.now()
-    if now in self.HoursOn:
-      return 1
-    else:
-      return 0
-    
- 
   def tvservice_off(self):
-      if self.getTvStatus() and self.tvServiceBin:
+      if self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -o')  
 
   def tvservice_on(self):
-      if not self.getTvStatus() and self.tvServiceBin:
+      if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
         os.system('sudo /bin/chvt 2')
         os.system('sudo /bin/chvt 1')
@@ -139,8 +132,10 @@ class frame:
     return cv2.resize(image, ( w2, h2))
 
   def add_hour(self):  # Adding hour to displayed image
-    hours_show="1" #self.get_hours_show() #todo
-    if hours_show=="1":
+    hoursClock= CronTab(self.showClock)
+    
+    print (hoursClock.previous())
+    if (hoursClock.previous()>-3600):
       self.msg=time.strftime("%H:%M")
       self.add_text()
       return
@@ -164,11 +159,11 @@ class frame:
     org = (20, 100+scale*15) 
     # fontScale 
     # Line thickness of 2 px 
-    thickness = scale*3
+    thickness = int(scale)
     linecolor = (0,0,0)
-    linethickness = scale*3
+    linethickness = int(scale)
     bodycolor = (170,255,255)
-    bodythinkness = scale*2
+    bodythinkness = int(scale)
 
     # Using cv2.putText() method
     #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
@@ -180,12 +175,12 @@ class frame:
     hoursOn= CronTab(self.hoursOn)
     hoursOff= CronTab(self.hoursOff)
     if (hoursOn.previous()<hoursOff.previous()):
-       self.tvservice_off()
+        self.tvservice_off()
+        return False
     else:
        self.tvservice_on()
+       return True 
     
-
-
   def write_log(self,Text):
     print(time.strftime("%H:%M:%S ")+Text+"\n")
     f=open(self.LogFile,'a')
@@ -212,12 +207,12 @@ class frame:
     f.close()
 
   def display(self):
-    self.check_on_off()
-    self.msg=""
-    self.Hour=str(time.strftime("%H"))
-    self.read_img()
-    self.add_hour()
-    self.show()
+    if self.check_on_off():
+      self.msg=""
+      self.Hour=str(time.strftime("%H"))
+      self.read_img()
+      self.add_hour()
+      self.show()
 
   def main(self):
     count=0
@@ -226,7 +221,6 @@ class frame:
     else:
       f=randint(0,(len(self.List)-int(self.series)))
 
-    #self.stop_loading_service()
     while 1:
       self.FileName=self.List[f]
       self.display()
