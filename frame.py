@@ -10,13 +10,29 @@ from datetime import datetime,timedelta
 types=['jpg','jpeg','JPG','JPEG']
 xset=os.path.exists("/usr/bin/xset")
 
+"""
+ The motion part was copy from this lovely projects:
+
+ Lightweight Motion Detection using python picamera libraries.
+ Requires a Raspberry Pi computer with a picamera module.
+ This code is based on a raspberry pi forum post by user utpalc
+ modified by Claude Pageau for this working example.
+
+ This project can be used for further development
+ and is located on GitHub at
+ https://github.com/pageauc/picamera-motion
+ For a full featured program see my GitHub pi-timolo project at
+ https://github.com/pageauc/pi-timolo
+"""
+
+
 
 class motion:
   def __init__(self):
     self.threshold = 10  # How Much pixel changes
     self.sensitivity = 100  # How many pixels change
-    self.streamWidth = 128  # motion scan stream Width
-    self.streamHeight = 80
+    self.streamWidth = 1280  # motion scan stream Width
+    self.streamHeight = 800
     self.imageVFlip = True       # Flip image Vertically
     self.imageHFlip = True       # Flip image Horizontally
 
@@ -51,7 +67,10 @@ class motion:
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-                  print (diff)
+#                  print (f'diff',end=" " )
+                  print (f'{diff}')
+
+                  
                   return (diff)
           
           data1 = data2
@@ -78,7 +97,7 @@ class frame:
     self.write_log("* finish importing config *")
     #self.import_config_state()
     self.List=[]
-    self.lastMotion=datetime.now()
+    self.lastMotion=datetime.utcnow()
     self.screenOn=True
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
@@ -151,9 +170,9 @@ class frame:
   def motionCheck(self):
     motion01=motion()
     check=motion01.check()
-    print (f'motion --> {check}')
-    if check>2:
-      self.lastMotion=datetime.now()
+    if check>10:
+      motion01.display()
+      self.lastMotion=datetime.utcnow()
 
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -274,7 +293,7 @@ class frame:
 
     while 1:
       self.FileName=self.List[f]
-      past=datetime.now() - timedelta(minutes=60)
+      past=datetime.utcnow() - timedelta(minutes=60)
       print (self.lastMotion)
       print (past)
       if self.lastMotion>past:
