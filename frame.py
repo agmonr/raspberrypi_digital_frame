@@ -2,11 +2,63 @@
 import os,time,datetime,cv2,subprocess,json,numpy,tkinter,croniter
 from crontab import CronTab 
 from random import randint
-
-
+import picamera
+import picamera.array
+import sys
+from datetime import datetime,timedelta
 
 types=['jpg','jpeg','JPG','JPEG']
 xset=os.path.exists("/usr/bin/xset")
+
+
+class motion:
+  def __init__(self):
+    self.threshold = 10  # How Much pixel changes
+    self.sensitivity = 100  # How many pixels change
+    self.streamWidth = 128  # motion scan stream Width
+    self.streamHeight = 80
+    self.imageVFlip = True       # Flip image Vertically
+    self.imageHFlip = True       # Flip image Horizontally
+
+
+  def check(self):
+    return(self.scan_motion())
+
+
+  def get_stream_array(self):
+      """ Take a stream image and return the image data array"""
+      with picamera.PiCamera() as camera:
+          camera.resolution = (self.streamWidth, self.streamHeight)
+          with picamera.array.PiRGBArray(camera) as stream:
+              camera.vflip = self.imageVFlip
+              camera.hflip = self.imageHFlip
+              camera.exposure_mode = 'auto'
+              camera.awb_mode = 'auto'
+              camera.capture(stream, format='rgb')
+              camera.close()
+              return stream.array
+
+
+
+  def scan_motion(self):
+      """ Loop until motion is detected """
+      data1 = self.get_stream_array()
+      while True:
+          data2 = self.get_stream_array()
+          diff_count = 0
+          for y in range(0, self.streamHeight):
+              for x in range(0, self.streamWidth):
+                  # get pixel differences. Conversion to int
+                  # is required to avoid unsigned short overflow.
+                  diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
+                  print (diff)
+                  return (diff)
+          
+          data1 = data2
+
+
+
+
 
 class frame:
   def __init__(self):
@@ -26,6 +78,7 @@ class frame:
     self.write_log("* finish importing config *")
     #self.import_config_state()
     self.List=[]
+    self.lastMotion=datetime.now()
     self.screenOn=True
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
@@ -80,16 +133,6 @@ class frame:
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
 
-  def main(self):
-    self.msg=""
-    self.Hour=str(time.strftime("%H"))
-    Sleep=10
-    while 1:
-      self.check_on_off()
-      time.sleep(Sleep)
-      if Sleep < 120:
-        Sleep+=3
-
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     self.write_log(self.FileName+" "+str(self.img.shape))  
@@ -103,7 +146,15 @@ class frame:
     cv2.imshow("Frame",self.img)
     for f in range(0, int(self.delay)):
       key=cv2.waitKey(1)
-      time.sleep(1)
+      self.motionCheck()
+
+  def motionCheck(self):
+    motion01=motion()
+    check=motion01.check()
+    print (f'motion --> {check}')
+    if check>2:
+      self.lastMotion=datetime.now()
+
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
     # initialize the dimensions of the image to be resized and
@@ -223,7 +274,18 @@ class frame:
 
     while 1:
       self.FileName=self.List[f]
-      self.display()
+      past=datetime.now() - timedelta(minutes=60)
+      print (self.lastMotion)
+      print (past)
+      if self.lastMotion>past:
+        self.tvservice_on()
+        print ('display')
+        self.display()
+      else:
+        print (self.lastMotion)
+        self.tvservice_off()
+        print ('not display')
+        self.motionCheck()
       count+=1
       f+=1
       if count>=int(self.series):
