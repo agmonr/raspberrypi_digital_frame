@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os,time,datetime,cv2,subprocess,json,numpy,tkinter,croniter
 from crontab import CronTab 
+from motion import *
 from random import randint
 import picamera
 import picamera.array
@@ -9,75 +10,6 @@ from datetime import datetime,timedelta
 
 types=['jpg','jpeg','JPG','JPEG']
 xset=os.path.exists("/usr/bin/xset")
-
-"""
- The motion part was copy from this lovely projects:
-
- Lightweight Motion Detection using python picamera libraries.
- Requires a Raspberry Pi computer with a picamera module.
- This code is based on a raspberry pi forum post by user utpalc
- modified by Claude Pageau for this working example.
-
- This project can be used for further development
- and is located on GitHub at
- https://github.com/pageauc/picamera-motion
- For a full featured program see my GitHub pi-timolo project at
- https://github.com/pageauc/pi-timolo
-"""
-
-
-
-class motion:
-  def __init__(self):
-    self.threshold = 10  # How Much pixel changes
-    self.sensitivity = 100  # How many pixels change
-    self.streamWidth = 1280  # motion scan stream Width
-    self.streamHeight = 800
-    self.imageVFlip = True       # Flip image Vertically
-    self.imageHFlip = True       # Flip image Horizontally
-
-
-  def check(self):
-    return(self.scan_motion())
-
-
-  def get_stream_array(self):
-      """ Take a stream image and return the image data array"""
-      with picamera.PiCamera() as camera:
-          camera.resolution = (self.streamWidth, self.streamHeight)
-          with picamera.array.PiRGBArray(camera) as stream:
-              camera.vflip = self.imageVFlip
-              camera.hflip = self.imageHFlip
-              camera.exposure_mode = 'auto'
-              camera.awb_mode = 'auto'
-              camera.capture(stream, format='rgb')
-              camera.close()
-              return stream.array
-
-
-
-  def scan_motion(self):
-      """ Loop until motion is detected """
-      data1 = self.get_stream_array()
-      while True:
-          data2 = self.get_stream_array()
-          diff_count = 0
-          for y in range(0, self.streamHeight):
-              for x in range(0, self.streamWidth):
-                  # get pixel differences. Conversion to int
-                  # is required to avoid unsigned short overflow.
-                  diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-#                  print (f'diff',end=" " )
-                  print (f'{diff}')
-
-                  
-                  return (diff)
-          
-          data1 = data2
-
-
-
-
 
 class frame:
   def __init__(self):
@@ -98,6 +30,7 @@ class frame:
     #self.import_config_state()
     self.List=[]
     self.lastMotion=datetime.utcnow()
+    self.startShow=datetime.utcnow()
     self.screenOn=True
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
@@ -147,7 +80,7 @@ class frame:
       
 
   def write_log(self,Text):
-    print(time.strftime("%H:%M:%S ")+Text+"\n")
+    #print(time.strftime("%H:%M:%S ")+Text+"\n")
     f=open(self.LogFile,'a')
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
@@ -163,15 +96,20 @@ class frame:
     self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
     cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2), int((self.xscreenresulation-self.img.shape[0])/2))
     cv2.imshow("Frame",self.img)
-    for f in range(0, int(self.delay)):
+    dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
+    while self.startShow > dateLimit:
+      dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
+      print ('looping in show')
       key=cv2.waitKey(1)
       self.motionCheck()
+    self.startShow=datetime.utcnow()
 
   def motionCheck(self):
     motion01=motion()
-    check=motion01.check()
-    if check>10:
-      motion01.display()
+    check=motion01.scan_motion()
+    if check is True:
+#      motion01.display()
+      print ('movment detected')
       self.lastMotion=datetime.utcnow()
 
 
@@ -252,7 +190,7 @@ class frame:
        return True 
     
   def write_log(self,Text):
-    print(time.strftime("%H:%M:%S ")+Text+"\n")
+    #print(time.strftime("%H:%M:%S ")+Text+"\n")
     f=open(self.LogFile,'a')
     f.write(time.strftime("%H:%M:%S ")+Text+"\n")
     f.close()
@@ -293,9 +231,8 @@ class frame:
 
     while 1:
       self.FileName=self.List[f]
-      past=datetime.utcnow() - timedelta(minutes=60)
-      print (self.lastMotion)
-      print (past)
+      past=datetime.utcnow() - timedelta(minutes=5)
+      print (f'last motion {self.lastMotion}, past={past}')
       if self.lastMotion>past:
         self.tvservice_on()
         print ('display')
