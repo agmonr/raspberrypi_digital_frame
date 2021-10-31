@@ -7,26 +7,30 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
+import logging
 
 types=['jpg','jpeg','JPG','JPEG']
 xset=os.path.exists("/usr/bin/xset")
 
+level    = logging.DEBUG
+format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
+logging.basicConfig(level = level, format = format, handlers = handlers)
+
+
 class frame:
   def __init__(self):
 
+    logging.debug('frame __init__' )
     self.tvServiceBin=os.path.exists("/usr/bin/tvservice") 
-    print (self.tvServiceBin)
     self.read_config()    
-    self.write_log("------------")
-    self.write_log("* Starting *")
-    
-    self.write_log("* finish importing config *")
+    logging.debug('frame __init__ read_config' )
     self.tvservice_on()
     root = tkinter.Tk()
     self.xscreenresulation=root.winfo_screenheight()
     self.yscreenresulation=root.winfo_screenwidth()
-    
-    self.write_log("* finish importing config *")
+    logging.debug(f'self.xscreenresulation={self.xscreenresulation}, self.yscreenresulation=${self.yscreenresulation}' )
     #self.import_config_state()
     self.List=[]
     self.lastMotion=datetime.utcnow()
@@ -38,7 +42,7 @@ class frame:
       for name in files:
         self.List.append(str(path)+"/"+str(name))
 
-    self.write_log("Total of "+str(len(self.List))+" images in "+str(self.root))
+    logging.info("Total of "+str(len(self.List))+" images in "+str(self.root))
     self.List.sort()
     self.main()
         
@@ -79,12 +83,6 @@ class frame:
         return True
       
 
-  def write_log(self,Text):
-    #print(time.strftime("%H:%M:%S ")+Text+"\n")
-    f=open(self.LogFile,'a')
-    f.write(time.strftime("%H:%M:%S ")+Text+"\n")
-    f.close()
-
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     self.write_log(self.FileName+" "+str(self.img.shape))  
@@ -99,7 +97,6 @@ class frame:
     dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
     while self.startShow > dateLimit:
       dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
-      print ('looping in show')
       key=cv2.waitKey(1)
       self.motionCheck()
     self.startShow=datetime.utcnow()
@@ -108,8 +105,6 @@ class frame:
     motion01=motion()
     check=motion01.scan_motion()
     if check is True:
-#      motion01.display()
-      print ('movment detected')
       self.lastMotion=datetime.utcnow()
 
 
@@ -141,8 +136,6 @@ class frame:
 
   def add_hour(self):  # Adding hour to displayed image
     hoursClock= CronTab(self.showClock)
-    
-    print (hoursClock.previous())
     if (hoursClock.previous()>-3600):
       self.msg=time.strftime("%H:%M")
       self.add_text()
@@ -223,6 +216,8 @@ class frame:
       self.show()
 
   def main(self):
+
+    logging.debug('frame.main')
     count=0
     if (len(self.List))<int(self.series):
       f=1
@@ -232,20 +227,20 @@ class frame:
     while 1:
       self.FileName=self.List[f]
       past=datetime.utcnow() - timedelta(minutes=5)
-      print (f'last motion {self.lastMotion}, past={past}')
+      logging.debug(f'last motion {self.lastMotion}, past={past}')
       if self.lastMotion>past:
         self.tvservice_on()
-        print ('display')
+        logging.debug ('display')
         self.display()
       else:
-        print (self.lastMotion)
+        logging.debug ('f lsat time recoreded motion={self.lastMotion)}')
         self.tvservice_off()
-        print ('not display')
+        logging.debug ('not display')
         self.motionCheck()
       count+=1
       f+=1
       if count>=int(self.series):
         count=0
-        f=randint(0,len(self.List)-self.series)
+        f=randint(0,len(self.List)-len(self.series))
 
 Frame01 = frame()

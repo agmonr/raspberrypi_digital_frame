@@ -6,6 +6,16 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
+import logging
+
+level    = logging.DEBUG
+format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
+logging.basicConfig(level = level, format = format, handlers = handlers)
+
+
+
 
 """
  The motion part was copy from this lovely projects:
@@ -57,7 +67,6 @@ class motion:
 
   def scan_motion(self):
       """ Loop until motion is detected """
-      print ('scanning')
       data1 = self.get_stream_array()
       for f in range(1,3):
           data2 = self.get_stream_array()
@@ -67,7 +76,7 @@ class motion:
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
                   if diff > 50:
-                    print (diff)
+                    logging.debug(f' motion detected {diff}')
                     return (True)
           
           data1 = data2
