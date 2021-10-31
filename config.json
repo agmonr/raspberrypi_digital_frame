@@ -8,6 +8,8 @@
 		"Delay": 60,
 		"FontScale": 2,
 		"Series": 100,
+    "offsetx": 0,
+    "offsety": -28, 
 		"Grayscale": "False",
 		"ShowHalfHour": 1
 	}

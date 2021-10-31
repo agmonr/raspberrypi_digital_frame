@@ -6,16 +6,7 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
-import logging
-
-level    = logging.DEBUG
-format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
-handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
-logging.basicConfig(level = level, format = format, handlers = handlers)
-
-
-
+from llogging import *
 
 """
  The motion part was copy from this lovely projects:

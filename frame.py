@@ -7,16 +7,8 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
-import logging
+from logging import *
 
-types=['jpg','jpeg','JPG','JPEG']
-xset=os.path.exists("/usr/bin/xset")
-
-level    = logging.DEBUG
-format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
-handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
-logging.basicConfig(level = level, format = format, handlers = handlers)
 
 
 class frame:
@@ -38,7 +30,6 @@ class frame:
     self.screenOn=True
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
-      self.write_log(str(path))
       for name in files:
         self.List.append(str(path)+"/"+str(name))
 
@@ -59,6 +50,8 @@ class frame:
     self.show_half=(data['config']['ShowHalfHour'])
     self.showClock=(data['config']['clockOn'])
     self.scale=(data['config']['FontScale'])
+    self.offsetx=(data['config']['offsetx'])
+    self.offsety=(data['config']['offsety'])
     self.check_net=0
     f.close()
     
@@ -85,14 +78,13 @@ class frame:
 
   def read_img(self):
     self.img=cv2.imread(self.FileName)
-    self.write_log(self.FileName+" "+str(self.img.shape))  
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
   def show(self):
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
-    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2), int((self.xscreenresulation-self.img.shape[0])/2))
+    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
     dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
     while self.startShow > dateLimit:
@@ -182,12 +174,6 @@ class frame:
        self.tvservice_on()
        return True 
     
-  def write_log(self,Text):
-    #print(time.strftime("%H:%M:%S ")+Text+"\n")
-    f=open(self.LogFile,'a')
-    f.write(time.strftime("%H:%M:%S ")+Text+"\n")
-    f.close()
-
   def write_history_html(self,Text):
     FileName=Text.replace("/home/","")
     History=[]
@@ -226,6 +212,7 @@ class frame:
 
     while 1:
       self.FileName=self.List[f]
+      logging.info(f'{self.FileName}')
       past=datetime.utcnow() - timedelta(minutes=5)
       if self.lastMotion>past:
         self.tvservice_on()
