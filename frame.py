@@ -227,13 +227,11 @@ class frame:
     while 1:
       self.FileName=self.List[f]
       past=datetime.utcnow() - timedelta(minutes=5)
-      logging.debug(f'last motion {self.lastMotion}, past={past}')
       if self.lastMotion>past:
         self.tvservice_on()
         logging.debug ('display')
         self.display()
       else:
-        logging.debug ('f lsat time recoreded motion={self.lastMotion)}')
         self.tvservice_off()
         logging.debug ('not display')
         self.motionCheck()
