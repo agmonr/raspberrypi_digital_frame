@@ -21,26 +21,29 @@ logging.basicConfig(level = level, format = format, handlers = handlers)
 class frame:
   def __init__(self):
 
-    logging.debug('frame __init__' )
-    self.tvServiceBin=os.path.exists("/usr/bin/tvservice") 
-    self.read_config()    
-    logging.debug('frame __init__ read_config' )
-    self.tvservice_on()
     root = tkinter.Tk()
+    logging.debug('frame __init__' )
+    self.read_config()
+    logging.debug('frame __init__ read_config' )
+
+    self.tvServiceBin=os.path.exists("/usr/bin/tvservice") 
     self.xscreenresulation=root.winfo_screenheight()
     self.yscreenresulation=root.winfo_screenwidth()
     logging.debug(f'self.xscreenresulation={self.xscreenresulation}, self.yscreenresulation=${self.yscreenresulation}' )
-    #self.import_config_state()
+    self.lastMotion=datetime.now()
+    self.startShow=datetime.now()
+   #self.import_config_state()
     self.List=[]
-    self.lastMotion=datetime.utcnow()
-    self.startShow=datetime.utcnow()
+    self.msg=""
     self.screenOn=True
+
     self.Shown=[]
     for path, subdirs, files in os.walk(self.root):
       for name in files:
         self.List.append(str(path)+"/"+str(name))
 
     logging.info("Total of "+str(len(self.List))+" images in "+str(self.root))
+
     self.List.sort()
     self.main()
         
@@ -49,7 +52,6 @@ class frame:
     data = json.load(f)
     self.root=(data['config']['Root'])
     self.hoursOn=(data['config']['hoursOn'])
-    self.hoursOff=(data['config']['hoursOff'])
     self.delay=(data['config']['Delay'])
     self.series=(data['config']['Series']) # Length of image series
     self.grayscale=(data['config']['Grayscale']) 
@@ -62,13 +64,12 @@ class frame:
     f.close()
     
 
-  def tvservice_off(self):
+  def tvserviceOff(self):
       logging.info('tvservice_off')
-
       if self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -o')  
 
-  def tvservice_on(self):
+  def tvserviceOn(self):
       logging.info('tvservice_on')
       if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
@@ -90,24 +91,14 @@ class frame:
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
-  def show(self):
-    cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
-    self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
-    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
-    cv2.imshow("Frame",self.img)
-    dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
-    while self.startShow > dateLimit:
-      dateLimit=datetime.utcnow() - timedelta(seconds=self.delay)
-      key=cv2.waitKey(1)
-      self.motionCheck()
-    self.startShow=datetime.utcnow()
-
   def motionCheck(self):
     motion01=motion()
     check=motion01.scan_motion()
     if check != 0:
+     
+      self.msg=self.msg+" Zzzzoooom"
       motion01.capture()
-      self.lastMotion=datetime.utcnow()
+      self.lastMotion=datetime.now()
 
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -139,7 +130,7 @@ class frame:
   def add_hour(self):  # Adding hour to displayed image
     hoursClock= CronTab(self.showClock)
     if (hoursClock.previous()>-3600):
-      self.msg=time.strftime("%H:%M")
+      self.msg=self.msg+" "+time.strftime("%H:%M")
       self.add_text()
       return
 
@@ -174,19 +165,20 @@ class frame:
     cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
 
 
-  def check_on_off(self):
-#    hoursOn= CronTab(self.hoursOn)
-#    hoursOff= CronTab(self.hoursOff)
-    return True    
-  '''
-    print (repr(hoursOn))
-    if (hoursOn.previous()<hoursOff.previous()):
-        self.tvservice_off()
-        return False
-    else:
-       self.tvservice_on()
+  def checkOnOff(self):
+
+    logging.debug('frame.checkOnOff()')
+    cronOn  = croniter.croniter(self.hoursOn)
+    on      = (cronOn.get_prev(datetime))
+
+    if (datetime.utcnow()-timedelta(seconds=60)<on):
+       self.startShow=datetime.now()
+       self.tvserviceOn()
        return True 
-  '''
+    else:
+       self.startShow=datetime.now() - timedelta(seconds=(self.delay*2))
+       self.tvserviceOff()
+       return False 
     
   def write_history_html(self,Text):
     FileName=Text.replace("/home/","")
@@ -207,13 +199,34 @@ class frame:
       f.write(str(History[g]))
     f.close()
 
-  def display(self):
-    if self.check_on_off():
-      self.msg=""
+  def show(self):
+    logging.debug('frame.show()')
+    cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
+    self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
+    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
+    cv2.imshow("Frame",self.img)
+    dateLimit=datetime.now() - timedelta(seconds=self.delay)
+    while self.startShow > dateLimit:
+      dateLimit=datetime.now() - timedelta(seconds=self.delay)
+      key=cv2.waitKey(1)
+      self.motionCheck()
+
+
+  def preShow(self):
+    logging.debug(f'frame.preShow()')
+    logging.info(f'{self.FileName}')
+    if self.checkOnOff() == True:
       self.Hour=str(time.strftime("%H"))
       self.read_img()
       self.add_hour()
       self.show()
+    else:
+      for f in range(1,5):
+        self.motionCheck()
+
+
+
+
 
   def main(self):
     """
@@ -230,20 +243,16 @@ class frame:
 
     while 1:
       self.FileName=self.List[f]
-      logging.info(f'{self.FileName}')
-      past=datetime.utcnow() - timedelta(minutes=5)
+      past=datetime.now() - timedelta(minutes=5)
       if self.lastMotion>past:
-        self.tvservice_on()
-        self.display()
+        self.preShow()
         count+=1
         f+=1
-
       else:
-        self.tvservice_off()
         self.motionCheck()
 
       if count>=int(self.series):
         count=0
-        f=randint(0,len(self.List)-len(self.series)) 
+        f=randint(0,len(self.List)-int(self.series)) 
 
 Frame01 = frame()

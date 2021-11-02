@@ -40,8 +40,7 @@ class motion:
       with picamera.PiCamera() as camera:
           camera.resolution = (self.streamWidth, self.streamHeight)
           with picamera.array.PiRGBArray(camera) as stream:
-              camera.vflip = self.imageVFlip
-              camera.hflip = self.imageHFlip
+#              camera.hflip = self.imageHFlip
               camera.exposure_mode = 'auto'
         #      camera.exposure_mode = 'night'
        #       camera.awb_mode = 'auto'
@@ -59,18 +58,17 @@ class motion:
   def capture(self):
     for f in range(1,10):
       with picamera.PiCamera() as camera:
-        camera.vflip = self.imageVFlip
+        #camera.vflip = self.imageVFlip
         camera.resolution = (2592, 1944)
         camera.exposure_mode = 'night'
         fileName=str(datetime.today().strftime("%Y%m%d%H%M%S"))+str(time.time())[-5:0]+".jpg"
-        print (fileName)
         camera.capture(f'/home/ram/motion/{fileName}')
 
     time.sleep(1)
 
   def scan_motion(self):
       """ Loop until motion is detected """
-      logging.debug('scaning')
+      logging.debug('motion.scan_motion()')
       data1 = self.get_stream_array()
       for f in range(1,30):
           diffShows=0
@@ -83,7 +81,6 @@ class motion:
                   if diff>30:
                     diffShows+=1 
 
-          print (diffShows)
           if (diffShows) >500:
             logging.debug(f'motion detacted {diffShows}')
             #self.capture() -> moved to the frame class
