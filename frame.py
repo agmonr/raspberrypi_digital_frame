@@ -9,6 +9,13 @@ import sys
 from datetime import datetime,timedelta
 from logging import *
 
+evel    = logging.DEBUG
+format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
+logging.basicConfig(level = level, format = format, handlers = handlers)
+
+
 
 
 class frame:
@@ -38,15 +45,14 @@ class frame:
     self.main()
         
   def read_config(self):
-    f = open('config.json',)
+    f = open('dframe.json',)
     data = json.load(f)
-    self.LogFile=(data['config']['LogFile'])
     self.root=(data['config']['Root'])
     self.hoursOn=(data['config']['hoursOn'])
     self.hoursOff=(data['config']['hoursOff'])
     self.delay=(data['config']['Delay'])
-    self.series=(data['config']['Series'])
-    self.grayscale=(data['config']['Grayscale'])
+    self.series=(data['config']['Series']) # Length of image series
+    self.grayscale=(data['config']['Grayscale']) 
     self.show_half=(data['config']['ShowHalfHour'])
     self.showClock=(data['config']['clockOn'])
     self.scale=(data['config']['FontScale'])
@@ -57,13 +63,16 @@ class frame:
     
 
   def tvservice_off(self):
+      logging.info('tvservice_off')
+
       if self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -o')  
 
   def tvservice_on(self):
+      logging.info('tvservice_on')
       if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
-        os.system('sudo /bin/chvt 2')
+        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
         os.system('sudo /bin/chvt 1')
 
   def getTvStatus(self):
@@ -96,7 +105,8 @@ class frame:
   def motionCheck(self):
     motion01=motion()
     check=motion01.scan_motion()
-    if check is True:
+    if check != 0:
+      motion01.capture()
       self.lastMotion=datetime.utcnow()
 
 
@@ -165,14 +175,18 @@ class frame:
 
 
   def check_on_off(self):
-    hoursOn= CronTab(self.hoursOn)
-    hoursOff= CronTab(self.hoursOff)
+#    hoursOn= CronTab(self.hoursOn)
+#    hoursOff= CronTab(self.hoursOff)
+    return True    
+  '''
+    print (repr(hoursOn))
     if (hoursOn.previous()<hoursOff.previous()):
         self.tvservice_off()
         return False
     else:
        self.tvservice_on()
        return True 
+  '''
     
   def write_history_html(self,Text):
     FileName=Text.replace("/home/","")
@@ -202,10 +216,14 @@ class frame:
       self.show()
 
   def main(self):
-
+    """
+    If your pictures are sorted by name, they will be dispalied in a group.
+    From a random point in file location, a group of {self.serires} will be 
+    Dispalied. A way to keep memories togther
+    """
     logging.debug('frame.main')
-    count=0
-    if (len(self.List))<int(self.series):
+    count=0 #index to the location in the series
+    if (len(self.List))<int(self.series): #when there are fewer images then {self.series}
       f=1
     else:
       f=randint(0,(len(self.List)-int(self.series)))
@@ -216,16 +234,16 @@ class frame:
       past=datetime.utcnow() - timedelta(minutes=5)
       if self.lastMotion>past:
         self.tvservice_on()
-        logging.debug ('display')
         self.display()
+        count+=1
+        f+=1
+
       else:
         self.tvservice_off()
-        logging.debug ('not display')
         self.motionCheck()
-      count+=1
-      f+=1
+
       if count>=int(self.series):
         count=0
-        f=randint(0,len(self.List)-len(self.series))
+        f=randint(0,len(self.List)-len(self.series)) 
 
 Frame01 = frame()

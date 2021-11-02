@@ -43,8 +43,8 @@ class motion:
               camera.vflip = self.imageVFlip
               camera.hflip = self.imageHFlip
               camera.exposure_mode = 'auto'
-              camera.exposure_mode = 'night'
-              camera.awb_mode = 'auto'
+        #      camera.exposure_mode = 'night'
+       #       camera.awb_mode = 'auto'
               camera.capture(stream, format='rgb')
               camera.close()
               return stream.array
@@ -56,23 +56,43 @@ class motion:
       time.sleep(10)
 
 
+  def capture(self):
+    for f in range(1,10):
+      with picamera.PiCamera() as camera:
+        camera.vflip = self.imageVFlip
+        camera.resolution = (2592, 1944)
+        camera.exposure_mode = 'night'
+        fileName=str(datetime.today().strftime("%Y%m%d%H%M%S"))+str(time.time())[-5:0]+".jpg"
+        print (fileName)
+        camera.capture(f'/home/ram/motion/{fileName}')
+
+    time.sleep(1)
+
   def scan_motion(self):
       """ Loop until motion is detected """
+      logging.debug('scaning')
       data1 = self.get_stream_array()
-      for f in range(1,3):
+      for f in range(1,30):
+          diffShows=0
           data2 = self.get_stream_array()
-          for y in range(0, self.streamHeight,20):
-              for x in range(0, self.streamWidth,20):
+          for y in range(0, self.streamHeight,10):
+              for x in range(0, self.streamWidth,10):
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-                  if diff > 50:
-                    logging.debug(f' motion detected {diff}')
-                    return (True)
+                  if diff>30:
+                    diffShows+=1 
+
+          print (diffShows)
+          if (diffShows) >500:
+            logging.debug(f'motion detacted {diffShows}')
+            #self.capture() -> moved to the frame class
+            return (diffShows)
           
           data1 = data2
 
-      return (False)
+      return (0)
 
-
+#motion01=motion()
+#motion01.scan_motion()
 
