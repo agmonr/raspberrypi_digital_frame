@@ -58,7 +58,7 @@ class motion:
   def capture(self):
     for f in range(1,10):
       with picamera.PiCamera() as camera:
-        #camera.vflip = self.imageVFlip
+        camera.vflip = self.imageVFlip
         camera.resolution = (2592, 1944)
         camera.exposure_mode = 'night'
         fileName=str(datetime.today().strftime("%Y%m%d%H%M%S"))+str(time.time())[-5:0]+".jpg"
@@ -70,7 +70,7 @@ class motion:
       """ Loop until motion is detected """
       logging.debug('motion.scan_motion()')
       data1 = self.get_stream_array()
-      for f in range(1,30):
+      for f in range(1,10):
           diffShows=0
           data2 = self.get_stream_array()
           for y in range(0, self.streamHeight,10):

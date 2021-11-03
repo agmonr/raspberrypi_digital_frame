@@ -14,7 +14,7 @@ format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
 logging.basicConfig(level = level, format = format, handlers = handlers)
-
+logging.info('------------------------- starting ----------------------')
 
 
 
@@ -92,10 +92,9 @@ class frame:
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
   def motionCheck(self):
+    logging.debug("frame.motionCheck()")
     motion01=motion()
-    check=motion01.scan_motion()
-    if check != 0:
-     
+    if motion01.scan_motion() !=0:
       self.msg=self.msg+" Zzzzoooom"
       motion01.capture()
       self.lastMotion=datetime.now()
@@ -165,20 +164,6 @@ class frame:
     cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
 
 
-  def checkOnOff(self):
-
-    logging.debug('frame.checkOnOff()')
-    cronOn  = croniter.croniter(self.hoursOn)
-    on      = (cronOn.get_prev(datetime))
-
-    if (datetime.utcnow()-timedelta(seconds=60)<on):
-       self.startShow=datetime.now()
-       self.tvserviceOn()
-       return True 
-    else:
-       self.startShow=datetime.now() - timedelta(seconds=(self.delay*2))
-       self.tvserviceOff()
-       return False 
     
   def write_history_html(self,Text):
     FileName=Text.replace("/home/","")
@@ -199,33 +184,46 @@ class frame:
       f.write(str(History[g]))
     f.close()
 
+
+  def checkOnOff(self):
+    logging.debug('frame.checkOnOff()')
+    cronOn  = croniter.croniter(self.hoursOn)
+    on      = (cronOn.get_prev(datetime))
+
+    if (datetime.utcnow()-timedelta(seconds=60)<on):
+       self.startShow=datetime.now()
+       self.tvserviceOn()
+       return True 
+    else:
+       self.startShow=datetime.now() - timedelta(seconds=(self.delay*2))
+       self.tvserviceOff()
+       return False 
+
+
   def show(self):
     logging.debug('frame.show()')
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
     cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
-    dateLimit=datetime.now() - timedelta(seconds=self.delay)
-    while self.startShow > dateLimit:
-      dateLimit=datetime.now() - timedelta(seconds=self.delay)
-      key=cv2.waitKey(1)
-      self.motionCheck()
+    key=cv2.waitKey(1)
+    return True
 
 
   def preShow(self):
+    self.msg=""
     logging.debug(f'frame.preShow()')
     logging.info(f'{self.FileName}')
-    if self.checkOnOff() == True:
-      self.Hour=str(time.strftime("%H"))
-      self.read_img()
-      self.add_hour()
-      self.show()
-    else:
-      for f in range(1,5):
-        self.motionCheck()
+
+    if self.checkOnOff() == False:
+      return False
 
 
-
+    self.Hour=str(time.strftime("%H"))
+    self.read_img()
+    self.add_hour()
+    self.show()
+    return True
 
 
   def main(self):
@@ -235,21 +233,26 @@ class frame:
     Dispalied. A way to keep memories togther
     """
     logging.debug('frame.main')
-    count=0 #index to the location in the series
     if (len(self.List))<int(self.series): #when there are fewer images then {self.series}
       f=1
     else:
       f=randint(0,(len(self.List)-int(self.series)))
 
+    count=0
     while 1:
       self.FileName=self.List[f]
-      past=datetime.now() - timedelta(minutes=5)
-      if self.lastMotion>past:
-        self.preShow()
+      past=datetime.now() - timedelta(minutes=1)
+      dateLimit=datetime.now()- timedelta(seconds=self.delay)
+      self.preShow()
+
+      while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
+        dateLimit=datetime.now()-timedelta(seconds=self.delay)
+        logging.debug(f'waiting for {self.startShow} > {dateLimit}')
+        self.motionCheck()
         count+=1
         f+=1
-      else:
-        self.motionCheck()
+
+      self.startShow=datetime.now()
 
       if count>=int(self.series):
         count=0
