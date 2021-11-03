@@ -7,6 +7,7 @@ import picamera.array
 import sys
 from datetime import datetime,timedelta
 from log import *
+from pathlib import Path
 
 """
  The motion part was copy from this lovely projects:
@@ -64,10 +65,22 @@ class motion:
         camera.resolution = (1600, 1200)
 #        camera.framerate=10
         camera.exposure_mode = 'auto'
-        fileName=str(datetime.today().strftime("%Y%m%d%H%M%S"))+str(time.time())[-5:0]+".jpg"
-        camera.capture(f'/home/ram/motion/{fileName}')
+        fileName=str(datetime.today().strftime("%H%M%S"))+str(time.time())[-5:0]+".jpg"
+        dirName="storage/"+str(datetime.today().strftime("%Y%m%d"))
+        try:
+          Path(f'{dirName}').mkdir(parents=True, exist_ok=True)
+        except:
+          logging.critcal(f'failed to mkdir f{dirName}')
+          sys.exit(2)
 
-    time.sleep(1)
+        try:
+          camera.capture(f'{dirName}/{fileName}')
+        except:
+          logging.critcal(f'failed to save image to f{dirName}/{fileName}')
+          sys.exit(2)
+
+  
+    return True
 
   def scan_motion(self):
       """ Loop until motion is detected """
@@ -81,10 +94,11 @@ class motion:
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-                  if diff>30:
+                  if diff>20:
                     diffShows+=1 
 
-          if (diffShows) >500:
+#          print (diffShows)
+          if (diffShows) >100:
             logging.debug(f'motion detacted {diffShows}')
             #self.capture() -> moved to the frame class
             return (diffShows)

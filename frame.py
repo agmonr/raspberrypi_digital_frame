@@ -91,8 +91,8 @@ class frame:
     if motion01.scan_motion() !=0:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
-      self.tvserviceOn()
       motion01.capture()
+      self.tvserviceOn()
       return True
 
     return False
@@ -218,10 +218,10 @@ class frame:
     if self.checkOnOff() == False:
       return False
 
-
     self.Hour=str(time.strftime("%H"))
     self.read_img()
     self.add_hour()
+    self.show()
     self.show()
     return True
 
@@ -247,7 +247,8 @@ class frame:
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
-        self.checkMotion()
+        if self.checkMotion() == True:
+          break
         count+=1
         f+=1
 
