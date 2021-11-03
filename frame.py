@@ -7,14 +7,7 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
-from logging import *
-
-evel    = logging.DEBUG
-format   = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-
-handlers = [logging.FileHandler('dframe.log'), logging.StreamHandler()]
-logging.basicConfig(level = level, format = format, handlers = handlers)
-logging.info('------------------------- starting ----------------------')
+from log import *
 
 
 
@@ -48,11 +41,12 @@ class frame:
     self.main()
         
   def read_config(self):
-    f = open('dframe.json',)
+    f = open('frame.json',)
     data = json.load(f)
     self.root=(data['config']['Root'])
     self.hoursOn=(data['config']['hoursOn'])
     self.delay=(data['config']['Delay'])
+    self.sleep=(data['config']['Sleep']) # seconds to go to sleep if no motion
     self.series=(data['config']['Series']) # Length of image series
     self.grayscale=(data['config']['Grayscale']) 
     self.show_half=(data['config']['ShowHalfHour'])
@@ -91,13 +85,17 @@ class frame:
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
-  def motionCheck(self):
-    logging.debug("frame.motionCheck()")
+  def checkMotion(self):
+    logging.debug("frame.checkMotion()")
     motion01=motion()
     if motion01.scan_motion() !=0:
       self.msg=self.msg+" Zzzzoooom"
-      motion01.capture()
       self.lastMotion=datetime.now()
+      self.tvserviceOn()
+      motion01.capture()
+      return True
+
+    return False
 
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -190,12 +188,14 @@ class frame:
     cronOn  = croniter.croniter(self.hoursOn)
     on      = (cronOn.get_prev(datetime))
 
+    if self.lastMotion< datetime.now() - timedelta(seconds=self.sleep):
+      self.tvserviceOff()
+      return False
+
     if (datetime.utcnow()-timedelta(seconds=60)<on):
-       self.startShow=datetime.now()
        self.tvserviceOn()
        return True 
     else:
-       self.startShow=datetime.now() - timedelta(seconds=(self.delay*2))
        self.tvserviceOff()
        return False 
 
@@ -244,11 +244,10 @@ class frame:
       past=datetime.now() - timedelta(minutes=1)
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
-
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
-        self.motionCheck()
+        self.checkMotion()
         count+=1
         f+=1
 

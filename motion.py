@@ -6,7 +6,7 @@ import picamera
 import picamera.array
 import sys
 from datetime import datetime,timedelta
-from llogging import *
+from log import *
 
 """
  The motion part was copy from this lovely projects:
@@ -59,8 +59,11 @@ class motion:
     for f in range(1,10):
       with picamera.PiCamera() as camera:
         camera.vflip = self.imageVFlip
-        camera.resolution = (2592, 1944)
-        camera.exposure_mode = 'night'
+#        camera.resolution = (2592, 1944)
+#        camera.framerate = 15 
+        camera.resolution = (1600, 1200)
+#        camera.framerate=10
+        camera.exposure_mode = 'auto'
         fileName=str(datetime.today().strftime("%Y%m%d%H%M%S"))+str(time.time())[-5:0]+".jpg"
         camera.capture(f'/home/ram/motion/{fileName}')
 
@@ -90,6 +93,8 @@ class motion:
 
       return (0)
 
-#motion01=motion()
-#motion01.scan_motion()
+#for f in range (1,100):
+#  print (f)
+#  motion01=motion()
+#  motion01.scan_motion()
 
