@@ -88,7 +88,7 @@ class frame:
   def checkMotion(self):
     logging.debug("frame.checkMotion()")
     motion01=motion()
-    if motion01.scan_motion() !=0:
+    if motion01.scan_motion()>0:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
       motion01.capture()
@@ -187,8 +187,11 @@ class frame:
     logging.debug('frame.checkOnOff()')
     cronOn  = croniter.croniter(self.hoursOn)
     on      = (cronOn.get_prev(datetime))
+    
+    logging.debug(f'{on}')
 
     if self.lastMotion< datetime.now() - timedelta(seconds=self.sleep):
+#      logging.debug(f'{self.lastMotion} {datetime.now()}')
       self.tvserviceOff()
       return False
 
@@ -196,6 +199,7 @@ class frame:
        self.tvserviceOn()
        return True 
     else:
+#       logging.debug(f'{datetime.utcnow()} {on}')
        self.tvserviceOff()
        return False 
 
@@ -247,8 +251,7 @@ class frame:
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
-        if self.checkMotion() == True:
-          break
+        self.checkMotion()
         count+=1
         f+=1
 

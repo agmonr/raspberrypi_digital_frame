@@ -65,8 +65,10 @@ class motion:
         camera.resolution = (1600, 1200)
 #        camera.framerate=10
         camera.exposure_mode = 'auto'
-        fileName=str(datetime.today().strftime("%H%M%S"))+str(time.time())[-5:0]+".jpg"
-        dirName="storage/"+str(datetime.today().strftime("%Y%m%d"))
+        fileName=str(datetime.today().strftime("%H%M%S%f"))+".jpg"
+        dirName="/storage/"+str(datetime.today().strftime("%Y%m%d"))
+#.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        print (f'{dirName} {fileName}')
         try:
           Path(f'{dirName}').mkdir(parents=True, exist_ok=True)
         except:
@@ -105,7 +107,7 @@ class motion:
           
           data1 = data2
 
-      return (0)
+      return (-1)
 
 #for f in range (1,100):
 #  print (f)
