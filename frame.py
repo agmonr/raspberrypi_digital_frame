@@ -54,6 +54,7 @@ class frame:
     self.scale=(data['config']['FontScale'])
     self.offsetx=(data['config']['offsetx'])
     self.offsety=(data['config']['offsety'])
+    self.captureOn=(data['config']['captureOn'])
     self.check_net=0
     f.close()
     
@@ -84,18 +85,6 @@ class frame:
     self.img=cv2.imread(self.FileName)
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-
-  def checkMotion(self):
-    logging.debug("frame.checkMotion()")
-    motion01=motion()
-    if motion01.scan_motion()>0:
-      self.msg=self.msg+" Zzzzoooom"
-      self.lastMotion=datetime.now()
-      motion01.capture()
-      self.tvserviceOn()
-      return True
-
-    return False
 
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -182,27 +171,65 @@ class frame:
       f.write(str(History[g]))
     f.close()
 
+  def checkMotion(self):
+    logging.debug("frame.checkMotion()")
+    motion01=motion()
+    if motion01.scan_motion()>0:
+      self.msg=self.msg+" Zzzzoooom"
+      self.lastMotion=datetime.now()
+    
+    self.captureMotion()
+    self.tvserviceOn()
+    return True 
+
+
+  def captureMotion(self):
+    cronOn  =       croniter.croniter(self.captureOn)
+    prevCron      = cronOn.get_prev()
+    nextCron      = cronOn.get_prev()
+    now=datetime.utcnow()
+    unixtime = int(time.mktime(now.timetuple()))
+
+    if (unixtime > prevCron) and (unixtime < nextCron):
+       self.tvserviceOn()
+
+    logging.debug(f'now is {unixtime}')
+    if (unixtime > prevCron) and (unixtime < nextCron):
+      motion01.capture()
+
+    return True
+
+
 
   def checkOnOff(self):
     logging.debug('frame.checkOnOff()')
-    cronOn  = croniter.croniter(self.hoursOn)
-    on      = (cronOn.get_prev(datetime))
-    
-    logging.debug(f'{on}')
 
     if self.lastMotion< datetime.now() - timedelta(seconds=self.sleep):
-#      logging.debug(f'{self.lastMotion} {datetime.now()}')
+      logging.debug(f'{self.lastMotion} {datetime.now()}')
       self.tvserviceOff()
       return False
 
-    if (datetime.utcnow()-timedelta(seconds=60)<on):
+    cronOn  = croniter.croniter(self.hoursOn)
+    print( cronOn.get_prev(datetime))
+    print( cronOn.get_next(datetime))
+
+    prevCron      = int(cronOn.get_prev())
+    nextCron      = int(cronOn.get_next())
+
+
+    now=datetime.utcnow()
+    unixtime = int(time.mktime(now.timetuple()))
+
+    logging.debug(f'cronOn.get_prev = {prevCron}')
+    logging.debug(f'now is {unixtime}')
+
+    if (unixtime > prevCron) and (unixtime < nextCron):
        self.tvserviceOn()
        return True 
     else:
-#       logging.debug(f'{datetime.utcnow()} {on}')
+       logging.debug(f'{datetime.utcnow()} {now}')
        self.tvserviceOff()
        return False 
-
 
   def show(self):
     logging.debug('frame.show()')

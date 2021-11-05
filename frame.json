@@ -1,15 +1,16 @@
 {
 	"config": {
-		"Root": "/home/Photos/Photos",
-		"hoursOn": "* * * * *",
+    "Root": "/home/Photos/Photos",
+    "hoursOn": "0 0 * * *",
     "clockOn": "0 17-20 * * *",
-		"Delay": 60,
+    "captureOn": "0 22,23,0-7 * * *",
+    "Delay": 60,
     "Sleep": 600,
-		"FontScale": 2,
-		"Series": 100,
+    "FontScale": 2,
+    "Series": 100,
     "offsetx": 0,
     "offsety": -28, 
-		"Grayscale": "False",
-		"ShowHalfHour": 1
+    "Grayscale": "False",
+    "ShowHalfHour": 1
 	}
 }

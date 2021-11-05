@@ -2,3 +2,5 @@
 vagrant/.vagrant/*
 test.py
 test.sh
+__pycache__/
+.*.swp

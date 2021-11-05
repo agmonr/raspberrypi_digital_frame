@@ -36,7 +36,7 @@ class motion:
     try:
       f = open('motion.json',)
     except:
-      logging.critcal=('failed to load config file')
+      logging.critical=('failed to load config file')
       sys.exit(2)
   
     try:
@@ -92,13 +92,13 @@ class motion:
         try:
           Path(f'{dirName}').mkdir(parents=True, exist_ok=True)
         except:
-          logging.critcal(f'failed to mkdir f{dirName}')
+          logging.critical(f'failed to mkdir f{dirName}')
           sys.exit(2)
 
         try:
           camera.capture(f'{dirName}/{fileName}')
         except:
-          logging.critcal(f'failed to save image to f{dirName}/{fileName}')
+          logging.critical(f'failed to save image to f{dirName}/{fileName}')
           sys.exit(2)
 
   
