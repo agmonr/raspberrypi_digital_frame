@@ -1,9 +1,9 @@
 {
 	"config": {
-    "Root": "/home/Photos/Photos",
+    "Root": [ "/home/Photos/Photos", "/home/Photos/2012" ],
     "hoursOn": "0 0 * * *",
     "clockOn": "0 17-20 * * *",
-    "captureOn": "0 22,23,0-7 * * *",
+    "captureOn": "0 0 * * *",
     "Delay": 60,
     "Sleep": 600,
     "FontScale": 2,

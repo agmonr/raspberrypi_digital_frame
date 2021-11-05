@@ -31,9 +31,11 @@ class frame:
     self.screenOn=True
 
     self.Shown=[]
-    for path, subdirs, files in os.walk(self.root):
-      for name in files:
-        self.List.append(str(path)+"/"+str(name))
+    print (self.root)
+    for rootFolders in self.root:
+      for path, subdirs, files in os.walk(rootFolders):
+        for name in files:
+          self.List.append(str(path)+"/"+str(name))
 
     logging.info("Total of "+str(len(self.List))+" images in "+str(self.root))
 
