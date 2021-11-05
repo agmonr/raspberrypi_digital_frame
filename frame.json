@@ -1,6 +1,6 @@
 {
 	"config": {
-		"Root": "/home/Photos/",
+		"Root": "/home/Photos/Photos",
 		"hoursOn": "* * * * *",
     "clockOn": "0 17-20 * * *",
 		"Delay": 60,

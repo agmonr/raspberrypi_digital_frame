@@ -1,0 +1,10 @@
+{
+	"config": {
+		"captureRoot": "/storage/motion/",
+		"xScanStep": 10,
+		"yScanStep": 10,
+    "streamWidth": 1920,
+    "streamHeight": 1088,
+    "numberOfMotions": 250
+	}
+}

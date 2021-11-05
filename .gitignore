@@ -1,5 +1,4 @@
-run/*
-log/*.log
+*.log
 vagrant/.vagrant/*
-www/Photos/
-www/Photos/history.html
+test.py
+test.sh

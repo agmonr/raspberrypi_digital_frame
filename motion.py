@@ -28,12 +28,32 @@ from pathlib import Path
 
 class motion:
   def __init__(self):
-    self.threshold = 10  # How Much pixel changes
-    self.sensitivity = 100  # How many pixels change
-    self.streamWidth = 1280  # motion scan stream Width
-    self.streamHeight = 800
-    self.imageVFlip = True       # Flip image Vertically
-    self.imageHFlip = True       # Flip image Horizontally
+    self.read_config()
+
+
+
+  def read_config(self):
+    try:
+      f = open('motion.json',)
+    except:
+      logging.critcal=('failed to load config file')
+      sys.exit(2)
+  
+    try:
+      data = json.load(f)
+      self.captureRoot=       (data['config']['captureRoot'])
+      self.xScanStep=         (data['config']['xScanStep'])
+      self.yScanStep=         (data['config']['yScanStep'])
+      self.streamWidth=       (data['config']['streamWidth'])
+      self.streamHeight=      (data['config']['streamHeight'])
+      self.numberOfMotions=   (data['config']['numberOfMotions'])
+      f.close()
+      self.imageVFlip=       True
+    except ValueError:
+      logging.critical('Decoding JSON has failed')
+
+    return True
+   
 
 
   def get_stream_array(self):
@@ -42,8 +62,8 @@ class motion:
           camera.resolution = (self.streamWidth, self.streamHeight)
           with picamera.array.PiRGBArray(camera) as stream:
 #              camera.hflip = self.imageHFlip
-              camera.exposure_mode = 'auto'
-        #      camera.exposure_mode = 'night'
+        #      camera.exposure_mode = 'auto'
+              camera.exposure_mode = 'night'
        #       camera.awb_mode = 'auto'
               camera.capture(stream, format='rgb')
               camera.close()
@@ -91,8 +111,9 @@ class motion:
       for f in range(1,10):
           diffShows=0
           data2 = self.get_stream_array()
-          for y in range(0, self.streamHeight,10):
-              for x in range(0, self.streamWidth,10):
+          for y in range(0, self.streamHeight,self.xScanStep):
+              for x in range(0, self.streamWidth,self.yScanStep):
+
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
@@ -100,7 +121,7 @@ class motion:
                     diffShows+=1 
 
 #          print (diffShows)
-          if (diffShows) >100:
+          if (diffShows) >self.numberOfMotions:
             logging.debug(f'motion detacted {diffShows}')
             #self.capture() -> moved to the frame class
             return (diffShows)
