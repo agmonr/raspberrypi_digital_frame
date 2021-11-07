@@ -29,7 +29,6 @@ class frame:
     self.List=[]
     self.msg=""
     self.screenOn=True
-
     self.Shown=[]
     print (self.root)
     for rootFolders in self.root:
@@ -57,6 +56,12 @@ class frame:
     self.offsetx=(data['config']['offsetx'])
     self.offsety=(data['config']['offsety'])
     self.captureOn=(data['config']['captureOn'])
+    self.camera=(data['config']['camera'])
+    if self.camera=="True":
+      self.camera=True
+    else:
+      self.camera=False
+
     self.check_net=0
     f.close()
     
@@ -174,14 +179,16 @@ class frame:
     f.close()
 
   def checkMotion(self):
+    if self.camera is False:
+      time.sleep(30)
+      return True
     logging.debug("frame.checkMotion()")
     motion01=motion()
     if motion01.scan_motion()>0:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
-    
-    self.captureMotion()
-    self.tvserviceOn()
+      self.captureMotion()
+    #self.tvserviceOn()
     return True 
 
 
@@ -192,12 +199,10 @@ class frame:
     now=datetime.utcnow()
     unixtime = int(time.mktime(now.timetuple()))
 
-    if (unixtime > prevCron) and (unixtime < nextCron):
-       self.tvserviceOn()
+#    if (unixtime > prevCron) and (unixtime < nextCron):
 
-    logging.debug(f'now is {unixtime}')
-    if (unixtime > prevCron) and (unixtime < nextCron):
-      motion01.capture()
+    motion01=motion()
+    motion01.capture()
 
     return True
 
@@ -212,24 +217,16 @@ class frame:
       return False
 
     cronOn  = croniter.croniter(self.hoursOn)
-    print( cronOn.get_prev(datetime))
-    print( cronOn.get_next(datetime))
-
     prevCron      = int(cronOn.get_prev())
     nextCron      = int(cronOn.get_next())
 
-
     now=datetime.utcnow()
     unixtime = int(time.mktime(now.timetuple()))
-
-    logging.debug(f'cronOn.get_prev = {prevCron}')
-    logging.debug(f'now is {unixtime}')
 
     if (unixtime > prevCron) and (unixtime < nextCron):
        self.tvserviceOn()
        return True 
     else:
-       logging.debug(f'{datetime.utcnow()} {now}')
        self.tvserviceOff()
        return False 
 
@@ -284,6 +281,7 @@ class frame:
         count+=1
         f+=1
 
+      self.read_config()
       self.startShow=datetime.now()
 
       if count>=int(self.series):

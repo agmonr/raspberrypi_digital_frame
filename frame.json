@@ -1,8 +1,9 @@
 {
 	"config": {
-    "Root": [ "/home/Photos/Photos", "/home/Photos/2012" ],
+    "Root": [ "/home/Photos/" ],
     "hoursOn": "0 0 * * *",
     "clockOn": "0 17-20 * * *",
+    "camera": "True",
     "captureOn": "0 0 * * *",
     "Delay": 60,
     "Sleep": 600,
