@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import os,time,datetime,cv2,subprocess,json,numpy,tkinter,croniter
-from crontab import CronTab 
+import os,time,datetime,cv2,subprocess,json,numpy,tkinter,sys,picamera,picamera.array
 from motion import *
 from random import randint
-import picamera
-import picamera.array
-import sys
-from datetime import datetime,timedelta
+from croniter import croniter
+from datetime import datetime
+from datetime import timedelta
+
 from log import *
 
 
@@ -121,15 +120,17 @@ class frame:
     return cv2.resize(image, ( w2, h2))
 
   def add_hour(self):  # Adding hour to displayed image
-    hoursClock= CronTab(self.showClock)
-    if (hoursClock.previous()>-3600):
+    if CronTab(self.showClock) is True:
       self.msg=self.msg+" "+time.strftime("%H:%M")
       self.add_text()
-      return
+      return True
 
-    if self.show_half=="1" and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
+    if self.show_half=="True" and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
        self.msg=time.strftime("%H:%M")
        self.add_text()
+       return True
+
+    return False
   
   def check_net(self): #Check internet connection
     Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
@@ -193,18 +194,21 @@ class frame:
 
 
   def captureMotion(self):
-    cronOn  =       croniter.croniter(self.captureOn)
-    prevCron      = cronOn.get_prev()
-    nextCron      = cronOn.get_prev()
-    now=datetime.utcnow()
-    unixtime = int(time.mktime(now.timetuple()))
-
-#    if (unixtime > prevCron) and (unixtime < nextCron):
-
-    motion01=motion()
-    motion01.capture()
-
+    self.debug("frame.captureMotion()")
+    if checkCron(self.captureOn):
+      motion01=motion()
+      motion01.capture()
     return True
+
+  def checkCron(self, cront):
+    base = datetime.now()
+    iter = croniter(cront, datetime.now())
+    prev=(iter.get_prev(datetime)+timedelta(minutes=1))
+
+    if base < prev:
+      return True
+
+    return False
 
 
 
@@ -216,14 +220,7 @@ class frame:
       self.tvserviceOff()
       return False
 
-    cronOn  = croniter.croniter(self.hoursOn)
-    prevCron      = int(cronOn.get_prev())
-    nextCron      = int(cronOn.get_next())
-
-    now=datetime.utcnow()
-    unixtime = int(time.mktime(now.timetuple()))
-
-    if (unixtime > prevCron) and (unixtime < nextCron):
+    if self.checkCron(self.hoursOn) is True: 
        self.tvserviceOn()
        return True 
     else:
