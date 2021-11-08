@@ -70,7 +70,6 @@ class motion:
     base = datetime.now()
     iter = croniter(cront, datetime.now())
     prev=(iter.get_prev(datetime)+timedelta(minutes=1))
-
     if base < prev:
       return True
 
@@ -101,11 +100,13 @@ class motion:
     for f in range(1,10):
       with picamera.PiCamera() as camera:
         camera.vflip = self.imageVFlip
-#        camera.resolution = (2592, 1944)
-#        camera.framerate = 15 
         camera.resolution = (self.xCaptureRes, self.yCaptureRes)
-#        camera.framerate=10
-        camera.exposure_mode = 'auto'
+
+        if self.checkCron(self.highSensitivityHours) is True:
+          camera.exposure_mode = 'night'
+        else:
+          camera.exposure_mode = 'auto'
+
         fileName=str(datetime.today().strftime("%H%M%S%f"))+".jpg"
         dirName="/storage/"+str(datetime.today().strftime("%Y%m%d"))
 #.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
@@ -129,6 +130,7 @@ class motion:
       """ Loop until motion is detected """
       logging.debug('motion.scan_motion()')
       data1 = self.get_stream_array()
+
       if self.checkCron(self.highSensitivityHours) is True:
         sensitivity=self.highSensitivity
         numberOfMotions=self.numberOfMotionsHigh
