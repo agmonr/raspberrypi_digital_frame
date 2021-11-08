@@ -194,8 +194,8 @@ class frame:
 
 
   def captureMotion(self):
-    self.debug("frame.captureMotion()")
-    if checkCron(self.captureOn):
+    logging.debug("frame.captureMotion()")
+    if self.checkCron(self.captureOn):
       motion01=motion()
       motion01.capture()
     return True
