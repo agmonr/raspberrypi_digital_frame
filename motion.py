@@ -129,27 +129,25 @@ class motion:
       """ Loop until motion is detected """
       logging.debug('motion.scan_motion()')
       data1 = self.get_stream_array()
+      if self.checkCron(self.highSensitivityHours) is True:
+        sensitivity=self.highSensitivity
+        numberOfMotions=self.numberOfMotionsHigh
+      else:
+        sensitivity=self.Sensitivity
+        numberOfMotions=self.numberOfMotions
+
       for f in range(1,10):
           diffShows=0
           data2 = self.get_stream_array()
           for y in range(0, self.streamHeight,self.xScanStep):
-
               for x in range(0, self.streamWidth,self.yScanStep):
-
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-                  if self.checkCron(self.highSensitivityHours) is True:
-                    sensitivity=self.highSensitivity
-                    numberOfMotions=self.numberOfMotionsHigh
-                  else:
-                    sensitivity=self.Sensitivity
-                    numberOfMotions=self.numberOfMotions
-
                   if diff>sensitivity:
                     diffShows+=1 
 
-#          print (diffShows)
+
           if (diffShows) >numberOfMotions:
             logging.debug(f'motion detacted {diffShows}')
             #self.capture() -> moved to the frame class

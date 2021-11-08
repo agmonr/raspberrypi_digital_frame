@@ -9,7 +9,7 @@
     "xCaptureRes": 1920,
     "yCaptureRes": 1080,
     "sensitivity": 120,
-    "highSensitivity": 30,
+    "highSensitivity": 20,
     "highSensitivityHours": "* 20-23,0-8 * * *",
     "numberOfMotionsHigh": 50
 	}
