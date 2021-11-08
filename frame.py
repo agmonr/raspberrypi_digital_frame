@@ -5,9 +5,9 @@ from random import randint
 from croniter import croniter
 from datetime import datetime
 from datetime import timedelta
+from crontab import CronTab
 
 from log import *
-
 
 
 class frame:
@@ -55,6 +55,7 @@ class frame:
     self.offsetx=(data['config']['offsetx'])
     self.offsety=(data['config']['offsety'])
     self.captureOn=(data['config']['captureOn'])
+
     self.camera=(data['config']['camera'])
     if self.camera=="True":
       self.camera=True
@@ -201,18 +202,6 @@ class frame:
       motion01.capture()
     return True
 
-  def checkCron(self, cront):
-    base = datetime.now()
-    iter = croniter(cront, datetime.now())
-    prev=(iter.get_prev(datetime)+timedelta(minutes=1))
-
-    if base < prev:
-      return True
-
-    return False
-
-
-
   def checkOnOff(self):
     logging.debug('frame.checkOnOff()')
 
@@ -227,6 +216,17 @@ class frame:
     else:
        self.tvserviceOff()
        return False 
+
+  def checkCron(self, cront):
+    base = datetime.now()
+    iter = croniter(cront, datetime.now())
+    prev=(iter.get_prev(datetime)+timedelta(minutes=1))
+
+    if base < prev:
+      return True
+
+    return False
+
 
   def show(self):
     logging.debug('frame.show()')

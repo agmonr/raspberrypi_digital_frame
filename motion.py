@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os,time,datetime,cv2,subprocess,json,numpy,tkinter,croniter
-from crontab import CronTab 
 from random import randint
 import picamera
 import picamera.array
@@ -8,6 +7,12 @@ import sys
 from datetime import datetime,timedelta
 from log import *
 from pathlib import Path
+from crontab import CronTab
+
+from datetime import datetime
+from datetime import timedelta
+from crontab import CronTab
+from croniter import croniter
 
 """
  The motion part was copy from this lovely projects:
@@ -41,14 +46,19 @@ class motion:
   
     try:
       data = json.load(f)
-      self.captureRoot=       (data['config']['captureRoot'])
-      self.xScanStep=         (data['config']['xScanStep'])
-      self.yScanStep=         (data['config']['yScanStep'])
-      self.streamWidth=       (data['config']['streamWidth'])
-      self.streamHeight=      (data['config']['streamHeight'])
-      self.numberOfMotions=   (data['config']['numberOfMotions'])
-      self.xCaptureRes=       (data['config']['xCaptureRes'])
-      self.yCaptureRes=       (data['config']['yCaptureRes'])
+      self.captureRoot=           (data['config']['captureRoot'])
+      self.xScanStep=             (data['config']['xScanStep'])
+      self.yScanStep=             (data['config']['yScanStep'])
+      self.streamWidth=           (data['config']['streamWidth'])
+      self.streamHeight=          (data['config']['streamHeight'])
+      self.numberOfMotions=       (data['config']['numberOfMotions'])
+      self.xCaptureRes=           (data['config']['xCaptureRes'])
+      self.yCaptureRes=           (data['config']['yCaptureRes'])
+      self.sensitivity=           (data['config']['sensitivity'])
+      self.highSensitivity=       (data['config']['highSensitivity'])
+      self.highSensitivityHours=  (data['config']['highSensitivityHours'])
+      self.numberOfMotionsHigh=   (data['config']['numberOfMotionsHigh'])
+
       f.close()
       self.imageVFlip=       True
     except ValueError:
@@ -56,6 +66,15 @@ class motion:
 
     return True
    
+  def checkCron(self, cront):
+    base = datetime.now()
+    iter = croniter(cront, datetime.now())
+    prev=(iter.get_prev(datetime)+timedelta(minutes=1))
+
+    if base < prev:
+      return True
+
+    return False
 
 
   def get_stream_array(self):
@@ -114,16 +133,24 @@ class motion:
           diffShows=0
           data2 = self.get_stream_array()
           for y in range(0, self.streamHeight,self.xScanStep):
+
               for x in range(0, self.streamWidth,self.yScanStep):
 
                   # get pixel differences. Conversion to int
                   # is required to avoid unsigned short overflow.
                   diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
-                  if diff>20:
+                  if self.checkCron(self.highSensitivityHours) is True:
+                    sensitivity=self.highSensitivity
+                    numberOfMotions=self.numberOfMotionsHigh
+                  else:
+                    sensitivity=self.Sensitivity
+                    numberOfMotions=self.numberOfMotions
+
+                  if diff>sensitivity:
                     diffShows+=1 
 
 #          print (diffShows)
-          if (diffShows) >self.numberOfMotions:
+          if (diffShows) >numberOfMotions:
             logging.debug(f'motion detacted {diffShows}')
             #self.capture() -> moved to the frame class
             return (diffShows)
