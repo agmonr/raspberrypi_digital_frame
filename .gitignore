@@ -4,6 +4,5 @@ test.py
 test.sh
 __pycache__/
 .*.swp
-bin/
-lib/
+env/
 pyvenv.cfg
