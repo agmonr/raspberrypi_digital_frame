@@ -3,7 +3,7 @@ killall X
 killall Xorg
 
 cd /root/raspberrypi_digital_frame/ 
-source bin/activate
+source env/bin/activate
 export DISPLAY=:0
 #[[ "x$( pgrep X)" == "x" ]] && sudo /usr/bin/X vt1 -nolock -nocursor :0 -s 14400 &
 sudo /usr/bin/X vt1 -nolock -nocursor :0 -s 14400 &

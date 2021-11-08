@@ -45,8 +45,8 @@ class frame:
     data = json.load(f)
     self.root=(data['config']['Root'])
     self.hoursOn=(data['config']['hoursOn'])
-    self.delay=(data['config']['Delay'])
-    self.sleep=(data['config']['Sleep']) # seconds to go to sleep if no motion
+    self.delay=(data['config']['Delay']) # delay between images 
+    self.sleep=(data['config']['Sleep']) # seconds to go to sleep if no motion detected
     self.series=(data['config']['Series']) # Length of image series
     self.grayscale=(data['config']['Grayscale']) 
     self.show_half=(data['config']['ShowHalfHour'])
@@ -189,8 +189,9 @@ class frame:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
       self.captureMotion()
-    #self.tvserviceOn()
-    return True 
+      self.tvserviceOn()
+      return True 
+    return False
 
 
   def captureMotion(self):
@@ -230,6 +231,7 @@ class frame:
   def show(self):
     logging.debug('frame.show()')
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
+    cv2.namedWindow("Frame", flags=cv2.WINDOW_GUI_NORMAL )
     self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
     cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
@@ -274,7 +276,9 @@ class frame:
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
-        self.checkMotion()
+        if self.checkMotion() is True and self.checkOnOff is False:
+          self.show()
+          break 
         count+=1
         f+=1
 
