@@ -5,6 +5,8 @@
 		"yScanStep": 10,
     "streamWidth": 1920,
     "streamHeight": 1088,
-    "numberOfMotions": 250
+    "numberOfMotions": 250,
+    "xCaptureRes": 1920,
+    "yCaptureRes": 1080
 	}
 }

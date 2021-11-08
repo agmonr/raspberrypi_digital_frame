@@ -47,6 +47,8 @@ class motion:
       self.streamWidth=       (data['config']['streamWidth'])
       self.streamHeight=      (data['config']['streamHeight'])
       self.numberOfMotions=   (data['config']['numberOfMotions'])
+      self.xCaptureRes=       (data['config']['xCaptureRes'])
+      self.yCaptureRes=       (data['config']['yCaptureRes'])
       f.close()
       self.imageVFlip=       True
     except ValueError:
@@ -82,7 +84,7 @@ class motion:
         camera.vflip = self.imageVFlip
 #        camera.resolution = (2592, 1944)
 #        camera.framerate = 15 
-        camera.resolution = (1600, 1200)
+        camera.resolution = (self.xCaptureRes, self.yCaptureRes)
 #        camera.framerate=10
         camera.exposure_mode = 'auto'
         fileName=str(datetime.today().strftime("%H%M%S%f"))+".jpg"
@@ -130,8 +132,9 @@ class motion:
 
       return (-1)
 
-#for f in range (1,100):
-#  print (f)
-#  motion01=motion()
-#  motion01.scan_motion()
-
+"""
+for f in range (1,100):
+  print (f)
+  motion01=motion()
+  motion01.scan_motion()
+"""
