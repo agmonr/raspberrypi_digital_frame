@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo apt install xserver-xorg vim python3-venv python3-pip htop python3-tk python3-opencv
-sudo python3 -m pip install --upgrade pip
-sudo python3 -m pip install crontab croniter opencv-contrib-python==4.1.0.25
+sudo apt install xserver-xorg vim python3-venv python3-pip htop python3-tk 
+python3 -m venv .
+
+source bin/activate
+sudo python3 -m pip install --upgrade pip setuptools wheel
+sudo python3 -m pip install -r requirements.txt 
 
