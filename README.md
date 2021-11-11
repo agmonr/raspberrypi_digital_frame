@@ -1,7 +1,7 @@
-# raspberrypi_digital_frame
-#### small python3 script to display images using raspberry pi (testing on all versions from 0,1 to 4).
-config.json:
-Root -> root folder for images.
-HoursOn -> on supporeted screens will make sure the screen is on.
-Delay -> time to show each image
+Digital frame with motion detection
+
+The aim of the project is to provide a pleasant way to show pictures using raspberry pie.
+
+The installation was tested on Raspbian GNU/Linux 10 and probably won't work on other systems. Please enable the camera using the raspi-config util.
+
 
