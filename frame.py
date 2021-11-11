@@ -276,7 +276,8 @@ class frame:
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
-        if self.checkMotion() is True and self.checkOnOff is False:
+        if self.checkMotion() is True and self.checkOnOff() is False:
+          self.show()
           self.show()
           break 
         count+=1

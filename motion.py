@@ -135,7 +135,7 @@ class motion:
         sensitivity=self.highSensitivity
         numberOfMotions=self.numberOfMotionsHigh
       else:
-        sensitivity=self.Sensitivity
+        sensitivity=self.sensitivity
         numberOfMotions=self.numberOfMotions
 
       for f in range(1,10):
