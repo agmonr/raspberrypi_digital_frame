@@ -246,7 +246,6 @@ class frame:
 
   def preShow(self):
     logging.debug(f'frame.preShow()')
-    self.msg=""
     logging.info(f'{self.FileName}')
 
     if self.checkOnOff() == False or self.screenState == False:
@@ -275,7 +274,7 @@ class frame:
     count=0
     while 1:
       self.FileName=self.List[f]
-      past=datetime.now() - timedelta(minutes=1)
+#      past=datetime.now() - timedelta(minutes=1)
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
@@ -284,13 +283,12 @@ class frame:
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
         if self.checkMotion() is True and self.checkOnOff() is False:
           self.screenState=True
-          break 
         count+=1
         f+=1
 
       self.read_config()
       self.startShow=datetime.now()
-
+      self.msg=""
       if count>=int(self.series):
         count=0
         f=randint(0,len(self.List)-int(self.series)) 

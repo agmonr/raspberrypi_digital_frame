@@ -52,6 +52,7 @@ class motion:
       self.streamWidth=           (data['config']['streamWidth'])
       self.streamHeight=          (data['config']['streamHeight'])
       self.numberOfMotions=       (data['config']['numberOfMotions'])
+      self.scanTime=              (data['config']['scanTime'])
       self.xCaptureRes=           (data['config']['xCaptureRes'])
       self.yCaptureRes=           (data['config']['yCaptureRes'])
       self.sensitivity=           (data['config']['sensitivity'])
@@ -138,7 +139,9 @@ class motion:
         sensitivity=self.sensitivity
         numberOfMotions=self.numberOfMotions
 
-      for f in range(1,10):
+
+      dateLimit=datetime.now()+ timedelta(seconds=self.scanTime)
+      while datetime.now() < dateLimit:
           diffShows=0
           data2 = self.get_stream_array()
           for y in range(0, self.streamHeight,self.xScanStep):
@@ -151,7 +154,7 @@ class motion:
 
 
           if (diffShows) >numberOfMotions:
-            logging.debug(f'motion detacted {diffShows}')
+            logging.debug(f'==== motion detacted {diffShows}')
             #self.capture() -> moved to the frame class
             return (diffShows)
           
