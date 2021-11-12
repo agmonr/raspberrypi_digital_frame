@@ -29,6 +29,7 @@ class frame:
     self.msg=""
     self.screenOn=True
     self.Shown=[]
+    self.screenState=True #true to on
     print (self.root)
     for rootFolders in self.root:
       for path, subdirs, files in os.walk(rootFolders):
@@ -46,7 +47,7 @@ class frame:
     self.root=(data['config']['Root'])
     self.hoursOn=(data['config']['hoursOn'])
     self.delay=(data['config']['Delay']) # delay between images 
-    self.sleep=(data['config']['Sleep']) # seconds to go to sleep if no motion detected
+    self.sleep=(data['config']['time2Sleep']) # seconds to go to sleep if no motion detected
     self.series=(data['config']['Series']) # Length of image series
     self.grayscale=(data['config']['Grayscale']) 
     self.show_half=(data['config']['ShowHalfHour'])
@@ -68,11 +69,13 @@ class frame:
 
   def tvserviceOff(self):
       logging.info('tvservice_off')
+      self.screenState=False
       if self.getTvStatus() and self.tvServiceBin == True:
-        os.system('sudo /usr/bin/tvservice -o')  
+        os.system('sudo /usr/bin/tvservice -o') 
 
   def tvserviceOn(self):
       logging.info('tvservice_on')
+      self.screenState=True
       if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
         os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
@@ -83,8 +86,10 @@ class frame:
           return True
       displayStatus=str(subprocess.run(['sudo','/usr/bin/tvservice','-s'], stdout=subprocess.PIPE))
       if 'TV is off' in displayStatus:
+        self.screenState=False
         return False
       else:
+        self.screenState=True
         return True
       
 
@@ -181,16 +186,16 @@ class frame:
     f.close()
 
   def checkMotion(self):
+    logging.debug("frame.checkMotion()")
     if self.camera is False:
       time.sleep(30)
       return True
-    logging.debug("frame.checkMotion()")
     motion01=motion()
     if motion01.scan_motion()>0:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
       self.captureMotion()
-      self.tvserviceOn()
+      self.screenOn=True
       return True 
     return False
 
@@ -240,17 +245,17 @@ class frame:
 
 
   def preShow(self):
-    self.msg=""
     logging.debug(f'frame.preShow()')
+    self.msg=""
     logging.info(f'{self.FileName}')
 
-    if self.checkOnOff() == False:
+    if self.checkOnOff() == False or self.screenState == False:
       return False
 
+    
     self.Hour=str(time.strftime("%H"))
     self.read_img()
     self.add_hour()
-    self.show()
     self.show()
     return True
 
@@ -274,11 +279,11 @@ class frame:
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
+        self.preShow()
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
         if self.checkMotion() is True and self.checkOnOff() is False:
-          self.show()
-          self.show()
+          self.screenState=True
           break 
         count+=1
         f+=1
