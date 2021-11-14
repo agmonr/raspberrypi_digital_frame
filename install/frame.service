@@ -3,6 +3,7 @@ Description=DigtilFrame
 After=network.target auditd.service
 
 [Service]
+Environment=DISPLAY=:0
 ExecStart=/root/raspberrypi_digital_frame/frame.sh
 KillMode=process
 

@@ -126,8 +126,8 @@ class frame:
     return cv2.resize(image, ( w2, h2))
 
   def add_hour(self):  # Adding hour to displayed image
-    if CronTab(self.showClock) is True:
-      self.msg=self.msg+" "+time.strftime("%H:%M")
+    if self.checkCron(self.showClock):
+      self.msg=time.strftime("%H:%M")
       self.add_text()
       return True
 
@@ -222,13 +222,14 @@ class frame:
        self.tvserviceOff()
        return False 
 
-  def checkCron(self, cront):
+  def checkCron(self, crons):
     base = datetime.now()
-    iter = croniter(cront, datetime.now())
-    prev=(iter.get_prev(datetime)+timedelta(minutes=1))
+    for cront in crons:
+      iter = croniter(cront, datetime.now())
+      prev=(iter.get_prev(datetime)+timedelta(minutes=1))
 
-    if base < prev:
-      return True
+      if base < prev:
+        return True 
 
     return False
 
@@ -270,11 +271,11 @@ class frame:
       f=1
     else:
       f=randint(0,(len(self.List)-int(self.series)))
+      logging.debug(f'random image start series {f}')
 
     count=0
     while 1:
       self.FileName=self.List[f]
-#      past=datetime.now() - timedelta(minutes=1)
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
@@ -288,9 +289,9 @@ class frame:
 
       self.read_config()
       self.startShow=datetime.now()
-      self.msg=""
       if count>=int(self.series):
         count=0
         f=randint(0,len(self.List)-int(self.series)) 
+        logging.debug(f'random image start series {f}')
 
 Frame01 = frame()
