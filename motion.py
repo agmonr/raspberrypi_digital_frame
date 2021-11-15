@@ -13,6 +13,8 @@ from datetime import datetime
 from datetime import timedelta
 from crontab import CronTab
 from croniter import croniter
+from fractions import Fraction
+
 
 """
  The motion part was copy from this lovely projects:
@@ -114,10 +116,11 @@ class motion:
         camera.resolution = (self.xCaptureRes, self.yCaptureRes)
 
         if self.checkCron(self.highSensitivityHours) is True:
-          camera.framerate = Fraction(1, 6)
-          camera.shutter_speed = 6000000
-          camera.exposure_mode = 'off'
-          camera.iso = 800
+#          camera.framerate = Fraction(1, 20)
+#          camera.shutter_speed = 200000
+#          camera.exposure_mode = 'off'
+#          camera.iso = 800
+          camera.exposure_mode = 'night'
         else:
           camera.exposure_mode = 'auto'
 

@@ -24,13 +24,11 @@ class frame:
     logging.debug(f'self.xscreenresulation={self.xscreenresulation}, self.yscreenresulation=${self.yscreenresulation}' )
     self.lastMotion=datetime.now()
     self.startShow=datetime.now()
-   #self.import_config_state()
     self.List=[]
     self.msg=""
     self.screenOn=True
     self.Shown=[]
     self.screenState=True #true to on
-    print (self.root)
     for rootFolders in self.root:
       for path, subdirs, files in os.walk(rootFolders):
         for name in files:
@@ -94,10 +92,14 @@ class frame:
         return True
       
 
+
+
   def read_img(self):
     self.img=cv2.imread(self.FileName)
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+
+
 
 
   def image_resize(self,image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -126,6 +128,9 @@ class frame:
     # resize the image
     return cv2.resize(image, ( w2, h2))
 
+
+
+
   def add_hour(self):  # Adding hour to displayed image
     if self.checkCron(self.showClock):
       self.msg=time.strftime("%H:%M")
@@ -138,12 +143,17 @@ class frame:
        return True
 
     return False
+
+
+
   
   def check_net(self): #Check internet connection
     Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
     if Status.find ('100% packet loss') > 0:
       self.msg=":( "+self.msg
       self.add_text()
+
+
 
   def add_text(self,x=50,y=170):
     # font 
@@ -166,6 +176,7 @@ class frame:
     cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
 
 
+
     
   def write_history_html(self,Text):
     FileName=Text.replace("/home/","")
@@ -186,11 +197,15 @@ class frame:
       f.write(str(History[g]))
     f.close()
 
+
+
   def checkMotion(self):
     logging.debug("frame.checkMotion()")
+
     if self.camera is False:
       time.sleep(30)
       return True
+
     motion01=motion()
     if motion01.scan_motion()>0:
       self.msg=self.msg+" Zzzzoooom"
@@ -198,11 +213,13 @@ class frame:
       self.captureMotion()
       self.screenOn=True
       return True 
+
     return False
 
 
   def captureMotion(self):
     logging.debug("frame.captureMotion()")
+
     if self.checkCron(self.captureOn):
       motion01=motion()
       motion01.capture()
