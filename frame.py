@@ -56,6 +56,7 @@ class frame:
     self.offsetx=(data['config']['offsetx'])
     self.offsety=(data['config']['offsety'])
     self.captureOn=(data['config']['captureOn'])
+    self.captureVideo=(data['config']['captureVideo'])
 
     self.camera=(data['config']['camera'])
     if self.camera=="True":
@@ -205,6 +206,11 @@ class frame:
     if self.checkCron(self.captureOn):
       motion01=motion()
       motion01.capture()
+
+    if self.checkCron(self.captureVideo):
+      motion01=motion()
+      motion01.captureVideo()
+
     return True
 
   def checkOnOff(self):

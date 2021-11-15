@@ -11,6 +11,7 @@ ln -s /root/raspberrypi_digital_frame/install/frame.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable fra
 
+mkdir ../logs/
 python3 -m venv ../env/ 
 
 

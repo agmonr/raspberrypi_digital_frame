@@ -1,17 +1,22 @@
 {
-	"config": {
-		"captureRoot": "/storage/motion/",
-		"xScanStep": 5,
-		"yScanStep": 5,
+  "config": {
+    "captureRoot": "/storage/",
+    "xScanStep": 5,
+    "yScanStep": 5,
     "streamWidth": 1920,
     "streamHeight": 1088,
     "xCaptureRes": 1920,
     "yCaptureRes": 1080,
     "sensitivity": 50,
     "scanTime": 20,
-    "numberOfMotions": 100,
+    "numberOfMotions": 150,
     "highSensitivityHours": "* 16-23,0-8 * * *",
     "highSensitivity": 20,
-    "numberOfMotionsHigh": 10
-	}
+    "numberOfMotionsHigh": 10,
+    "images2Capture": 10,
+    "xCaptureResVideo": 800,
+    "yCaptureResVideo": 600,
+    "captureRootVideo": "/storage/",
+    "captureVideoDuration": 10
+  }
 }

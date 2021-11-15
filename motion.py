@@ -59,6 +59,12 @@ class motion:
       self.highSensitivity=       (data['config']['highSensitivity'])
       self.highSensitivityHours=  (data['config']['highSensitivityHours'])
       self.numberOfMotionsHigh=   (data['config']['numberOfMotionsHigh'])
+      self.images2Capture=        (data['config']['images2Capture'])
+      self.xCaptureResVideo=      (data['config']['xCaptureResVideo'])
+      self.yCaptureResVideo=      (data['config']['yCaptureResVideo'])
+      self.captureRootVideo=      (data['config']['captureRootVideo'])
+      self.captureVideoDuration=  (data['config']['captureVideoDuration'])
+
 
       f.close()
       self.imageVFlip=       True
@@ -82,10 +88,7 @@ class motion:
       with picamera.PiCamera() as camera:
           camera.resolution = (self.streamWidth, self.streamHeight)
           with picamera.array.PiRGBArray(camera) as stream:
-#              camera.hflip = self.imageHFlip
-        #      camera.exposure_mode = 'auto'
               camera.exposure_mode = 'night'
-       #       camera.awb_mode = 'auto'
               camera.capture(stream, format='rgb')
               camera.close()
               return stream.array
@@ -96,33 +99,56 @@ class motion:
       camera.start_preview()
       time.sleep(10)
 
+  def createPath(self, captureRoot, dirName):
+      try:
+        Path(f'{dirName}').mkdir(parents=True, exist_ok=True)
+      except:
+        logging.critical(f'failed to mkdir f{dirName}')
+        sys.exit(2)
 
   def capture(self):
-    for f in range(1,10):
+    logging.debug('motion.capture()')
+    for f in range(1,self.images2Capture):
       with picamera.PiCamera() as camera:
         camera.vflip = self.imageVFlip
         camera.resolution = (self.xCaptureRes, self.yCaptureRes)
 
         if self.checkCron(self.highSensitivityHours) is True:
-          camera.exposure_mode = 'night'
+          camera.framerate = Fraction(1, 6)
+          camera.shutter_speed = 6000000
+          camera.exposure_mode = 'off'
+          camera.iso = 800
         else:
           camera.exposure_mode = 'auto'
 
-        fileName=str(datetime.today().strftime("%H%M%S%f"))+".jpg"
-        dirName="/storage/"+str(datetime.today().strftime("%Y%m%d"))
-#.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-        print (f'{dirName} {fileName}')
-        try:
-          Path(f'{dirName}').mkdir(parents=True, exist_ok=True)
-        except:
-          logging.critical(f'failed to mkdir f{dirName}')
-          sys.exit(2)
+        fileName=str(datetime.today().strftime("%H%M%S%f"))
+        dirName=self.captureRoot+str(datetime.today().strftime("%Y%m%d"))
 
         try:
-          camera.capture(f'{dirName}/{fileName}')
+          self.createPath(self.captureRoot, dirName)
+          print (self.captureRoot)
+          print (dirName)
+          camera.capture(f'{dirName}/{fileName}.jpg')
+
         except:
           logging.critical(f'failed to save image to f{dirName}/{fileName}')
           sys.exit(2)
+
+
+  def captureVideo(self):
+    logging.debug('motion.captureVideo()')
+    dirName=self.captureRootVideo+str(datetime.today().strftime("%Y%m%d"))
+    self.createPath(self.captureRootVideo, dirName)
+    try:
+      with picamera.PiCamera() as camera:
+          camera.resolution = (self.xCaptureResVideo, self.yCaptureResVideo)
+          fileName=str(datetime.today().strftime("%H%M%S%f"))
+          camera.start_recording(f'{dirName}/{fileName}.h264')
+          camera.wait_recording(self.captureVideoDuration)
+          camera.stop_recording()
+    except:
+      logging.critical(f'failed to save video to f{dirName}/{fileName}')
+      sys.exit(2)
 
   
     return True
