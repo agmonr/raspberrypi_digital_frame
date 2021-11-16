@@ -27,6 +27,7 @@ class frame:
     self.List=[]
     self.msg=""
     self.screenOn=True
+    self.alone=False
     self.Shown=[]
     self.screenState=True #true to on
     for rootFolders in self.root:
@@ -55,6 +56,11 @@ class frame:
     self.offsety=(data['config']['offsety'])
     self.captureOn=(data['config']['captureOn'])
     self.captureVideo=(data['config']['captureVideo'])
+    self.aloneMode=(data['config']['aloneMode'])
+
+
+    self.stations=(data['networks']['stations'])
+
 
     self.camera=(data['config']['camera'])
     if self.camera=="True":
@@ -146,12 +152,24 @@ class frame:
 
 
 
-  
-  def check_net(self): #Check internet connection
-    Status=subprocess.Popen("/bin/ping -c1 -w2 " +str (Net_target), shell=True, stdout=subprocess.PIPE).stdout.read()
-    if Status.find ('100% packet loss') > 0:
-      self.msg=":( "+self.msg
-      self.add_text()
+  def ping(self,host):
+    command = ['ping', '-c', '1', host]
+    return subprocess.call(command) == 0  
+
+
+
+  def checkStations(self):
+    for station in self.stations:
+      for name, dnsName in station.items():
+        if self.ping(dnsName):
+          print (f'{name} is home')
+          self.alone=False
+          return False 
+   
+    self.captureOn=['* * * * *']
+    self.captureVideOn=['* * * * *']
+    self.alone=True
+    return True
 
 
 
@@ -207,7 +225,7 @@ class frame:
       return True
 
     motion01=motion()
-    if motion01.scan_motion()>0:
+    if motion01.scan_motion()>0 and self.alone:
       self.msg=self.msg+" Zzzzoooom"
       self.lastMotion=datetime.now()
       self.captureMotion()
@@ -215,7 +233,6 @@ class frame:
       return True 
 
     return False
-
 
   def captureMotion(self):
     logging.debug("frame.captureMotion()")
@@ -301,17 +318,30 @@ class frame:
       self.FileName=self.List[f]
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
+
+      
+
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         self.preShow()
         dateLimit=datetime.now()-timedelta(seconds=self.delay)
         logging.debug(f'waiting for {self.startShow} > {dateLimit}')
+
         if self.checkMotion() is True and self.checkOnOff() is False:
           self.screenState=True
+
         count+=1
         f+=1
 
+      if self.checkCron(self.aloneMode):
+        self.checkStations()
+
+
+
       self.read_config()
       self.startShow=datetime.now()
+
+
+ 
       if count>=int(self.series):
         count=0
         f=randint(0,len(self.List)-int(self.series)) 

@@ -1,5 +1,5 @@
 {
-	"config": {
+  "config": {
     "Root": [ "/home/Photos/" ],
     "hoursOn": [ "* 05-23 * * *"],
     "clockOn": [ "* 6-8,17-20 * * 0-5", "* 6-8 * * 6" ],
@@ -11,8 +11,15 @@
     "FontScale": 2,
     "Series": 100,
     "offsetx": 0,
-    "offsety": -28, 
+    "offsety": -28,
     "Grayscale": "False",
-    "ShowHalfHour": "True"
-	}
+    "ShowHalfHour": "True",
+    "aloneMode": ["* * * * *" ]
+
+  },
+  "networks": {
+      "stations": [ {"ram": "rphone"}, {"av": "aphone"}, {"cv": "cphone"}, {"ta": "tphone"} ]
+
 }
+}
+
