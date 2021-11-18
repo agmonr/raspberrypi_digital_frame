@@ -19,13 +19,13 @@ class frame:
     logging.debug('frame __init__ read_config' )
 
     self.tvServiceBin=os.path.exists("/usr/bin/tvservice") 
-    self.xscreenresulation=root.winfo_screenheight()
-    self.yscreenresulation=root.winfo_screenwidth()
+    self.yscreenresulation=root.winfo_screenheight()
+    self.xscreenresulation=root.winfo_screenwidth()
     logging.debug(f'self.xscreenresulation={self.xscreenresulation}, self.yscreenresulation=${self.yscreenresulation}' )
     self.lastMotion=datetime.now()
     self.startShow=datetime.now()
     self.List=[]
-    self.msg=""
+    self.msg=[" "," "]
     self.screenOn=True
     self.alone=False
     self.Shown=[]
@@ -139,15 +139,15 @@ class frame:
 
   def add_hour(self):  # Adding hour to displayed image
     if self.checkCron(self.showClock):
-      self.msg=time.strftime("%H:%M")
-      self.add_text()
+      self.msg[0]=time.strftime("%H:%M")
       return True
 
     if self.show_half=="True" and (time.strftime("%M")=='30' or time.strftime("%M")=='00'):
-       self.msg=time.strftime("%H:%M")
-       self.add_text()
+       self.msg[0]=time.strftime("%H:%M")
        return True
 
+
+    self.msg[0]=""
     return False
 
 
@@ -165,33 +165,28 @@ class frame:
           print (f'{name} is home')
           self.alone=False
           return False 
-   
-    self.captureOn=['* * * * *']
-    self.captureVideOn=['* * * * *']
+  
+    logging.debug ("home alone") 
     self.alone=True
     return True
 
 
 
   def add_text(self,x=50,y=170):
-    # font 
+
     font = cv2.FONT_HERSHEY_SIMPLEX 
-    # org 
-    scale=self.scale
-    fontScale = scale
-    org = (20, 100+scale*15) 
-    # fontScale 
-    # Line thickness of 2 px 
+    scale=int((self.img.shape[0]/self.yscreenresulation)*4)
+    logging.debug (f'yscreenresulation={self.yscreenresulation} imgshape[0]={self.img.shape[0]} scale={scale}')
+    org = (20, 100+scale*4) 
     thickness = int(scale)
     linecolor = (0,0,0)
-    linethickness = int(scale)
+    linethickness = int(scale*4)
     bodycolor = (170,255,255)
     bodythinkness = int(scale)
+    msg=' '.join(self.msg)
 
-    # Using cv2.putText() method
-    #  cv2.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)  
-    cv2.putText(self.img, self.msg, org, font, fontScale, linecolor, linethickness, cv2.LINE_AA) 
-    cv2.putText(self.img, self.msg, org, font, fontScale, bodycolor, bodythinkness, cv2.LINE_AA) 
+    cv2.putText(self.img, msg, org, font, scale, linecolor, linethickness, cv2.LINE_AA) 
+    cv2.putText(self.img, msg, org, font, scale, bodycolor, bodythinkness, cv2.LINE_AA) 
 
 
 
@@ -225,8 +220,7 @@ class frame:
       return True
 
     motion01=motion()
-    if motion01.scan_motion()>0 and self.alone:
-      self.msg=self.msg+" Zzzzoooom"
+    if motion01.scan_motion()>0: 
       self.lastMotion=datetime.now()
       self.captureMotion()
       self.screenOn=True
@@ -278,8 +272,8 @@ class frame:
     logging.debug('frame.show()')
     cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE )
     cv2.namedWindow("Frame", flags=cv2.WINDOW_GUI_NORMAL )
-    self.img=self.image_resize(self.img, self.yscreenresulation, self.xscreenresulation)
-    cv2.moveWindow("Frame", int((self.yscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.xscreenresulation-self.img.shape[0])/2)+self.offsety)
+    self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
+    cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.yscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
     key=cv2.waitKey(1)
     return True
@@ -296,6 +290,7 @@ class frame:
     self.Hour=str(time.strftime("%H"))
     self.read_img()
     self.add_hour()
+    self.add_text()
     self.show()
     return True
 
@@ -314,12 +309,19 @@ class frame:
       logging.debug(f'random image start series {f}')
 
     count=0
+
+
+
     while 1:
       self.FileName=self.List[f]
       dateLimit=datetime.now()- timedelta(seconds=self.delay)
       self.preShow()
 
-      
+      if self.alone:
+        self.captureOn=['* * * * *']
+        self.captureVideOn=['* * * * *']
+        self.hoursOn=['0 0 0 0 0']
+    
 
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         self.preShow()
@@ -332,10 +334,10 @@ class frame:
         count+=1
         f+=1
 
+
+
       if self.checkCron(self.aloneMode):
         self.checkStations()
-
-
 
       self.read_config()
       self.startShow=datetime.now()

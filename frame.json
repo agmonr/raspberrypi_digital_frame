@@ -4,7 +4,7 @@
     "hoursOn": [ "* 05-23 * * *"],
     "clockOn": [ "* 6-8,17-20 * * 0-5", "* 6-8 * * 6" ],
     "camera": "True",
-    "captureOn": ["* 22-23,0-6 * * *" ],
+    "captureOn": ["1 1 1 1 1"],
     "captureVideo": ["* 22-23,0-6 * * *" ],
     "Delay": 60,
     "time2Sleep": 600,
@@ -18,7 +18,7 @@
 
   },
   "networks": {
-      "stations": [ {"ram": "rphone"}, {"av": "aphone"}, {"cv": "cphone"}, {"ta": "tphone"} ]
+      "stations": [ {"ram": "rphone"}, {"av": "aphone"}, {"cv": "cphone"}, {"ta": "10.0.0.22"} ]
 
 }
 }
