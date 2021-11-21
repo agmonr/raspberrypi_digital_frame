@@ -174,10 +174,16 @@ class frame:
 
   def add_text(self,x=50,y=170):
 
-    font = cv2.FONT_HERSHEY_SIMPLEX 
-    scale=int((self.img.shape[0]/self.yscreenresulation)*4)
+    #font = cv2.FONT_HERSHEY_SIMPLEX 
+    font = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX
+    try: 
+      scale=int((self.img.shape[0]/self.yscreenresulation)*3)
+    except:
+      scale=5
+    
+
     logging.debug (f'yscreenresulation={self.yscreenresulation} imgshape[0]={self.img.shape[0]} scale={scale}')
-    org = (20, 100+scale*4) 
+    org = (20, 100+scale*5) 
     thickness = int(scale)
     linecolor = (0,0,0)
     linethickness = int(scale*4)
