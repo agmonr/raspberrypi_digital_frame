@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-import os,time,datetime,cv2,subprocess,json,numpy,tkinter,sys,picamera,picamera.array
-from motion import *
+import os,time,datetime,cv2,subprocess,json,numpy,tkinter,sys,array
 from random import randint
 from croniter import croniter
 from datetime import datetime
 from datetime import timedelta
 from crontab import CronTab
-
 from log import *
+
+
+with open('/etc/issue') as f:
+    if 'Raspbian GNU/Linux 10' in f.read():
+        from motion import *
+    else:
+        print ("running not under Raspbian, camera will not work")
+
 
 
 class frame:

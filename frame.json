@@ -3,7 +3,7 @@
     "Root": [ "/home/Photos/" ],
     "hoursOn": [ "* 05-23 * * *"],
     "clockOn": [ "* 6-8,17-20 * * 0-5", "* 6-8 * * 6" ],
-    "camera": "True",
+    "camera": "False",
     "captureOn": ["1 1 1 1 1"],
     "captureVideo": ["* 22-23,0-6 * * *" ],
     "Delay": 60,
