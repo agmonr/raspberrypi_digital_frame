@@ -165,6 +165,8 @@ class frame:
 
 
   def checkStations(self):
+    if self.camera == False: #no need to check if there are people at home if no capture will be done
+      return "False"
     for station in self.stations:
       for name, dnsName in station.items():
         if self.ping(dnsName):
