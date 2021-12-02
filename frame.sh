@@ -14,9 +14,8 @@ export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1.2.0
 export
 echo
 echo
-echo "=== some flicking"
 echo "=== and there will be X"
-nohup /usr/bin/X -nolock -nocursor &
+nohup /usr/bin/X vt1 -nolock -nocursor >> /dev/null &
 echo "=== time to sleep a bit"
 sleep 2
 echo "=== Starting frame.py !"

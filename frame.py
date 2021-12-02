@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
-import os,time,datetime,cv2,subprocess,json,numpy,tkinter,sys,array
+import os,time,datetime,cv2,subprocess,json,numpy,tkinter,sys,picamera,picamera.array
+from motion import *
 from random import randint
 from croniter import croniter
 from datetime import datetime
 from datetime import timedelta
 from crontab import CronTab
+
 from log import *
-
-
-with open('/etc/issue') as f:
-    if 'Raspbian GNU/Linux 10' in f.read():
-        from motion import *
-    else:
-        print ("running not under Raspbian, camera will not work")
-
 
 
 class frame:
@@ -89,8 +83,8 @@ class frame:
       self.screenState=True
       if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
-#        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
-#        os.system('sudo /bin/chvt 1')
+        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
+        os.system('sudo /bin/chvt 1')
 
   def getTvStatus(self):
       if self.tvServiceBin is False:
@@ -104,12 +98,16 @@ class frame:
         return True
       
 
-
-
   def read_img(self):
-    self.img=cv2.imread(self.FileName)
+    try:
+      self.img=cv2.imread(self.FileName)
+      self.img.shape[:2]
+    except:
+      return False
+
     if self.grayscale=="True": 
       self.img=cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+    return True
 
 
 
@@ -165,8 +163,6 @@ class frame:
 
 
   def checkStations(self):
-    if self.camera == False: #no need to check if there are people at home if no capture will be done
-      return "False"
     for station in self.stations:
       for name, dnsName in station.items():
         if self.ping(dnsName):
@@ -186,11 +182,10 @@ class frame:
     font = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX
     try: 
       scale=int((self.img.shape[0]/self.yscreenresulation)*3)
+      logging.debug (f'yscreenresulation={self.yscreenresulation} imgshape[0]={self.img.shape[0]} scale={scale}')
     except:
       scale=5
     
-
-    logging.debug (f'yscreenresulation={self.yscreenresulation} imgshape[0]={self.img.shape[0]} scale={scale}')
     org = (20, 100+scale*5) 
     thickness = int(scale)
     linecolor = (0,0,0)
@@ -289,10 +284,11 @@ class frame:
     self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.yscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
-    cv2.waitKey(1)
-    cv2.waitKey(1)
-    cv2.waitKey(1)
-    cv2.waitKey(1)
+    key=cv2.waitKey(1)
+    key=cv2.waitKey(1)
+    key=cv2.waitKey(1)
+    key=cv2.waitKey(1)
+    key=cv2.waitKey(1)
     return True
 
 
@@ -305,7 +301,9 @@ class frame:
 
     
     self.Hour=str(time.strftime("%H"))
-    self.read_img()
+    if self.read_img() != True:
+      logging.debug('Failed to load image, trying again')
+      return
     self.add_hour()
     self.add_text()
     self.show()
