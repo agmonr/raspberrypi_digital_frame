@@ -254,6 +254,7 @@ class frame:
     logging.debug('frame.checkOnOff()')
 
     if self.lastMotion< datetime.now() - timedelta(seconds=self.sleep):
+      print ('if self.lastMotion< datetime.now() - timedelta(seconds=self.sleep):')
       logging.debug(f'{self.lastMotion} {datetime.now()}')
       self.tvserviceOff()
       return False
