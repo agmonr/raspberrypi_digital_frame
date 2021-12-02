@@ -89,8 +89,8 @@ class frame:
       self.screenState=True
       if not self.getTvStatus() and self.tvServiceBin == True:
         os.system('sudo /usr/bin/tvservice -p')
-        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
-        os.system('sudo /bin/chvt 1')
+#        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
+#        os.system('sudo /bin/chvt 1')
 
   def getTvStatus(self):
       if self.tvServiceBin is False:
@@ -289,7 +289,10 @@ class frame:
     self.img=self.image_resize(self.img, self.xscreenresulation, self.yscreenresulation)
     cv2.moveWindow("Frame", int((self.xscreenresulation-self.img.shape[1])/2+self.offsetx), int((self.yscreenresulation-self.img.shape[0])/2)+self.offsety)
     cv2.imshow("Frame",self.img)
-    key=cv2.waitKey(1)
+    cv2.waitKey(1)
+    cv2.waitKey(1)
+    cv2.waitKey(1)
+    cv2.waitKey(1)
     return True
 
 

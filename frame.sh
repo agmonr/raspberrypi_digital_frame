@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-killall X
-killall Xorg
+#killall X
+#killall Xorg
 
 cd /root/raspberrypi_digital_frame/ 
 
@@ -15,10 +15,8 @@ export
 echo
 echo
 echo "=== some flicking"
-chvt 2
-chvt 1
 echo "=== and there will be X"
-nohup /usr/bin/X vt1 -nolock -nocursor :0 -s 14400 &
+#nohup /usr/bin/X -nolock -nocursor &
 echo "=== time to sleep a bit"
 sleep 2
 echo "=== Starting frame.py !"
