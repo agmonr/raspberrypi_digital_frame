@@ -82,9 +82,10 @@ class frame:
       logging.info('tvservice_on')
       self.screenState=True
       if not self.getTvStatus() and self.tvServiceBin == True:
-        os.system('sudo /usr/bin/tvservice -p')
-        os.system('sudo /bin/chvt 2') #switch to another vt and back to make sure we catch X
-        os.system('sudo /bin/chvt 1')
+        system('/usr/bin/tvservice -p')
+        os.system('kill X')
+        time.sleep(1)
+        os.system('nohup /usr/bin/X vt1 -s 0 -nolock -nocursor -keeptty 2>&1 >> /dev/null & ')
 
   def getTvStatus(self):
       if self.tvServiceBin is False:
