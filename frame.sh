@@ -16,7 +16,7 @@ echo
 echo
 echo "=== and there will be X"
 /usr/bin/tvservice -p
-nohup /usr/bin/X vt1 -s 0 -nolock -nocursor -keeptty 2>&1 >> /dev/null &
+nohup /usr/bin/X vt1 -s 0 -nolock -nocursor 2>&1 >> /dev/null &
 echo "=== time to sleep a bit"
 sleep 2
 echo "=== Starting frame.py !"
