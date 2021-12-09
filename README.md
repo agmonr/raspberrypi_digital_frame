@@ -6,6 +6,8 @@ When no motion is detected the screen will go off.
 
 The installation was tested on Raspbian GNU/Linux 10 and probably won't work on other systems. Please enable the camera using the raspi-config util and set the screen resolution.
 
+The dframe now support powering off and on the usb port if no onw at home. You may need to comile uhubctl (for rspi4) . (https://github.com/mvp/uhubctl#raspberry-pi-4b) 
+
 installations:
 cd /root/
 git clone https://github.com/agmonr/raspberrypi_digital_frame.git

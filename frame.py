@@ -38,6 +38,8 @@ class frame:
     logging.info("Total of "+str(len(self.List))+" images in "+str(self.root))
 
     self.List.sort()
+    command = ['uhubctl','-a','0', '-l', '2']
+    subprocess.call(command)
     self.main()
         
   def read_config(self):
@@ -57,6 +59,7 @@ class frame:
     self.captureOn=(data['config']['captureOn'])
     self.captureVideo=(data['config']['captureVideo'])
     self.aloneMode=(data['config']['aloneMode'])
+    self.usbHomeAlone=(data['config']['usbHomeAlone'])
 
 
     self.stations=(data['networks']['stations'])
@@ -169,10 +172,16 @@ class frame:
         if self.ping(dnsName):
           print (f'{name} is home')
           self.alone=False
+          command = ['uhubctl','-a','0', '-l', '2']
+          subprocess.call(command)
           return False 
   
     logging.debug ("home alone") 
     self.alone=True
+    if self.checkCron(self.usbHomeAlone):
+      command = ['uhubctl','-a','1', '-l', '2']
+      print (subprocess.call(command))
+      print ("turning off")
     return True
 
 
@@ -338,7 +347,6 @@ class frame:
         self.captureOn=['* * * * *']
         self.captureVideOn=['* * * * *']
         self.hoursOn=['0 0 0 0 0']
-    
 
       while self.startShow > dateLimit: #loop until pass self.delay seconds from last image show
         self.preShow()
